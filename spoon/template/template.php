@@ -254,14 +254,14 @@ class SpoonTemplate
 	 */
 	public function cycle($counter, array $elements)
 	{
-		// update counter
-		$counter += 1;
-
 		// number of elements
 		$numElements = count($elements);
 
 		// calculate modulus
 		$modulus = $counter % $numElements;
+
+		// update counter
+		$counter += 1;
 
 		// leftovers?
 		if($modulus == 0) return $elements[$numElements - 1];
