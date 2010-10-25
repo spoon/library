@@ -33,6 +33,7 @@
 - Bugfix: SpoonEmail now uses the charset when building the emails' headers.
 - Bugfix: template cycle tags now work as intended. (thx to Matthis Mullie)
 - Bugfix: fixed check that used to always fail. Needs to be improved though. (thx to Dieter Vanden Eynde)
+- Feature: SpoonDatabase now prefixes fields with their tablename (insert/update)
 
 
 1.2.0 (2010-05-18)
