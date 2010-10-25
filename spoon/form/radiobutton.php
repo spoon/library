@@ -82,7 +82,7 @@ class SpoonFormRadiobutton extends SpoonFormElement
 	 *
 	 * @return	void
 	 * @param	string $name
-	 * @param	string $values
+	 * @param	array $values
 	 * @param	string[optional] $checked
 	 * @param	string[optional] $class
 	 */
