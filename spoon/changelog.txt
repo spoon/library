@@ -35,6 +35,7 @@
 - SpoonDatabase now prefixes fields with their tablename (insert/update)
 - Exceptions now show the user-agent, if we can find it in the $_SERVER array
 - Spoondatabase can now be used with custom ports
+- SpoonTemplate does allow empty strings in the cycle-tag from now on.
 
 1.2.0 (2010-05-18)
 ----
