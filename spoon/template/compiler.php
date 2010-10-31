@@ -877,7 +877,7 @@ class SpoonTemplateCompiler
 	private function parseVariables($content)
 	{
 		// regex pattern
-		$pattern = '/\{\$([a-z0-9_\'\[\]])+(\.([a-z0-9_\'\[\]])+)?(\|[a-z0-9\-_]+(:[\']?[a-z0-9\-_\s\$\[\]:]+[\']?)*)*\}/i';
+		$pattern = '/\{\$[a-z][a-z0-9_]*(\.([a-z_][a-z0-9_]*)+)*(-\>([a-z_][a-z0-9_]*)+)?(\.([a-z_][a-z0-9_]*)+)*(\|[a-z_][a-z0-9_]*(:(([\'"])[a-z0-9]*\\10|\[\$[a-z0-9]+\]))*)*\}/i';
 
 		// temp variables
 		$variables = array();
@@ -893,6 +893,7 @@ class SpoonTemplateCompiler
 			// find matches
 			if(preg_match_all($pattern, $content, $matches))
 			{
+				Spoon::dump($matches);
 				// init var
 				$correctVariables = false;
 
