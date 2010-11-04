@@ -37,6 +37,7 @@
 - Spoondatabase can now be used with custom ports
 - SpoonTemplate does allow empty strings in the cycle-tag from now on.
 - SpoonLocale::getCountry added, which allows you to fetch a country in a specific language.
+- SpoonLocale: getMonth and getWeekDay added as well.
 
 
 1.2.0 (2010-05-18)

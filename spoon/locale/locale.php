@@ -93,6 +93,31 @@ class SpoonLocale
 	}
 
 
+	public static function getMonth($month, $language = 'en', $abbreviated = false)
+	{
+		// init vars
+		$months = array(1 => 'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december');
+		$language = SpoonFilter::getValue($language, self::$languages, 'en');
+		$locale = array();
+
+		// which month?
+		if(SpoonFilter::isInteger($month)) $month = SpoonFilter::getValue($month, range(1, 12), 1);
+
+		// month by name
+		else
+		{
+			$month = array_keys($months, SpoonFilter::getValue($month, array_values($months), 'january'));
+			$month = $month[0];
+		}
+
+		// fetch file
+		require 'data/'. $language .'.php';
+
+		// abbreviated?
+		return ($abbreviated) ? $locale['date']['months']['abbreviated'][$month] : $locale['date']['months']['full'][$month];
+	}
+
+
 	/**
 	 * Retrieve the months of the year in a specified language.
 	 *
@@ -111,6 +136,34 @@ class SpoonLocale
 
 		// abbreviated?
 		return ($abbreviated) ? $locale['date']['months']['abbreviated'] : $locale['date']['months']['full'];
+	}
+
+
+	/**
+	 * Fetch a specific day of the week for a specific language.
+	 *
+	 * @return	string
+	 * @param	mixed $day
+	 * @param	string[optional] $language
+	 * @param	bool[optional] $abbreviated
+	 */
+	public static function getWeekDay($day, $language = 'en', $abbreviated = false)
+	{
+		// init vars
+		$dayIndexes = array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
+		$dayNames = array('sunday' => 'sun', 'monday' => 'mon', 'tuesday' => 'tue', 'wednesday' => 'wed', 'thursday' => 'thu', 'friday' => 'fri', 'saturday' => 'sat');
+		$language = SpoonFilter::getValue($language, self::$languages, 'en');
+		$locale = array();
+
+		// which day?
+		if(SpoonFilter::isInteger($day)) $day = $dayIndexes[SpoonFilter::getValue(strtolower($day), range(0, 6), 0)];
+		else $day = $dayNames[SpoonFilter::getValue(strtolower($day), array_keys($dayNames), 'sunday')];
+
+		// fetch file
+		require 'data/'. $language .'.php';
+
+		// abbreviated?
+		return ($abbreviated) ? $locale['date']['days']['abbreviated'][$day] : $locale['date']['days']['full'][$day];
 	}
 
 
