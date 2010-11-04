@@ -93,6 +93,14 @@ class SpoonLocale
 	}
 
 
+	/**
+	 * Fetch the language specific month.
+	 *
+	 * @return	string
+	 * @param	string $month
+	 * @param	string[optional] $language
+	 * @param	bool[optional] $abbreviated
+	 */
 	public static function getMonth($month, $language = 'en', $abbreviated = false)
 	{
 		// init vars
