@@ -69,6 +69,31 @@ class SpoonLocale
 
 
 	/**
+	 * Fetch the name of a country based on the code.
+	 *
+	 * @return	string
+	 * @param	string $code
+	 * @param	string[optional] $language
+	 */
+	public static function getCountry($code, $language = 'en')
+	{
+		// init vars
+		$code = (string) $code;
+		$language = SpoonFilter::getValue($language, self::$languages, 'en');
+		$locale = array();
+
+		// fetch file
+		require 'data/'. $language .'.php';
+
+		// doesn't exist
+		if(!isset($locale['countries'][$code])) throw new SpoonLocaleException('There is no country with the code: '. $code);
+
+		// all seems fine
+		return $locale['countries'][$code];
+	}
+
+
+	/**
 	 * Retrieve the months of the year in a specified language.
 	 *
 	 * @return	array							An array with all the months in the requested language.
