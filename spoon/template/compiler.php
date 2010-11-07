@@ -711,22 +711,22 @@ class SpoonTemplateCompiler
 	private function parseVariable($variable)
 	{
 		// pattern
-		$pattern = '/\{\$([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?(\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*\}/i';
+		$pattern = '/\{\$([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?((\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*)\}/i';
 
 		// fetch matches
-		if(preg_match($pattern, $variable, $matches))
+		if(preg_match($pattern, $variable, $match))
 		{
 			// base variable
 			$variable = '';
 
 			// variable within iteration
-			if($matches[4] != '')
+			if(isset($match[4]) && $match[4] != '')
 			{
 				// base
-				$variable = '$'. $matches[1];
+				$variable = '$'. $match[1];
 
 				// add separate chunks
-				foreach(explode('.', ltrim($matches[2], '.') .'.'. ltrim(str_replace('->', '.', $matches[4]), '.')) as $chunk)
+				foreach(explode('.', ltrim($match[2], '.') .'.'. ltrim(str_replace('->', '.', $match[4]), '.')) as $chunk)
 				{
 					$variable .= "['". $chunk ."']";
 				}
@@ -739,15 +739,26 @@ class SpoonTemplateCompiler
 				$variable = '$this->variables';
 
 				// add separate chunks
-				foreach(explode('.', $matches[1] . $matches[2]) as $chunk)
+				foreach(explode('.', $match[1] . $match[2]) as $chunk)
 				{
 					$variable .= "['". $chunk ."']";
 				}
 			}
 
-			// @todo add modifiers
+			// has modifiers
+			if(isset($match[7]) && $match[7] != '')
+			{
+				// modifier pattern
+				$pattern = '/(\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)+/';
 
-			// @todo add modifier arguments
+				// has match
+				if(preg_match($pattern, $match[7], $modifiers))
+				{
+					// @todo add modifiers to var from the inside out
+
+					// @todo add modifier arguments
+				}
+			}
 
 			// variable in PHP form
 			return $variable;
@@ -844,6 +855,8 @@ class SpoonTemplateCompiler
 			// fast mode
 			else $content = str_replace('[$'. $key .']', '<?php echo '. $value .'; ?>', $content);
 		}
+
+		Spoon::dump($content);
 
 		return $content;
 	}
