@@ -28,6 +28,7 @@
  *
  *
  * @author		Davy Hellemans <davy@spoon-library.com>
+ * @author		Matthias Mullie <matthias@spoon-library.com>
  * @since		1.0.0
  */
 class SpoonTemplateCompiler
@@ -749,14 +750,43 @@ class SpoonTemplateCompiler
 			if(isset($match[7]) && $match[7] != '')
 			{
 				// modifier pattern
-				$pattern = '/(\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)+/';
+				$pattern = '/\|([a-z_][a-z0-9_]*)((:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)/';
 
 				// has match
-				if(preg_match($pattern, $match[7], $modifiers))
+				if(preg_match_all($pattern, $match[7], $modifiers))
 				{
-					// @todo add modifiers to var from the inside out
+					// loop modifiers
+					foreach($modifiers[1] as $key => $modifier)
+					{
+						// modifier doesn't exist
+						if(!isset($this->modifiers[$modifier])) throw new SpoonTemplateException('The modifier "'. $modifier .'" does not exist.');
 
-					// @todo add modifier arguments
+						// add call
+						else
+						{
+							// method call
+							if(is_array($this->modifiers[$modifier])) $variable = implode('::', $this->modifiers[$modifier]) .'('. $variable;
+
+							// function call
+							else $variable = $this->modifiers[$modifier] .'('. $variable;
+						}
+
+						// has arguments
+						if($modifiers[2][$key] != '')
+						{
+							// arguments pattern
+							$pattern = '/:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+)/';
+
+							// has arguments
+							if(preg_match_all($pattern, $modifiers[2][$key], $arguments))
+							{
+								$variable .= ', '. implode(', ', $arguments[1]);
+							}
+						}
+
+						// add close tag
+						$variable .= ')';
+					}
 				}
 			}
 
@@ -855,8 +885,6 @@ class SpoonTemplateCompiler
 			// fast mode
 			else $content = str_replace('[$'. $key .']', '<?php echo '. $value .'; ?>', $content);
 		}
-
-		Spoon::dump($content);
 
 		return $content;
 	}
