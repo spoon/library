@@ -13,7 +13,6 @@
  * @author		Davy Hellemans <davy@spoon-library.com>
  * @author 		Tijs Verkoyen <tijs@spoon-library.com>
  * @author		Dave Lens <dave@spoon-library.com>
- * @author		Bram Van Damme <bramus@bram.us>
  * @since		1.1.2
  */
 
@@ -26,6 +25,7 @@
  *
  *
  * @author		Tijs Verkoyen <tijs@spoon-library.com>
+ * @author		Bram Van Damme <bramus@bram.us>
  * @since		1.1.1
  */
 class SpoonRESTClient
