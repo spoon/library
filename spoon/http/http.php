@@ -13,7 +13,6 @@
  * @author		Davy Hellemans <davy@spoon-library.com>
  * @author 		Tijs Verkoyen <tijs@spoon-library.com>
  * @author		Dave Lens <dave@spoon-library.com>
- * @author		Bram Van Damme <bramus@bram.us>
  * @since		0.1.1
  */
 
@@ -118,44 +117,23 @@ class SpoonHTTP
 	 *
 	 * @return	void
 	 * @param	string $URL				The URL or page to redirect to.
-	 * @param	int[optional] $code		The redirect code. Only 301 (moved permanently), 302 (found) and 404 (not found) are allowed
+	 * @param	int[optional] $code		The redirect code. Only 301 (moved permanently) and 302 (found) are allowed.
 	 * @param	int[optional] $delay	A delay, expressed in seconds.
-     *
-     * @internal	Caution when using 404, as it is implemented via a non-standard HTTP header field (viz. 'refresh' aka 'Client Pull') 
 	 */
 	public static function redirect($URL, $code = 302, $delay = null)
 	{
 		// redefine url
 		$URL = (string) $URL;
-		$code = SpoonFilter::getValue($code, array(301, 302, 404), 302, 'int');
+		$code = SpoonFilter::getValue($code, array(301, 302), 302, 'int');
+
+		// redirect headers
+		self::setHeadersByCode($code);
 
 		// delay execution
 		if($delay !== null) sleep((int) $delay);
-		
-		// 404 redirect
-		if ($code === 404) 
-		{
-			
-			// We can't set a 404 and then use a regular 'location' header, because the latter one sets a 302 if no 201 or 3xx has been set before (@see http://php.net/header)
-			// @internal This is not a standard HTTP header field, but a custom one introduced by Netscape back in the day. The technique is also known as "Client Pull"
-			// @link http://docstore.mik.ua/orelly/java-ent/servlet/ch05_06.htm (5.6.3)
-			// @link http://stackoverflow.com/questions/283752/refresh-http-header
-			// @link http://tools.ietf.org/html/rfc2616#section-14
-			header('Refresh: 0; url=' . $URL, false, 404);
-			
-		}
-		
-		// Regular redirect (301 & 302)
-		else 
-		{
 
-			// redirect headers
-			self::setHeadersByCode($code);
-
-			// redirect
-			self::setHeaders("Location: $URL");
-			
-		}
+		// redirect
+		self::setHeaders("Location: $URL");
 
 		// stop execution
 		exit;
