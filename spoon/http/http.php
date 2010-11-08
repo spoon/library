@@ -53,7 +53,7 @@ class SpoonHTTP
 		if($cURLoptions !== null)
 		{
 			// loop the extra options
-			foreach((array) $cURLoptions as $key => $value) $options[$key] = $value;
+			foreach($cURLoptions as $key => $value) $options[$key] = $value;
 		}
 
 		// init
