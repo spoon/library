@@ -96,7 +96,7 @@ class SpoonRESTClient
 		if($cURLoptions !== null)
 		{
 			// loop the extra options, and set 'm
-			foreach((array) $cURLoptions as $key => $value) $options[$key] = $value;
+			foreach($cURLoptions as $key => $value) $options[$key] = $value;
 		}
 
 		// set headers
