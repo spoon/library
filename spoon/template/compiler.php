@@ -98,6 +98,14 @@ class SpoonTemplateCompiler
 
 
 	/**
+	 * List of compiler-interpreted variables
+	 *
+	 * @var	array
+	 */
+	private $templateVariables = array();
+
+
+	/**
 	 * List of variables
 	 *
 	 * @var	array
@@ -277,7 +285,7 @@ class SpoonTemplateCompiler
 			$this->content = $this->stripComments($this->content);
 
 			// parse iterations
-//			$this->content = $this->parseIterations($this->content);
+			$this->content = $this->parseIterations($this->content);
 
 			// includes
 //			$this->content = $this->parseIncludes($this->content);
@@ -358,7 +366,7 @@ class SpoonTemplateCompiler
 	private function parseCycle($content, $iteration)
 	{
 		// regex pattern
-		$pattern = '/\{cycle((:\'[a-z0-9\-_\<\/\>\"\=\;\:\s]?\')+)\}/is';
+		$pattern = '/\{cycle((:\'[a-z0-9\-_\<\/\>\"\=\;\:\s]+\')+)\}/is';
 
 		// find matches
 		if(preg_match_all($pattern, $content, $matches))
@@ -527,7 +535,7 @@ class SpoonTemplateCompiler
 	private function parseIterations($content)
 	{
 		// fetch iterations
-		$pattern = '/\{iteration:(([a-z09\'\[\]])+(\.([a-z0-9\'\[\]])+)?)\}/is';
+		$pattern = '/\{iteration:([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)}/is';
 
 		// find matches
 		if(preg_match_all($pattern, $content, $matches))
@@ -711,6 +719,9 @@ class SpoonTemplateCompiler
 	 */
 	private function parseVariable($variable)
 	{
+		// unique key
+		$varKey = md5($variable);
+
 		// pattern
 		$pattern = '/\{\$([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?((\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*)\}/i';
 
@@ -719,6 +730,7 @@ class SpoonTemplateCompiler
 		{
 			// base variable
 			$variable = '';
+			$PHP = '';
 
 			// variable within iteration
 			if(isset($match[4]) && $match[4] != '')
@@ -746,6 +758,9 @@ class SpoonTemplateCompiler
 				}
 			}
 
+			// save PHP code
+			$PHP = $variable;
+
 			// has modifiers
 			if(isset($match[7]) && $match[7] != '')
 			{
@@ -765,10 +780,10 @@ class SpoonTemplateCompiler
 						else
 						{
 							// method call
-							if(is_array($this->modifiers[$modifier])) $variable = implode('::', $this->modifiers[$modifier]) .'('. $variable;
+							if(is_array($this->modifiers[$modifier])) $PHP = implode('::', $this->modifiers[$modifier]) .'('. $PHP;
 
 							// function call
-							else $variable = $this->modifiers[$modifier] .'('. $variable;
+							else $PHP = $this->modifiers[$modifier] .'('. $PHP;
 						}
 
 						// has arguments
@@ -780,18 +795,75 @@ class SpoonTemplateCompiler
 							// has arguments
 							if(preg_match_all($pattern, $modifiers[2][$key], $arguments))
 							{
-								$variable .= ', '. implode(', ', $arguments[1]);
+								$PHP .= ', '. implode(', ', $arguments[1]);
 							}
 						}
 
 						// add close tag
-						$variable .= ')';
+						$PHP .= ')';
 					}
 				}
 			}
 
+			/**
+			 * Variables may have other variables used as parameters in modifiers
+			 * so loop all currently known variables to replace them.
+			 * It does not matter that we do not yet know all variables, we only
+			 * need those inside this particular variable, and those will
+			 * certainly already be parsed because we parse out variables outwards.
+			 */
+			// temporary variable which is a list of 'variables to check before parsing'
+			$variables = array($variable);
+
+			// loop all known template variables
+			foreach($this->templateVariables as $key => $value)
+			{
+				// replace variables
+				$PHP = str_replace('[$'. $key .']', $value['content'], $PHP);
+
+				// debug enabled
+				if(SPOON_DEBUG)
+				{
+					// check if this variable is found
+					$match[0] = str_replace('[$'. $key .']', $value['template'], $match[0], $count);
+
+					// add variable name to list of 'variables to check before parsing'
+					if($count > 0) $variables = array_merge($variables, $value['variables']);
+				}
+			}
+
+			// debug enabled: variable not assigned = revert to template code
+			if(SPOON_DEBUG)
+			{
+				// holds checks to see if this variable can be parsed (along with the variables that may be used inside it)
+				$exists = array();
+
+				// loop variables
+				foreach((array) $variables as $variable)
+				{
+					// get array containing variable
+					$array = preg_replace('/(\[\'[a-z_][a-z0-9_]*\'\])$/', '', $variable);
+
+					// get variable name
+					preg_match('/\[\'([a-z_][a-z0-9_]*)\'\]$/', $variable, $variable);
+					$variable = $variable[1];
+
+					// container array is index of higher array
+					if(preg_match('/\[\'[a-z_][a-z0-9_]*\'\]/', $array)) $exists[] = 'isset('. $array .')';
+					$exists[] = 'array_key_exists(\''. $variable .'\', (array) '. $array .')';
+				}
+
+				// save info for error fallback
+				$this->templateVariables[$varKey]['content'] = '('. implode(' && ', $exists) .' ? '. $PHP .' : \''. str_replace(array('\\','\''), array('\\\\','\\\''), $match[0]) .'\')';
+				$this->templateVariables[$varKey]['variables'] = $variables;
+				$this->templateVariables[$varKey]['template'] = $match[0];
+			}
+
+			// fast mode, without error recovery
+			else $this->templateVariables[$varKey]['content'] = $PHP;
+
 			// variable in PHP form
-			return $variable;
+			return $this->templateVariables[$varKey]['content'];
 		}
 
 		// something went wrong. The variable could not be matched again. Something might be wrong with the regex
@@ -810,10 +882,6 @@ class SpoonTemplateCompiler
 		// regex pattern
 		$pattern = '/\{\$[a-z][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?(\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*\}/i';
 
-		// temp variables
-		$variables = array();
-		$originals = array();
-
 		// we want to keep parsing vars until none can be found.
 		while(1)
 		{
@@ -827,14 +895,13 @@ class SpoonTemplateCompiler
 				foreach($matches[0] as $match)
 				{
 					// variable doesn't already exist
-					if(array_search($match, $variables, true) === false)
+					if(array_search($match, $this->templateVariables, true) === false)
 					{
 						// unique key
 						$key = md5($match);
 
-						// add parsed variable
-						$variables[$key] = $this->parseVariable($match);
-						$originals[$key] = $match;
+						// parse variable
+						$this->parseVariable($match);
 
 						// replace in content
 						$content = str_replace($match, '[$'. $key .']', $content);
@@ -853,37 +920,12 @@ class SpoonTemplateCompiler
 		}
 
 		/**
-		 * Every variable needs to be searched & replaced one by one,
-		 * since only then the nesting process works as intended.
-		 */
-		foreach($variables as $key => $value)
-		{
-			// loop each element except this one
-			foreach($variables as $keyIndex => $valueContent)
-			{
-				// skip myself
-				if($key == $keyIndex) continue;
-
-				// replace myself in the other var
-				$variables[$keyIndex] = str_replace('[$'. $key .']', $variables[$key], $variables[$keyIndex]);
-			}
-		}
-
-		/**
 		 * Now loop these vars again, but this time parse them in the
 		 * content we're actually working with.
 		 */
-		foreach($variables as $key => $value)
+		foreach($this->templateVariables as $key => $value)
 		{
-			// debug enabled
-			if(SPOON_DEBUG)
-			{
-				// @todo the originals need to be incorporated to display the original variable if something goes wrong
-				$content = str_replace('[$'. $key .']', '<?php echo '. $value .'; ?>', $content);
-			}
-
-			// fast mode
-			else $content = str_replace('[$'. $key .']', '<?php echo '. $value .'; ?>', $content);
+			$content = str_replace('[$'. $key .']', '<?php echo '. $value['content'] .'; ?>', $content);
 		}
 
 		return $content;
