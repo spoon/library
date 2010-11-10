@@ -28,6 +28,7 @@
  *
  *
  * @author		Davy Hellemans <davy@spoon-library.com>
+ * @author		Matthias Mullie <matthias@spoon-library.com>
  * @since		1.0.0
  */
 class SpoonTemplateCompiler
@@ -195,7 +196,7 @@ class SpoonTemplateCompiler
 	{
 		// init vars
 		$string = (string) $string;
-		$type = SpoonFilter::getValue($type, array('cycle', 'iteration', 'option', 'variable'), 'variable', 'string');
+		$type = SpoonFilter::getValue($type, array('cycle', 'iteration', 'option'), 'string');
 
 		// types
 		switch($type)
@@ -244,27 +245,6 @@ class SpoonTemplateCompiler
 				// empty brackets are NOT allowed
 				if(substr_count($string, '[]') != 0) return false;
 			break;
-
-			// variable string
-			case 'variable':
-				// the number of square opening/closing brackets should be equal
-				if(substr_count($string, '[') != substr_count($string, ']')) return false;
-
-				// the number of single qoutes should always be an even number
-				if(!SpoonFilter::isEven(substr_count($string, "'"))) return false;
-
-				// first charachter should not be a number
-				if(SpoonFilter::isInteger(substr($string, 2, 1))) return false;
-
-				// square bracket followed by a dot is NOT allowed eg {$variable[0].var}
-				if(substr_count($string, '].') != 0) return false;
-
-				// dot followed by a square bracket is NOT allowed eg {$variable.['test']}
-				if(substr_count($string, '.[') != 0) return false;
-
-				// empty brackets are NOT allowed
-				if(substr_count($string, '[]') != 0) return false;
-			break;
 		}
 
 		return true;
@@ -297,22 +277,22 @@ class SpoonTemplateCompiler
 			$this->content = $this->stripComments($this->content);
 
 			// parse iterations
-			$this->content = $this->parseIterations($this->content);
+//			$this->content = $this->parseIterations($this->content);
 
 			// includes
-			$this->content = $this->parseIncludes($this->content);
+//			$this->content = $this->parseIncludes($this->content);
 
 			// parse options
-			$this->content = $this->parseOptions($this->content);
+//			$this->content = $this->parseOptions($this->content);
 
 			// parse cache tags
-			$this->content = $this->parseCache($this->content);
+//			$this->content = $this->parseCache($this->content);
 
 			// parse variables
 			$this->content = $this->parseVariables($this->content);
 
 			// parse forms
-			$this->content = $this->parseForms($this->content);
+//			$this->content = $this->parseForms($this->content);
 
 			// while developing, you might want to know about the undefined indexes
 			$errorReporting = (SPOON_DEBUG) ? 'E_ALL | E_STRICT' : 'E_WARNING';
@@ -731,140 +711,91 @@ class SpoonTemplateCompiler
 	 */
 	private function parseVariable($variable)
 	{
-		// strip '{$' and '}'
-		$variable = ltrim($variable, '{$');
-		$variable = rtrim($variable, '}');
+		// pattern
+		$pattern = '/\{\$([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?((\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*)\}/i';
 
-		// fetch modifiers
-		$var = explode('|', $variable);
-
-		// base variable
-		$variable = '';
-
-		// explode using the dots
-		$varChunks = explode('.', $var[0]);
-
-		// number of chunks
-		$numChunks = count($varChunks);
-
-		// more than 2 chunks is NOT allowed
-		if($numChunks > 2) return '\'{$'. implode('|', $var) .'}\'';
-
-		// 2 chunks
-		elseif($numChunks == 2)
+		// fetch matches
+		if(preg_match($pattern, $variable, $match))
 		{
-			// contains [
-			if(strpos($varChunks[1],'[') !== false)
+			// base variable
+			$variable = '';
+
+			// variable within iteration
+			if(isset($match[4]) && $match[4] != '')
 			{
-				// get rid of ]
-				$varChunks[1] = str_replace(']', '', $varChunks[1]);
+				// base
+				$variable = '$'. $match[1];
 
-				// create chunks
-				$bracketChunks = explode('[', $varChunks[1]);
-
-				// add first part
-				$variable = '$'. $varChunks[0];
-
-				// loop all chunks
-				for($i = 0; $i < count($bracketChunks); $i++)
+				// add separate chunks
+				foreach(explode('.', ltrim($match[2], '.') .'.'. ltrim(str_replace('->', '.', $match[4]), '.')) as $chunk)
 				{
-					// explicitly add single quotes for the first element
-					if($i == 0) $variable .= '[\''. $bracketChunks[$i] .'\']';
-
-					// everything after first as is provided in the template
-					else $variable .= '['. $bracketChunks[$i] .']';
+					$variable .= "['". $chunk ."']";
 				}
 			}
 
-			// no square bracketes used
-			else $variable = '$'. $varChunks[0] .'[\''. $varChunks[1] .'\']';
-		}
-
-		// 1 chunk
-		else
-		{
-			// contains [
-			if(strpos($varChunks[0],'[') !== false)
+			// regular variable
+			else
 			{
-				// get rid of ]
-				$varChunks[0] = str_replace(']', '', $varChunks[0]);
+				// base
+				$variable = '$this->variables';
 
-				// create chunks
-				$bracketChunks = explode('[', $varChunks[0]);
-
-				// add first part
-				$variable = '$this->variables[\''. $bracketChunks[0] .'\']';
-
-				// loop all chunks
-				for($i = 1; $i < count($bracketChunks); $i++)
+				// add separate chunks
+				foreach(explode('.', $match[1] . $match[2]) as $chunk)
 				{
-					// add this chunk (as provided in the template)
-					$variable .= '['. $bracketChunks[$i] .']';
+					$variable .= "['". $chunk ."']";
 				}
 			}
 
-			// no square brackets used
-			else $variable = '$this->variables[\''. $var[0] .'\']';
-		}
-
-		// has modifiers ?
-		if(isset($var[1]))
-		{
-			// loop modifiers
-			foreach($var as $i => $modifier)
+			// has modifiers
+			if(isset($match[7]) && $match[7] != '')
 			{
-				// skip first record
-				if($i == 0) continue;
+				// modifier pattern
+				$pattern = '/\|([a-z_][a-z0-9_]*)((:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)/';
 
-				// modifier + parameters
-				$modifierChunks = explode(':', $modifier);
-
-				// modifier doesn't exist
-				if(!isset($this->modifiers[$modifierChunks[0]])) throw new SpoonTemplateException('The modifier ('. $modifierChunks[0] .') does not exist.');
-
-				// add call
-				else
+				// has match
+				if(preg_match_all($pattern, $match[7], $modifiers))
 				{
-					// method call
-					if(is_array($this->modifiers[$modifierChunks[0]])) $variable = implode('::', $this->modifiers[$modifierChunks[0]]) .'('. $variable;
-
-					// function call
-					else $variable = $this->modifiers[$modifierChunks[0]] .'('. $variable;
-				}
-
-				// has arguments
-				if(count($modifierChunks) > 1)
-				{
-					// init vars
-					$inParameter = false;
-					$parameters = mb_substr($modifier, strlen($modifierChunks[0]), mb_strlen($modifier, SPOON_CHARSET), SPOON_CHARSET);
-
-					// loop every character
-					for($i = 0; $i < mb_strlen($parameters, SPOON_CHARSET); $i++)
+					// loop modifiers
+					foreach($modifiers[1] as $key => $modifier)
 					{
-						// fetch character
-						$string = mb_substr($parameters, $i, 1, SPOON_CHARSET);
+						// modifier doesn't exist
+						if(!isset($this->modifiers[$modifier])) throw new SpoonTemplateException('The modifier "'. $modifier .'" does not exist.');
 
-						// single quote in parameter, indicating the end for this parameter
-						if($string == "'" && $inParameter) $inParameter = false;
+						// add call
+						else
+						{
+							// method call
+							if(is_array($this->modifiers[$modifier])) $variable = implode('::', $this->modifiers[$modifier]) .'('. $variable;
 
-						// single quotes, indicating the start of a new parameter
-						elseif($string == "'" && !$inParameter) $inParameter = true;
+							// function call
+							else $variable = $this->modifiers[$modifier] .'('. $variable;
+						}
 
-						// semicolon outside parameter
-						elseif($string == ':' && !$inParameter) $string = ', ';
+						// has arguments
+						if($modifiers[2][$key] != '')
+						{
+							// arguments pattern
+							$pattern = '/:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+)/';
 
-						// add character
-						$variable .= $string;
+							// has arguments
+							if(preg_match_all($pattern, $modifiers[2][$key], $arguments))
+							{
+								$variable .= ', '. implode(', ', $arguments[1]);
+							}
+						}
+
+						// add close tag
+						$variable .= ')';
 					}
 				}
-
-				// add close tag
-				$variable .= ')';
 			}
+
+			// variable in PHP form
+			return $variable;
 		}
 
-		return $variable;
+		// something went wrong. The variable could not be matched again. Something might be wrong with the regex
+		else throw new SpoonTemplateException('Something went wrong while trying to parse '. $variable);
 	}
 
 
@@ -874,18 +805,14 @@ class SpoonTemplateCompiler
 	 * @return	string				The updated content, containing the parsed variables.
 	 * @param	string $content		The content that may contain variables.
 	 */
-	private function parseVariables($content)
+	protected function parseVariables($content)
 	{
 		// regex pattern
-		$pattern = '/\{\$([a-z0-9_\'\[\]])+(\.([a-z0-9_\'\[\]])+)?(\|[a-z0-9\-_]+(:[\']?[a-z0-9\-_\s\$\[\]:]+[\']?)*)*\}/i';
+		$pattern = '/\{\$[a-z][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?(\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*\}/i';
 
 		// temp variables
 		$variables = array();
-
-		/*
-		 * We willen een lijstje bijhouden van alle variabelen die wel gematched zijn, maar niet correct zijn.
-		 * Van zodra dit de enige variabelen zijn die nog overschieten, dang aan we de while loop breken.
-		 */
+		$originals = array();
 
 		// we want to keep parsing vars until none can be found.
 		while(1)
@@ -902,24 +829,22 @@ class SpoonTemplateCompiler
 					// variable doesn't already exist
 					if(array_search($match, $variables, true) === false)
 					{
-						// syntax check this match
-						if($this->isCorrectSyntax($match, 'variable'))
-						{
-							// unique key
-							$key = md5($match);
+						// unique key
+						$key = md5($match);
 
-							// add parsed variable
-							$variables[$key] = $this->parseVariable($match);
+						// add parsed variable
+						$variables[$key] = $this->parseVariable($match);
+						$originals[$key] = $match;
 
-							// replace in content
-							$content = str_replace($match, '[$'. $key .']', $content);
+						// replace in content
+						$content = str_replace($match, '[$'. $key .']', $content);
 
-							// note that at least 1 good variable was found
-							$correctVariables = true;
-						}
+						// note that at least 1 good variable was found
+						$correctVariables = true;
 					}
 				}
 
+				// no correct variables were found
 				if(!$correctVariables) break;
 			}
 
@@ -950,7 +875,15 @@ class SpoonTemplateCompiler
 		 */
 		foreach($variables as $key => $value)
 		{
-			$content = str_replace('[$'. $key .']', '<?php echo '. $value .'; ?>', $content);
+			// debug enabled
+			if(SPOON_DEBUG)
+			{
+				// @todo the originals need to be incorporated to display the original variable if something goes wrong
+				$content = str_replace('[$'. $key .']', '<?php echo '. $value .'; ?>', $content);
+			}
+
+			// fast mode
+			else $content = str_replace('[$'. $key .']', '<?php echo '. $value .'; ?>', $content);
 		}
 
 		return $content;
