@@ -38,6 +38,7 @@
 - SpoonTemplate does allow empty strings in the cycle-tag from now on.
 - SpoonLocale::getCountry added, which allows you to fetch a country in a specific language.
 - SpoonLocale: getMonth and getWeekDay added as well.
+- SpoonFile::delete now allows you to delete an array of files.
 
 
 1.2.0 (2010-05-18)
