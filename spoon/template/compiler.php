@@ -538,76 +538,77 @@ class SpoonTemplateCompiler
 		$pattern = '/\{iteration:([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)}/is';
 
 		// find matches
-		if(preg_match_all($pattern, $content, $matches))
+		if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
 		{
-			// init var
-			$iterations = array();
-
-			// loop matches
-			foreach($matches[1] as $match)
+			// loop iterations
+			foreach($matches as $match)
 			{
-				if(!in_array($match, $iterations)) $iterations[] = $match;
-			}
+				// @todo: check if $match[0] already parsed
 
-			// has iterations
-			if(count($iterations) != 0)
-			{
-				// loop iterations
-				foreach($iterations as $iteration)
+				// base
+				$variable = '$this->variables[\''. $match[1] .'\']';
+				$internalVariable = '$'. $match[1];
+
+				// add separate chunks
+				if($match[2])
 				{
-					// check iteration syntax
-					if($this->isCorrectSyntax($iteration, 'iteration'))
+					foreach(explode('.', ltrim($match[2], '.')) as $chunk)
 					{
-						// parse cycle tag
-						$content = $this->parseCycle($content, $iteration);
-
-						// init vars
-						$search = array();
-						$replace = array();
-
-						// search
-						$search[0] = '{iteration:'. $iteration .'}';
-						$search[1] = '{/iteration:'. $iteration .'}';
-
-						// convert multiple dots to a single one
-						$name = preg_replace('/\.+/', '.', $iteration);
-						$name = trim($name, '.');
-
-						// explode using the dots
-						$chunks = explode('.', $name);
-
-						// number of chunks
-						$numChunks = count($chunks);
-
-						// define variable
-						$variable = $this->parseVariable($name);
-
-						// internal variable
-						$internalVariable = SpoonFilter::toCamelCase(str_replace(array('[', ']', "'", '_'), ' ', $chunks[$numChunks - 1]), ' ', true, SPOON_CHARSET);
-
-						// replace
-						$replace[0] = '<?php $'. $internalVariable ."I = 1; ?>\n";
-						$replace[0] .= '<?php $'. $internalVariable .'Count = count('. $variable ."); ?>\n";
-						$replace[0] .= '<?php foreach((array) '. $variable .' as $'. $internalVariable ."): ?>\n";
-						$replace[0] .= "<?php
-						if(!isset(\$". $internalVariable ."['first']) && \$". $internalVariable ."I == 1) \$". $internalVariable ."['first'] = true;
-						if(!isset(\$". $internalVariable ."['last']) && \$". $internalVariable ."I == \$". $internalVariable ."Count) \$". $internalVariable ."['last'] = true;
-						if(isset(\$". $internalVariable ."['formElements']) && is_array(\$". $internalVariable ."['formElements']))
-						{
-							foreach(\$". $internalVariable ."['formElements'] as \$name => \$object)
-							{
-								\$". $internalVariable ."[\$name] = \$object->parse();
-								\$". $internalVariable ."[\$name .'Error'] = (method_exists(\$object, 'getErrors') && \$object->getErrors() != '') ? '<span class=\"formError\">'. \$object->getErrors() .'</span>' : '';
-							}
-						}
-						?>";
-						$replace[1] = '<?php $'. $internalVariable ."I++; ?>\n";
-						$replace[1] .= '<?php endforeach; ?>';
-
-						// replace
-						$content = str_replace($search, $replace, $content);
+						$variable .= "['". $chunk ."']";
+						$internalVariable .= "['". $chunk ."']";
 					}
 				}
+
+				// parse cycle tag
+				$content = $this->parseCycle($content, $match[1]); // @todo
+
+				$md5 = '$var'. md5($variable);
+
+				// init vars
+				$search = array();
+				$replace = array();
+
+				// search
+				$search[0] = '{iteration:'. $match[1] . $match[2] .'}';
+				$search[1] = '{/iteration:'. $match[1] . $match[2] .'}';
+
+				// replace
+				$replace[0] = '<?php';
+				if(SPOON_DEBUG) $replace[0] .= '
+				if(!isset('. $variable .'))
+				{
+					?>{iteration:'. $match[1] . $match[2] .'}<?php
+					'. $variable .' = array(\'\');
+					'. $md5 .'Fail = true;
+				}';
+				$replace[0] .= '
+				'. $md5 .'I = 1;
+				'. $md5 .'Count = count('. $variable .');
+				foreach((array) '. $variable .' as '. $internalVariable .')
+				{
+					if(!isset('. $internalVariable .'[\'first\']) && '. $md5 .'I == 1) '. $internalVariable .'[\'first\'] = true;
+					if(!isset('. $internalVariable .'[\'last\']) && '. $md5 .'I == '. $md5 .'Count) '. $internalVariable .'[\'last\'] = true;
+					if(isset('. $internalVariable .'[\'formElements\']) && is_array('. $internalVariable .'[\'formElements\']))
+					{
+						foreach('. $internalVariable .'[\'formElements\'] as $name => $object)
+						{
+							'. $internalVariable .'[$name] = $object->parse();
+							'. $internalVariable .'[$name .\'Error\'] = (method_exists($object, \'getErrors\') && $object->getErrors() != \'\') ? \'<span class="formError">\'. $object->getErrors() .\'</span>\' : \'\';
+						}
+					}
+				?>';
+				$replace[1] = '<?php
+					'. $md5 .'I++;
+				}';
+				if(SPOON_DEBUG) $replace[1] .= '
+				if(isset('. $md5 .'Fail) && '. $md5 .'Fail == true)
+				{
+					?>{/iteration:'. $match[1] . $match[2] .'}<?php
+				}';
+				$replace[1] .= '?>';
+
+				// replace
+				$content = str_replace($search, $replace, $content);
 			}
 		}
 
@@ -719,155 +720,7 @@ class SpoonTemplateCompiler
 	 */
 	private function parseVariable($variable)
 	{
-		// unique key
-		$varKey = md5($variable);
-
-		// pattern
-		$pattern = '/\{\$([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?((\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*)\}/i';
-
-		// fetch matches
-		if(preg_match($pattern, $variable, $match))
-		{
-			// base variable
-			$variable = '';
-			$PHP = '';
-
-			// variable within iteration
-			if(isset($match[4]) && $match[4] != '')
-			{
-				// base
-				$variable = '$'. $match[1];
-
-				// add separate chunks
-				foreach(explode('.', ltrim($match[2], '.') .'.'. ltrim(str_replace('->', '.', $match[4]), '.')) as $chunk)
-				{
-					$variable .= "['". $chunk ."']";
-				}
-			}
-
-			// regular variable
-			else
-			{
-				// base
-				$variable = '$this->variables';
-
-				// add separate chunks
-				foreach(explode('.', $match[1] . $match[2]) as $chunk)
-				{
-					$variable .= "['". $chunk ."']";
-				}
-			}
-
-			// save PHP code
-			$PHP = $variable;
-
-			// has modifiers
-			if(isset($match[7]) && $match[7] != '')
-			{
-				// modifier pattern
-				$pattern = '/\|([a-z_][a-z0-9_]*)((:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)/';
-
-				// has match
-				if(preg_match_all($pattern, $match[7], $modifiers))
-				{
-					// loop modifiers
-					foreach($modifiers[1] as $key => $modifier)
-					{
-						// modifier doesn't exist
-						if(!isset($this->modifiers[$modifier])) throw new SpoonTemplateException('The modifier "'. $modifier .'" does not exist.');
-
-						// add call
-						else
-						{
-							// method call
-							if(is_array($this->modifiers[$modifier])) $PHP = implode('::', $this->modifiers[$modifier]) .'('. $PHP;
-
-							// function call
-							else $PHP = $this->modifiers[$modifier] .'('. $PHP;
-						}
-
-						// has arguments
-						if($modifiers[2][$key] != '')
-						{
-							// arguments pattern
-							$pattern = '/:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+)/';
-
-							// has arguments
-							if(preg_match_all($pattern, $modifiers[2][$key], $arguments))
-							{
-								$PHP .= ', '. implode(', ', $arguments[1]);
-							}
-						}
-
-						// add close tag
-						$PHP .= ')';
-					}
-				}
-			}
-
-			/**
-			 * Variables may have other variables used as parameters in modifiers
-			 * so loop all currently known variables to replace them.
-			 * It does not matter that we do not yet know all variables, we only
-			 * need those inside this particular variable, and those will
-			 * certainly already be parsed because we parse out variables outwards.
-			 */
-			// temporary variable which is a list of 'variables to check before parsing'
-			$variables = array($variable);
-
-			// loop all known template variables
-			foreach($this->templateVariables as $key => $value)
-			{
-				// replace variables
-				$PHP = str_replace('[$'. $key .']', $value['content'], $PHP);
-
-				// debug enabled
-				if(SPOON_DEBUG)
-				{
-					// check if this variable is found
-					$match[0] = str_replace('[$'. $key .']', $value['template'], $match[0], $count);
-
-					// add variable name to list of 'variables to check before parsing'
-					if($count > 0) $variables = array_merge($variables, $value['variables']);
-				}
-			}
-
-			// debug enabled: variable not assigned = revert to template code
-			if(SPOON_DEBUG)
-			{
-				// holds checks to see if this variable can be parsed (along with the variables that may be used inside it)
-				$exists = array();
-
-				// loop variables
-				foreach((array) $variables as $variable)
-				{
-					// get array containing variable
-					$array = preg_replace('/(\[\'[a-z_][a-z0-9_]*\'\])$/', '', $variable);
-
-					// get variable name
-					preg_match('/\[\'([a-z_][a-z0-9_]*)\'\]$/', $variable, $variable);
-					$variable = $variable[1];
-
-					// container array is index of higher array
-					if(preg_match('/\[\'[a-z_][a-z0-9_]*\'\]/', $array)) $exists[] = 'isset('. $array .')';
-					$exists[] = 'array_key_exists(\''. $variable .'\', (array) '. $array .')';
-				}
-
-				// save info for error fallback
-				$this->templateVariables[$varKey]['content'] = '('. implode(' && ', $exists) .' ? '. $PHP .' : \''. str_replace(array('\\','\''), array('\\\\','\\\''), $match[0]) .'\')';
-				$this->templateVariables[$varKey]['variables'] = $variables;
-				$this->templateVariables[$varKey]['template'] = $match[0];
-			}
-
-			// fast mode, without error recovery
-			else $this->templateVariables[$varKey]['content'] = $PHP;
-
-			// variable in PHP form
-			return $this->templateVariables[$varKey]['content'];
-		}
-
-		// something went wrong. The variable could not be matched again. Something might be wrong with the regex
-		else throw new SpoonTemplateException('Something went wrong while trying to parse '. $variable);
+		// @todo
 	}
 
 
@@ -880,39 +733,160 @@ class SpoonTemplateCompiler
 	protected function parseVariables($content)
 	{
 		// regex pattern
-		$pattern = '/\{\$[a-z][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?(\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*\}/i';
+		$pattern = '/\{\$([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?((\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*)\}/i';
 
 		// we want to keep parsing vars until none can be found.
 		while(1)
 		{
 			// find matches
-			if(preg_match_all($pattern, $content, $matches))
+			if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
 			{
-				// init var
-				$correctVariables = false;
-
 				// loop matches
-				foreach($matches[0] as $match)
+				foreach($matches as $match)
 				{
 					// variable doesn't already exist
-					if(array_search($match, $this->templateVariables, true) === false)
+					if(array_search($match[0], $this->templateVariables, true) === false)
 					{
 						// unique key
-						$key = md5($match);
+						$varKey = md5($match[0]);
 
-						// parse variable
-						$this->parseVariable($match);
+						// base variable
+						$variable = '';
 
-						// replace in content
-						$content = str_replace($match, '[$'. $key .']', $content);
+						// variable within iteration
+						if(isset($match[4]) && $match[4] != '')
+						{
+							// base
+							$variable = '$'. $match[1];
 
-						// note that at least 1 good variable was found
-						$correctVariables = true;
+							// add separate chunks
+							foreach(explode('.', ltrim($match[2] . str_replace('->', '.', $match[4]), '.')) as $chunk)
+							{
+								$variable .= "['". $chunk ."']";
+							}
+						}
+
+						// regular variable
+						else
+						{
+							// base
+							$variable = '$this->variables';
+
+							// add separate chunks
+							foreach(explode('.', $match[1] . $match[2]) as $chunk)
+							{
+								$variable .= "['". $chunk ."']";
+							}
+						}
+
+						// save PHP code
+						$PHP = $variable;
+
+						// has modifiers
+						if(isset($match[7]) && $match[7] != '')
+						{
+							// modifier pattern
+							$pattern = '/\|([a-z_][a-z0-9_]*)((:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)/';
+
+							// has match
+							if(preg_match_all($pattern, $match[7], $modifiers))
+							{
+								// loop modifiers
+								foreach($modifiers[1] as $key => $modifier)
+								{
+									// modifier doesn't exist
+									if(!isset($this->modifiers[$modifier])) throw new SpoonTemplateException('The modifier "'. $modifier .'" does not exist.');
+
+									// add call
+									else
+									{
+										// method call
+										if(is_array($this->modifiers[$modifier])) $PHP = implode('::', $this->modifiers[$modifier]) .'('. $PHP;
+
+										// function call
+										else $PHP = $this->modifiers[$modifier] .'('. $PHP;
+									}
+
+									// has arguments
+									if($modifiers[2][$key] != '')
+									{
+										// arguments pattern
+										$pattern = '/:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+)/';
+
+										// has arguments
+										if(preg_match_all($pattern, $modifiers[2][$key], $arguments))
+										{
+											$PHP .= ', '. implode(', ', $arguments[1]);
+										}
+									}
+
+									// add close tag
+									$PHP .= ')';
+								}
+							}
+						}
+
+						/**
+						 * Variables may have other variables used as parameters in modifiers
+						 * so loop all currently known variables to replace them.
+						 * It does not matter that we do not yet know all variables, we only
+						 * need those inside this particular variable, and those will
+						 * certainly already be parsed because we parse out variables outwards.
+						 */
+						// temporary variable which is a list of 'variables to check before parsing'
+						$variables = array($variable);
+
+						// loop all known template variables
+						foreach($this->templateVariables as $key => $value)
+						{
+							// replace variables
+							$PHP = str_replace('[$'. $key .']', $value['content'], $PHP);
+
+							// debug enabled
+							if(SPOON_DEBUG)
+							{
+								// check if this variable is found
+								$match[0] = str_replace('[$'. $key .']', $value['template'], $match[0], $count);
+
+								// add variable name to list of 'variables to check before parsing'
+								if($count > 0) $variables = array_merge($variables, $value['variables']);
+							}
+						}
+
+						// debug enabled: variable not assigned = revert to template code
+						if(SPOON_DEBUG)
+						{
+							// holds checks to see if this variable can be parsed (along with the variables that may be used inside it)
+							$exists = array();
+
+							// loop variables
+							foreach((array) $variables as $variable)
+							{
+								// get array containing variable
+								$array = preg_replace('/(\[\'[a-z_][a-z0-9_]*\'\])$/', '', $variable);
+
+								// get variable name
+								preg_match('/\[\'([a-z_][a-z0-9_]*)\'\]$/', $variable, $variable);
+								$variable = $variable[1];
+
+								// container array is index of higher array
+								if(preg_match('/\[\'[a-z_][a-z0-9_]*\'\]/', $array)) $exists[] = 'isset('. $array .')';
+								$exists[] = 'array_key_exists(\''. $variable .'\', (array) '. $array .')';
+							}
+
+							// save info for error fallback
+							$this->templateVariables[$varKey]['content'] = '('. implode(' && ', $exists) .' ? '. $PHP .' : \''. str_replace(array('\\','\''), array('\\\\','\\\''), $match[0]) .'\')';
+							$this->templateVariables[$varKey]['variables'] = $variables;
+							$this->templateVariables[$varKey]['template'] = $match[0];
+						}
+
+						// fast mode, without error recovery
+						else $this->templateVariables[$varKey]['content'] = $PHP;
 					}
-				}
 
-				// no correct variables were found
-				if(!$correctVariables) break;
+					// replace in content
+					$content = str_replace($match[0], '[$'. $varKey .']', $content);
+				}
 			}
 
 			// break the loop, no matches were found
@@ -1000,7 +974,15 @@ class SpoonTemplateCompiler
 	 */
 	private function stripComments($content)
 	{
-		return $content = preg_replace('/\{\*(.+?)\*\}/s', '', $content);
+		// we want to keep stripping comments until none can be found.
+		do
+		{
+			// strip comments from output
+			$content = preg_replace('/\{\*(?!.*?\{\*).*?\*\}/s', '', $content, -1, $count);
+		}
+		while($count > 0);
+
+		return $content;
 	}
 }
 
