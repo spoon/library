@@ -74,6 +74,14 @@ class SpoonTemplateCompiler
 
 
 	/**
+	 * List of used iterations
+	 *
+	 * @var	array
+	 */
+	private $iterations = array();
+
+
+	/**
 	 * Cached list of the modifiers
 	 *
 	 * @var	array
@@ -284,6 +292,9 @@ class SpoonTemplateCompiler
 			// strip comments
 			$this->content = $this->stripComments($this->content);
 
+			// prepare iterations
+			$this->content = $this->prepareIterations($this->content);
+
 			// parse iterations
 			$this->content = $this->parseIterations($this->content);
 
@@ -366,76 +377,31 @@ class SpoonTemplateCompiler
 	private function parseCycle($content, $iteration)
 	{
 		// regex pattern
-		$pattern = '/\{cycle((:\'[a-z0-9\-_\<\/\>\"\=\;\:\s]+\')+)\}/is';
+		$pattern = '/\{cycle((:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))+)\}/is'; // @todo: no parsed variables yet here. Make sure variables work ok!
 
 		// find matches
-		if(preg_match_all($pattern, $content, $matches))
+		if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
 		{
-			// chunks
-			$chunks = explode('.', $iteration);
-
-			// number of chunks
-			$numChunks = count($chunks);
-
-			// variable string
-			$variable = '$'. SpoonFilter::toCamelCase(str_replace(array('[', ']', "'", '_'), ' ', $chunks[$numChunks - 1]), ' ', true, SPOON_CHARSET);
-
 			// loop matches
-			foreach($matches[1] as $i => $match)
+			foreach($matches as $i => $match)
 			{
-				// correct cycle
-				if($this->isCorrectSyntax($match, 'cycle'))
+				// init vars
+				$cycle = '';
+
+				// cycles pattern
+				$pattern = '/:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+)/';
+
+				// has cycles
+				if(preg_match_all($pattern, $match[1], $arguments))
 				{
-					// init vars
-					$cycle = '';
-					$inParameter = false;
-					$parameters = trim($match, ':');
-
-					// loop every character
-					for($c = 0; $c < mb_strlen($parameters, SPOON_CHARSET); $c++)
-					{
-						// fetch character
-						$string = mb_substr($parameters, $c, 1, SPOON_CHARSET);
-
-						// single quote in parameter, indicating the end for this parameter
-						if($string == "'" && $inParameter) $inParameter = false;
-
-						// single quotes, indicating the start of a new parameter
-						elseif($string == "'" && !$inParameter) $inParameter = true;
-
-						// semicolon outside parameter
-						elseif($string == ':' && !$inParameter) $string = ', ';
-
-						// add character
-						$cycle .= $string;
-					}
-
-					// search & replace
-					$search = $matches[0][$i];
-					$replace = '<?php echo $this->cycle('. $variable .'I, array('. $cycle .')); ?>';
-
-					// init var
-					$iterations = array();
-
-					/*
-					 * The name of this iteration may contain characters that need to be escaped if you
-					 * want to use them as a literal string in a regex match.
-					 */
-					$iterationPattern = str_replace(array('.', '[', ']', "'"), array('\.', '\[', '\]', "\'"), $iteration);
-
-					// match current iteration
-					preg_match_all('/\{iteration:'. $iterationPattern .'\}.*\{\/iteration:'. $iterationPattern .'\}/ismU', $content, $iterations);
-
-					// loop mathes
-					foreach($iterations as $block)
-					{
-						// build new content
-						$newContent = str_replace($search, $replace, $block);
-
-						// replace in original content
-						$content = str_replace($block, $newContent, $content);
-					}
+					$cycle .= implode(', ', $arguments[1]);
 				}
+
+				// search & replace
+				$search = $match[0];
+				$replace = '<?php echo $this->cycle('. $iteration .'[\'i\'], array('. $cycle .')); ?>';
+
+				$content = str_replace($search, $replace, $content);
 			}
 		}
 
@@ -530,12 +496,12 @@ class SpoonTemplateCompiler
 	 * Parse the iterations (recursively).
 	 *
 	 * @return	string				The updated content, containing the parsed iteration tags.
-	 * @param	string $content		The content that my contain the iteration tags.
+	 * @param	string $content		The content that may contain the iteration tags.
 	 */
 	private function parseIterations($content)
 	{
 		// fetch iterations
-		$pattern = '/\{iteration:([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)}/is';
+		$pattern = '/(\{iteration_([0-9]+):([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?)\})(.*?)(\{\/iteration_\\2:\\3\\4\})/is';
 
 		// find matches
 		if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
@@ -543,51 +509,43 @@ class SpoonTemplateCompiler
 			// loop iterations
 			foreach($matches as $match)
 			{
-				// @todo: check if $match[0] already parsed
+				// base variable names
+				$variable = '$this->variables[\''. $match[3] .'\']';
+				$iteration = '$this->iterations[\''. $match[2] .'\']';
+				$internalVariable = '$'. $match[3];
 
-				// base
-				$variable = '$this->variables[\''. $match[1] .'\']';
-				$internalVariable = '$'. $match[1];
+				// @todo: rework part about building $variable to use an internal variable if -> was used :)
 
 				// add separate chunks
-				if($match[2])
+				if($match[4])
 				{
-					foreach(explode('.', ltrim($match[2], '.')) as $chunk)
+					// loop parts
+					foreach(explode('.', ltrim(str_replace('->', '.', $match[4]), '.')) as $chunk)
 					{
+						// append pieces
 						$variable .= "['". $chunk ."']";
+						$iteration .= "['". $chunk ."']";
 						$internalVariable .= "['". $chunk ."']";
 					}
 				}
 
-				// parse cycle tag
-				$content = $this->parseCycle($content, $match[1]); // @todo
-
-				$md5 = '$var'. md5($variable);
-
-				// init vars
-				$search = array();
-				$replace = array();
-
-				// search
-				$search[0] = '{iteration:'. $match[1] . $match[2] .'}';
-				$search[1] = '{/iteration:'. $match[1] . $match[2] .'}';
-
-				// replace
-				$replace[0] = '<?php';
-				if(SPOON_DEBUG) $replace[0] .= '
+				// start iteration
+				$templateContent = '<?php';
+/*				if(SPOON_DEBUG) $templateContent .= '
 				if(!isset('. $variable .'))
 				{
 					?>{iteration:'. $match[1] . $match[2] .'}<?php
 					'. $variable .' = array(\'\');
 					'. $md5 .'Fail = true;
 				}';
-				$replace[0] .= '
-				'. $md5 .'I = 1;
-				'. $md5 .'Count = count('. $variable .');
-				foreach((array) '. $variable .' as '. $internalVariable .')
+*/				$templateContent .= '
+				'. $iteration .'[\'iteration\'] = '. $variable .';
+				'. $iteration .'[\'i\'] = 1;
+				'. $iteration .'[\'count\'] = count('. $iteration .'[\'iteration\']);
+				foreach((array) '. $iteration .'[\'iteration\'] as '. $internalVariable .')
 				{
-					if(!isset('. $internalVariable .'[\'first\']) && '. $md5 .'I == 1) '. $internalVariable .'[\'first\'] = true;
-					if(!isset('. $internalVariable .'[\'last\']) && '. $md5 .'I == '. $md5 .'Count) '. $internalVariable .'[\'last\'] = true;
+					if(!isset('. $internalVariable .'[\'first\']) && '. $iteration .'[\'i\'] == 1) '. $internalVariable .'[\'iteration\'][\'first\'] = true;
+					if(!isset('. $internalVariable .'[\'last\']) && '. $iteration .'[\'i\'] == '. $iteration .'[\'count\']) '. $internalVariable .'[\'iteration\'][\'last\'] = true;
 					if(isset('. $internalVariable .'[\'formElements\']) && is_array('. $internalVariable .'[\'formElements\']))
 					{
 						foreach('. $internalVariable .'[\'formElements\'] as $name => $object)
@@ -597,18 +555,22 @@ class SpoonTemplateCompiler
 						}
 					}
 				?>';
-				$replace[1] = '<?php
-					'. $md5 .'I++;
+
+				// iteration content: parse recursively and parse cycle tags
+				$templateContent .= $this->parseCycle($this->parseIterations($match[9]), $iteration);
+
+				// close iteration
+				$templateContent .= '<?php
+					'. $iteration .'[\'i\']++;
 				}';
-				if(SPOON_DEBUG) $replace[1] .= '
+/*				if(SPOON_DEBUG) $templateContent .= '
 				if(isset('. $md5 .'Fail) && '. $md5 .'Fail == true)
 				{
 					?>{/iteration:'. $match[1] . $match[2] .'}<?php
 				}';
-				$replace[1] .= '?>';
+*/				$templateContent .= '?>';
 
-				// replace
-				$content = str_replace($search, $replace, $content);
+				$content = str_replace($match[0], $templateContent, $content);
 			}
 		}
 
@@ -900,6 +862,61 @@ class SpoonTemplateCompiler
 		foreach($this->templateVariables as $key => $value)
 		{
 			$content = str_replace('[$'. $key .']', '<?php echo '. $value['content'] .'; ?>', $content);
+		}
+
+		return $content;
+	}
+
+
+	/**
+	 * Prepare iterations (recursively).
+	 *
+	 * @return	string				The updated content, containing reworked (unique) iteration tags.
+	 * @param	string $content		The content that may contain the iteration tags.
+	 * @param	string $prefix		Prefix to be used for the unique iteration tag.
+	 */
+	private function prepareIterations($content, $prefix = '')
+	{
+		$i = 0;
+
+		// we want to keep parsing iterations until none can be found.
+		while(1)
+		{
+			// fetch iterations - only the last iteration is matched if same iteration exists more than once
+			$pattern = '/(\{iteration:([a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?)\})(?!.*?\{iteration:\\2\}).*?(\{\/iteration:\\2\})/is';
+
+			// @todo: this probably can be done more efficiently using preg_replace iteratively (without using create_function because that one leaks memory) - but this is just testing the concept
+
+			// find matches
+			if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
+			{
+				// loop matched iterations
+				foreach($matches as $match)
+				{
+					// search
+					$search[0] = $match[1];
+					$search[1] = $match[7];
+
+					// replace
+					$replace[0] = '{iteration_'. $prefix . (string) $i .':'. $match[2] .'}';
+					$replace[1] = '{/iteration_'. $prefix . (string) $i .':'. $match[2] .'}';
+
+					// replace template content
+					$templateContent = str_replace($search, $replace, $match[0]);
+
+					// prepare nested iterations
+					$templateContent = $this->prepareIterations($templateContent, (string) $i);
+
+					// replace final content
+					$content = str_replace($match[0], $templateContent, $content);
+
+					// increment counter
+					$i++;
+				}
+			}
+
+			// break the loop, no matches were found
+			else break;
 		}
 
 		return $content;
