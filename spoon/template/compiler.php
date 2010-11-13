@@ -501,7 +501,7 @@ class SpoonTemplateCompiler
 	private function parseIterations($content)
 	{
 		// fetch iterations
-		$pattern = '/(\{iteration_([0-9]+):([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?)\})(.*?)(\{\/iteration_\\2:\\3\\4\})/is';
+		$pattern = '/(\{iteration_([0-9]+):([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)((-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?)\})(.*?)(\{\/iteration_\\2:\\3\\4\\6\})/is';
 
 		// find matches
 		if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
@@ -510,17 +510,17 @@ class SpoonTemplateCompiler
 			foreach($matches as $match)
 			{
 				// base variable names
-				$variable = '$this->variables[\''. $match[3] .'\']';
-				$iteration = '$this->iterations[\''. $match[2] .'\']';
+				$iteration = '$this->iterations['. $match[2] .']';
 				$internalVariable = '$'. $match[3];
 
-				// @todo: rework part about building $variable to use an internal variable if -> was used :)
-
-				// add separate chunks
-				if($match[4])
+				// variable within iteration
+				if($match[6] != '')
 				{
-					// loop parts
-					foreach(explode('.', ltrim(str_replace('->', '.', $match[4]), '.')) as $chunk)
+					// base
+					$variable = '$'. $match[3];
+
+					// add separate chunks
+					foreach(explode('.', ltrim($match[4] . str_replace('->', '.', $match[6]), '.')) as $chunk)
 					{
 						// append pieces
 						$variable .= "['". $chunk ."']";
@@ -528,6 +528,31 @@ class SpoonTemplateCompiler
 						$internalVariable .= "['". $chunk ."']";
 					}
 				}
+
+				// regular variable
+				else
+				{
+					// base
+					$variable = '$this->variables[\''. $match[3] .'\']';
+
+					// add separate chunks
+					foreach(explode('.', ltrim($match[4], '.')) as $chunk)
+					{
+						// make sure it's a valid chunk
+						if(!$chunk) continue;
+
+						// append pieces
+						$variable .= "['". $chunk ."']";
+						$iteration .= "['". $chunk ."']";
+						$internalVariable .= "['". $chunk ."']";
+					}
+				}
+
+				// iteration content: parse inner variables & iterations, parse recursively, parse cycle tags
+				$innerContent = $match[10];
+				$innerContent = str_replace($match[3] . $match[4] . str_replace('->', '.', $match[6]) .'.', $match[3] . $match[4] . str_replace('->', '.', $match[6]) .'->', $innerContent);
+				$innerContent = $this->parseIterations($innerContent);
+				$innerContent = $this->parseCycle($innerContent, $iteration);
 
 				// start iteration
 				$templateContent = '<?php';
@@ -556,8 +581,8 @@ class SpoonTemplateCompiler
 					}
 				?>';
 
-				// iteration content: parse recursively and parse cycle tags
-				$templateContent .= $this->parseCycle($this->parseIterations($match[9]), $iteration);
+				// append inner content
+				$templateContent .= $innerContent;
 
 				// close iteration
 				$templateContent .= '<?php
