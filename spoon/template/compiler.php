@@ -419,7 +419,7 @@ class SpoonTemplateCompiler
 	private function parseIterations($content)
 	{
 		// fetch iterations
-		$pattern = '/(\{iteration_([0-9]+):([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)((-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?)\})(.*?)(\{\/iteration_\\2:\\3\\4\\6\})/is';
+		$pattern = '/(\{iteration_([0-9]+):([a-z0-9_]*)((\.[a-z0-9_]*)*)((-\>[a-z0-9_]*((\.[a-z0-9_]*)*))?)\})(.*?)(\{\/iteration_\\2:\\3\\4\\6\})/is';
 
 		// find matches
 		if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
@@ -436,7 +436,7 @@ class SpoonTemplateCompiler
 				if($match[6] != '')
 				{
 					// base
-					$variable = '$'. $match[3];
+					$variable = '${\''. $match[3] .'\'}';
 
 					// add separate chunks
 					foreach(explode('.', ltrim($match[4], '.')) as $chunk)
@@ -453,15 +453,16 @@ class SpoonTemplateCompiler
 					if(isset($match[6]) && $match[6])
 					{
 						// set variable
-						$var = explode('.', str_replace('->', '', $match[6]));
+						$chunks = explode('.', str_replace('->', '', $match[6]));
 
 						// append pieces
-						$internalVariable = '$'. (string) array_shift($var);
-						$variable .= "['". trim($internalVariable, '$') ."']";
-						$iteration .= "['". trim($internalVariable, '$') ."']";
+						$internalVariable = (string) array_shift($chunks);
+						$variable .= "['". $internalVariable ."']";
+						$iteration .= "['". $internalVariable ."']";
+						$internalVariable = '${\''. $internalVariable .'\'}';
 
 						// add seperate chunks
-						foreach((array) $var as $chunk)
+						foreach((array) $chunks as $chunk)
 						{
 							// append pieces
 							$variable .= "['". $chunk ."']";
@@ -476,7 +477,7 @@ class SpoonTemplateCompiler
 				{
 					// base
 					$variable = '$this->variables[\''. $match[3] .'\']';
-					$internalVariable = '$'. $match[3];
+					$internalVariable = '${\''. $match[3] .'\'}';
 
 					// add separate chunks
 					foreach(explode('.', ltrim($match[4], '.')) as $chunk)
@@ -651,7 +652,7 @@ class SpoonTemplateCompiler
 	protected function parseVariables($content)
 	{
 		// regex pattern
-		$pattern = '/\{\$([a-z][a-z0-9_]*)((\.[a-z_][a-z0-9_]*)*)(-\>[a-z_][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*))?((\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*)\}/i';
+		$pattern = '/\{\$([a-z0-9_]*)((\.[a-z0-9_]*)*)(-\>[a-z0-9_]*((\.[a-z0-9_]*)*))?((\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*)\}/i';
 
 		// we want to keep parsing vars until none can be found.
 		while(1)
@@ -675,7 +676,7 @@ class SpoonTemplateCompiler
 						if(isset($match[4]) && $match[4] != '')
 						{
 							// base
-							$variable = '$'. $match[1];
+							$variable = '${\''. $match[1] .'\'}';
 
 							// add separate chunks
 							foreach(explode('.', ltrim($match[2] . str_replace('->', '.', $match[4]), '.')) as $chunk)
@@ -828,7 +829,7 @@ class SpoonTemplateCompiler
 		while(1)
 		{
 			// fetch iterations - only the last iteration is matched if same iteration exists more than once
-			$pattern = '/(\{iteration:([a-z][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*(-\>[a-z_][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*)?))\})(?!.*?\{iteration:\\2\})(.*?)(\{\/iteration:\\2\})/is';
+			$pattern = '/(\{iteration:([a-z0-9_]*((\.[a-z0-9_]*)*(-\>[a-z0-9_]*(\.[a-z0-9_]*)*)?))\})(?!.*?\{iteration:\\2\})(.*?)(\{\/iteration:\\2\})/is';
 
 			// replace iteration names to ensure that they're unique
 			$content = preg_replace_callback($pattern, array($this, 'prepareIterationsCallback'), $content, -1, $count);
