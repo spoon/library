@@ -195,11 +195,11 @@ class SpoonTemplateCompiler
 			// prepare iterations
 			$this->content = $this->prepareIterations($this->content);
 
-			// parse iterations
-			$this->content = $this->parseIterations($this->content);
-
 			// parse variables
 			$this->content = $this->parseVariables($this->content);
+
+			// parse iterations
+			$this->content = $this->parseIterations($this->content);
 
 			// includes
 			$this->content = $this->parseIncludes($this->content);
@@ -287,7 +287,7 @@ class SpoonTemplateCompiler
 	private function parseCycle($content, $iteration)
 	{
 		// regex pattern
-		$pattern = '/\{cycle((:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))+)\}/is'; // @todo: no parsed variables yet here. Make sure variables work ok!
+		$pattern = '/\{cycle((:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))+)\}/is';
 
 		// find matches
 		if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
@@ -305,6 +305,12 @@ class SpoonTemplateCompiler
 				if(preg_match_all($pattern, $match[1], $arguments))
 				{
 					$cycle .= implode(', ', $arguments[1]);
+				}
+
+				// parse variables into cycle
+				foreach($this->templateVariables as $key => $value)
+				{
+					$cycle = str_replace('[$'. $key .']', $value['content'], $cycle);
 				}
 
 				// search & replace
