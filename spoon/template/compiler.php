@@ -429,7 +429,8 @@ class SpoonTemplateCompiler
 			{
 				// base variable names
 				$iteration = '$this->iterations['. $match[2] .']';
-				$internalVariable = '$'. $match[3];
+
+				// @todo: code repitition is too big in the following 50 lines: rewrite
 
 				// variable within iteration
 				if($match[6] != '')
@@ -438,12 +439,35 @@ class SpoonTemplateCompiler
 					$variable = '$'. $match[3];
 
 					// add separate chunks
-					foreach(explode('.', ltrim($match[4] . str_replace('->', '.', $match[6]), '.')) as $chunk)
+					foreach(explode('.', ltrim($match[4], '.')) as $chunk)
 					{
+						// make sure it's a valid chunk
+						if(!$chunk) continue;
+
 						// append pieces
 						$variable .= "['". $chunk ."']";
 						$iteration .= "['". $chunk ."']";
-						$internalVariable .= "['". $chunk ."']";
+					}
+
+					// iteration value
+					if(isset($match[6]) && $match[6])
+					{
+						// set variable
+						$var = explode('.', str_replace('->', '', $match[6]));
+
+						// append pieces
+						$internalVariable = '$'. (string) array_shift($var);
+						$variable .= "['". trim($internalVariable, '$') ."']";
+						$iteration .= "['". trim($internalVariable, '$') ."']";
+
+						// add seperate chunks
+						foreach((array) $var as $chunk)
+						{
+							// append pieces
+							$variable .= "['". $chunk ."']";
+							$iteration .= "['". $chunk ."']";
+							$internalVariable .= "['". $chunk ."']";
+						}
 					}
 				}
 
@@ -452,6 +476,7 @@ class SpoonTemplateCompiler
 				{
 					// base
 					$variable = '$this->variables[\''. $match[3] .'\']';
+					$internalVariable = '$'. $match[3];
 
 					// add separate chunks
 					foreach(explode('.', ltrim($match[4], '.')) as $chunk)
@@ -468,10 +493,10 @@ class SpoonTemplateCompiler
 
 				// iteration content: parse inner variables & iterations, parse recursively, parse cycle tags
 				$innerContent = $match[10];
-				$innerContent = str_replace($match[3] . $match[4] . str_replace('->', '.', $match[6]) .'.', $match[3] . $match[4] . str_replace('->', '.', $match[6]) .'->', $innerContent);
 				$innerContent = $this->parseIterations($innerContent);
 				$innerContent = $this->parseCycle($innerContent, $iteration);
 
+// @todo: save current $internalVariable info and reset after iteration (in case we're looping the same iteration nested in one another
 				// start iteration
 				$templateContent = '<?php';
 				if(SPOON_DEBUG) $templateContent .= '
@@ -803,7 +828,7 @@ class SpoonTemplateCompiler
 		while(1)
 		{
 			// fetch iterations - only the last iteration is matched if same iteration exists more than once
-			$pattern = '/(\{iteration:([a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*)\})(?!.*?\{iteration:\\2\})(.*?)(\{\/iteration:\\2\})/is';
+			$pattern = '/(\{iteration:([a-z][a-z0-9_]*((\.[a-z_][a-z0-9_]*)*(-\>[a-z_][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*)?))\})(?!.*?\{iteration:\\2\})(.*?)(\{\/iteration:\\2\})/is';
 
 			// replace iteration names to ensure that they're unique
 			$content = preg_replace_callback($pattern, array($this, 'prepareIterationsCallback'), $content, -1, $count);
@@ -828,7 +853,7 @@ class SpoonTemplateCompiler
 		$this->iterationsCounter++;
 
 		// return the modified iteration name
-		return '{iteration_'. $this->iterationsCounter .':'. $match[2] .'}'. $match[4] .'{/iteration_'. $this->iterationsCounter .':'. $match[2] .'}';
+		return '{iteration_'. $this->iterationsCounter .':'. $match[2] .'}'. $match[7] .'{/iteration_'. $this->iterationsCounter .':'. $match[2] .'}';
 	}
 
 
