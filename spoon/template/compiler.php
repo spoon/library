@@ -205,7 +205,7 @@ class SpoonTemplateCompiler
 			$this->content = $this->parseIncludes($this->content);
 
 			// parse options
-//			$this->content = $this->parseOptions($this->content);
+			$this->content = $this->parseOptions($this->content);
 
 			// parse cache tags
 //			$this->content = $this->parseCache($this->content);
@@ -562,68 +562,86 @@ class SpoonTemplateCompiler
 	private function parseOptions($content)
 	{
 		// regex pattern
-		$pattern = '/\{option:((\!)?[a-z0-9\-_\[\]\']+(\.([a-z0-9\-_\[\]\'])+)?)}.*?\{\/option:\\1\}/is';
+		$pattern = '/\{option:((\!)?([a-z0-9_]*)((\.[a-z0-9_]*)*)((-\>[a-z0-9_]*((\.[a-z0-9_]*)*))?))}.*?\{\/option:\\1\}/is';
 
 		// init vars
 		$options = array();
 
-		// keep finding those options!
+		// we want to keep parsing options until none can be found
 		while(1)
 		{
 			// find matches
-			if(preg_match_all($pattern, $content, $matches))
+			if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
 			{
 				// init var
 				$correctOptions = false;
 
 				// loop matches
-				foreach($matches[1] as $match)
+				foreach($matches as $match)
 				{
-					// correct syntax
-					if($this->isCorrectSyntax($match, 'option'))
+					// base variable
+					$variable = '';
+
+					// variable within iteration
+					if(isset($match[6]) && $match[6] != '')
 					{
-						// redefine match
-						$match = str_replace('!', '', $match);
+						// base
+						$variable = '${\''. $match[3] .'\'}';
 
-						// fetch variable
-						$variable = $this->parseVariable($match);
+						// add separate chunks
+						foreach(explode('.', ltrim($match[4] . str_replace('->', '.', $match[6]), '.')) as $chunk)
+						{
+							$variable .= "['". $chunk ."']";
+						}
+					}
 
-						// already matched
-						if(in_array($match, $options)) continue;
+					// regular variable
+					else
+					{
+						// base
+						$variable = '$this->variables';
 
-						// init vars
-						$search = array();
-						$replace = array();
+						// add separate chunks
+						foreach(explode('.', $match[3] . $match[4]) as $chunk)
+						{
+							$variable .= "['". $chunk ."']";
+						}
+					}
 
-						// not yet used
-						$options[] = $match;
+					// already matched
+					if(in_array($match[1], $options)) continue;
 
-						// search for
-						$search[] = '{option:'. $match .'}';
-						$search[] = '{/option:'. $match .'}';
+					// init vars
+					$search = array();
+					$replace = array();
 
-						// inverse option
-						$search[] = '{option:!'. $match .'}';
-						$search[] = '{/option:!'. $match .'}';
+					// not yet used
+					$options[] = $match[1];
 
+					// search for
+					$search[] = '{option:'. $match[1] .'}';
+					$search[] = '{/option:'. $match[1] .'}';
+
+					// positive option
+					if($match[2] != '!')
+					{
 						// replace with
 						$replace[] = '<?php if(isset('. $variable .') && count('. $variable .') != 0 && '. $variable .' != \'\' && '. $variable .' !== false): ?>';
-						$replace[] = '<?php endif; ?>';
+					}
 
+					// negative option
+					else
+					{
 						// inverse option
 						$replace[] = '<?php if(!isset('. $variable .') || count('. $variable .') == 0 || '. $variable .' == \'\' || '. $variable .' === false): ?>';
-						$replace[] = '<?php endif; ?>';
-
-						// go replace
-						$content = str_replace($search, $replace, $content);
-
-						// reset vars
-						unset($search);
-						unset($replace);
-
-						// at least one correct option
-						$correctOptions = true;
 					}
+					$replace[] = '<?php endif; ?>';
+
+					// go replace
+					$content = str_replace($search, $replace, $content);
+
+					// at least one correct option
+					$correctOptions = true;
 				}
 
 				// no correct options were found
@@ -660,7 +678,7 @@ class SpoonTemplateCompiler
 		// regex pattern
 		$pattern = '/\{\$([a-z0-9_]*)((\.[a-z0-9_]*)*)(-\>[a-z0-9_]*((\.[a-z0-9_]*)*))?((\|[a-z_][a-z0-9_]*(:(("[^"]*?"|\'[^\']*?\')|\[\$[a-z0-9]+\]|[0-9]+))*)*)\}/i';
 
-		// we want to keep parsing vars until none can be found.
+		// we want to keep parsing vars until none can be found
 		while(1)
 		{
 			// find matches
@@ -831,7 +849,7 @@ class SpoonTemplateCompiler
 	 */
 	private function prepareIterations($content, $prefix = '')
 	{
-		// we want to keep parsing iterations until none can be found.
+		// we want to keep parsing iterations until none can be found
 		while(1)
 		{
 			// fetch iterations - only the last iteration is matched if same iteration exists more than once
@@ -932,7 +950,7 @@ class SpoonTemplateCompiler
 	 */
 	private function stripComments($content)
 	{
-		// we want to keep stripping comments until none can be found.
+		// we want to keep stripping comments until none can be found
 		do
 		{
 			// strip comments from output
