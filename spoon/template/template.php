@@ -74,6 +74,14 @@ class SpoonTemplate
 
 
 	/**
+	 * Stack of iterations (used in compiled template)
+	 *
+	 * @var	array
+	 */
+	private $iterations = array();
+
+
+	/**
 	 * Stack of variables & their replace values
 	 *
 	 * @var	array
@@ -229,7 +237,10 @@ class SpoonTemplate
 	public function compile($path, $template)
 	{
 		// redefine template
-		if(realpath($template) === false) $template = $path .'/'. $template; // @todo: Davy: check dit
+		if(realpath($template) === false) $template = $path .'/'. $template;
+
+		// source file does not exist
+		if(!SpoonFile::exists($template)) return false;
 
 		// create object
 		$compiler = new SpoonTemplateCompiler($template, $this->variables);
@@ -242,6 +253,8 @@ class SpoonTemplate
 
 		// compile & save
 		$compiler->parseToFile();
+
+		return true;
 	}
 
 
@@ -364,7 +377,7 @@ class SpoonTemplate
 	private function getCompileName($template, $path = null)
 	{
 		// redefine template
-		if($path !== null && realpath($template) === false) $template = $path .'/'. $template; // @todo: Davy: check dit
+		if($path !== null && realpath($template) === false) $template = $path .'/'. $template;
 
 		// return the correct full path
 		return md5(realpath($template)) .'_'. basename($template) .'.php';
