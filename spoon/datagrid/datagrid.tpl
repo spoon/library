@@ -11,7 +11,6 @@
 	- paging / whether pagination is enabled
 *}
 
-
 <table{option:summary} summary="{$summary}"{/option:summary}{$attributes}>
 	{option:caption}<caption>{$caption}</caption>{/option:caption}
 	<thead>
