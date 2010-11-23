@@ -1037,6 +1037,7 @@ class SpoonDatabase
 		// init vars
 		$table = (string) $table;
 		$parameters = (array) $parameters;
+		$namedParameters = false;
 
 		// values check
 		if(count($values) == 0) throw new SpoonDatabaseException('No values provided.', 0, $this->password);
@@ -1046,11 +1047,39 @@ class SpoonDatabase
 		$iValues = count($values);
 		$query = 'UPDATE '. (string) $table .' SET ';
 
+		// has parameters
+		if(count($parameters))
+		{
+			// loop parameters
+			foreach($parameters as $key => $value)
+			{
+				// key such as ':id' starting
+				if(substr($key, 0, 1) == ':')
+				{
+					$namedParameters = true;
+					break;
+				}
+			}
+		}
+
 		// loop values
 		foreach($values as $key => $value)
 		{
-			$query .= $table .'.'. $key .' = ?, ';
-			$aTmpParameters[] = $value;
+			// named parameters
+			if(!$namedParameters)
+			{
+				$query .= $table .'.'. $key .' = ?, ';
+				$aTmpParameters[] = $value;
+			}
+
+			// positional parameters
+			else
+			{
+				$query .= $table .'.'. $key .' = :'. $key .', ';
+				$aTmpParameters[':'. $key] = $value;
+			}
+
+			// counter
 			$i++;
 		}
 
