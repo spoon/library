@@ -837,10 +837,10 @@ class SpoonForm
 				// dropdowns
 				elseif($object instanceof SpoonFormDropdown)
 				{
-					$value .= "\t". '<label for="'. $object->getAttribute('id') .'">'. SpoonFilter::toCamelCase($object->getName()) ."</label>\n";
+					$value .= "\t". '<label for="'. $object->getAttribute('id') .'">'. str_replace('[]', '', SpoonFilter::toCamelCase($object->getName())) ."</label>\n";
 					$value .= "\t<p>\n";
-					$value .= "\t\t". '{$ddm'. SpoonFilter::toCamelCase($object->getName()) ."}\n";
-					$value .= "\t\t". '{$ddm'. SpoonFilter::toCamelCase($object->getName()) ."Error}\n";
+					$value .= "\t\t". '{$ddm'. str_replace('[]', '', SpoonFilter::toCamelCase($object->getName())) ."}\n";
+					$value .= "\t\t". '{$ddm'. str_replace('[]', '', SpoonFilter::toCamelCase($object->getName())) ."Error}\n";
 					$value .= "\t</p>\n";
 				}
 
