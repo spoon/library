@@ -46,7 +46,7 @@ class SpoonFormTextTest extends PHPUnit_Framework_TestCase
 		$this->txtName->setAttribute('rel', 'bauffman.jpg');
 		$this->assertEquals('bauffman.jpg', $this->txtName->getAttribute('rel'));
 		$this->txtName->setAttributes(array('id' => 'specialID'));
-		$this->assertEquals(array('name' => 'name', 'class' => 'inputTextfield', 'rel' => 'bauffman.jpg', 'id' => 'specialID'), $this->txtName->getAttributes());
+		$this->assertEquals(array('id' => 'specialID', 'name' => 'name', 'type' => 'text', 'class' => 'inputText', 'rel' => 'bauffman.jpg'), $this->txtName->getAttributes());
 	}
 
 	public function testIsFilled()
@@ -93,7 +93,7 @@ class SpoonFormTextTest extends PHPUnit_Framework_TestCase
 		$_POST['name'] = 'I liek boobies';
 		$this->assertEquals(false, $this->txtName->isBool());
 		$_POST['name'] = '101';
-		$this->assertEquals(true, $this->txtName->isBool());
+		$this->assertEquals(false, $this->txtName->isBool());
 		$_POST['name'] = '090';
 		$this->assertEquals(false, $this->txtName->isBool());
 	}
