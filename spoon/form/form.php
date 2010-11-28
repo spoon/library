@@ -793,7 +793,7 @@ class SpoonForm
 			// is a hidden field
 			if(($object instanceof SpoonFormHidden) && $object->getName() != 'form')
 			{
-				$value .= "\t". '{$hid'. SpoonFilter::toCamelCase($object->getName()) ."}\n";
+				$value .= "\t". '{$hid'. str_replace('[]', '', SpoonFilter::toCamelCase($object->getName())) ."}\n";
 			}
 		}
 
