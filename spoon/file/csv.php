@@ -11,6 +11,8 @@
  *
  *
  * @author		Davy Hellemans <davy@spoon-library.com>
+ * @author 		Tijs Verkoyen <tijs@spoon-library.com>
+ * @author		Dave Lens <dave@spoon-library.com>
  * @since		1.2.0
  */
 
@@ -77,6 +79,13 @@ class SpoonFileCSV
 		// column names are set
 		if(empty($columns)) $columns = array_keys($array[0]);
 
+		// check for delimiter/enclosure
+		if($delimiter === null) $delimiter = self::DEFAULT_DELIMITER;
+		if($enclosure === null) $enclosure = self::DEFAULT_ENCLOSURE;
+
+		// unset the excluded columns
+		foreach($excludeColumns as $column) unset($columns[array_search($column, $columns)]);
+
 		// start the string with the columns
 		$csv = $enclosure . implode($enclosure . $delimiter . $enclosure, $columns) . $enclosure . PHP_EOL;
 
@@ -96,7 +105,7 @@ class SpoonFileCSV
 			if(!empty($excludeColumns))
 			{
 				// unset the excluded columns
-				foreach($excludeColumns as $column) unset($row[$column]);
+				foreach($excludeColumns as $column) unset($row[$column], $columns[array_search($column, $columns)]);
 			}
 
 			// add this row to the CSV
@@ -125,7 +134,7 @@ class SpoonFileCSV
 
 		// set headers for download
 		$headers = array();
-		$headers[] = 'Content-type: application/octet-stream';
+		$headers[] = 'Content-type: text/csv; charset=utf-8';
 		$headers[] = 'Content-Disposition: attachment; filename="'. $filename .'"';
 
 		// overwrite the headers
@@ -186,6 +195,13 @@ class SpoonFileCSV
 		// no column names are set
 		if(empty($columns)) $columns = array_values($rows[0]);
 
+		// some columns are excluded
+//		if(!empty($excludeColumns))
+//		{
+//			// unset the excluded columns
+//			foreach($excludeColumns as $column) unset($columns[array_search($column, $columns)]);
+//		}
+
 		// remove the first row
 		array_shift($rows);
 
@@ -195,18 +211,18 @@ class SpoonFileCSV
 			// the keys of this row
 			$keys = array_keys($row);
 
+			// some columns are excluded
+			if(!empty($excludeColumns))
+			{
+				// unset the keys related to the excluded columns
+				foreach($excludeColumns as $columnKey => $column) unset($keys[array_search($columnKey, $columns)], $row[$columnKey]);
+			}
+
 			// loop the keys
 			foreach($keys as $columnId)
 			{
 				// add the field to this row
 				$row[$columns[$columnId]] = $row[$columnId];
-
-				// some columns are excluded
-				if(!empty($excludeColumns))
-				{
-					// unset the excluded columns
-					foreach($excludeColumns as $column) unset($row[$column]);
-				}
 
 				// remove the original field from this row
 				unset($row[$columnId]);
