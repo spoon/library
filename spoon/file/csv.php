@@ -195,13 +195,6 @@ class SpoonFileCSV
 		// no column names are set
 		if(empty($columns)) $columns = array_values($rows[0]);
 
-		// some columns are excluded
-//		if(!empty($excludeColumns))
-//		{
-//			// unset the excluded columns
-//			foreach($excludeColumns as $column) unset($columns[array_search($column, $columns)]);
-//		}
-
 		// remove the first row
 		array_shift($rows);
 
