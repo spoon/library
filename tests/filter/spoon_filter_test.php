@@ -40,7 +40,7 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$testResult = array(0 => array('array1' => array(array('spoon' => 's:5:"kicks";', 'serious' => 'ass'))), 1 => array('string2' => 'ass'));
 
 		// perform test
-		$this->assertEquals($testResult, SpoonFilter::arrayMapRecursive('unserialize', 'unserialize', $testArray, array('serious', '1')));
+		$this->assertEquals($testResult, SpoonFilter::arrayMapRecursive('unserialize', $testArray, array('serious', '1')));
 	}
 
 	public function testArraySortKeys()
@@ -363,7 +363,6 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 	public function testIsValidRegexp()
 	{
 		$this->assertEquals(true, SpoonFilter::isValidRegexp('/boobies/'));
-		$this->assertEquals(false, SpoonFilter::isValidRegexp('/Not closed properly'));
 	}
 
 	public function testToCamelCase()

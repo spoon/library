@@ -11,8 +11,6 @@
  *
  *
  * @author		Davy Hellemans <davy@spoon-library.com>
- * @author 		Tijs Verkoyen <tijs@spoon-library.com>
- * @author		Dave Lens <dave@spoon-library.com>
  * @since		0.1.1
  */
 
@@ -56,7 +54,7 @@ class SpoonFormText extends SpoonFormInput
 	 * @param	string[optional] $classError
 	 * @param	bool[optional] $HTML
 	 */
-	public function __construct($name, $value = null, $maxlength = null, $class = 'inputTextfield', $classError = 'inputTextfieldError', $HTML = false)
+	public function __construct($name, $value = null, $maxlength = null, $class = 'inputText', $classError = 'inputTextError', $HTML = false)
 	{
 		// obligated fields
 		$this->attributes['id'] = SpoonFilter::toCamelCase($name, '_', true);
