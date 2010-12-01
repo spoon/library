@@ -14,13 +14,13 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 	public function setup()
 	{
 		// create database object
-		$this->db = new SpoonDatabase('mysql', 'localhost', 'spoon', 'spoon', 'spoon_tests');
+		$this->db = new SpoonDatabase('mysql', 'localhost', 'root', 'root', 'spoon_tests');
 	}
 
 	public function testExecute()
 	{
 		// create database
-		try { $this->db->execute('CREATE DATABASE spoon_tests;'); }
+		try { $this->db->execute('CREATE DATABASE IF NOT EXISTS spoon_tests'); }
 		catch (SpoondatabaseException $e) {}
 
 		// clear all tables
@@ -45,7 +45,7 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 
 		// do nothing
 		$this->db->execute('SELECT * FROM users LIMIT ?;', 10);
-		$this->db->execute('SELECT * FROM users limit :limitnum;', 10);
+		$this->db->execute('SELECT * FROM users limit :limit;', array(':limit' => 10));
 	}
 
 	public function testDrop()
@@ -145,6 +145,9 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 
 		// 1 record with id 1337
 		$this->assertEquals(1, $this->db->getNumRows('SELECT id FROM users WHERE id = ?;', 1337));
+
+		// update record
+		$this->db->update('users', array('id' => 1337), 'id = :leet AND id != :bauffman', array(':leet' => 1337, ':bauffman' => 291));
 	}
 
 	public function testOptimize()
