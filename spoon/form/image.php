@@ -43,7 +43,7 @@ class SpoonFormImage extends SpoonFormFile
 		$thumbnail = new SpoonThumbnail($this->getTempFileName(), $width, $height, true);
 		$thumbnail->setAllowEnlargement($allowEnlargement);
 		$thumbnail->setForceOriginalAspectRatio($forceOriginalAspectRatio);
-		$thumbnail->parseToFile($filename, $quality);
+		return $thumbnail->parseToFile($filename, $quality);
 	}
 
 
