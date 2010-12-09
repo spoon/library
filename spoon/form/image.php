@@ -30,7 +30,7 @@ class SpoonFormImage extends SpoonFormFile
 	/**
 	 * Creates a thumbnail from this field
 	 *
-	 * @return	void
+	 * @return	bool
 	 * @param	string $filename
 	 * @param	int[optional] $width
 	 * @param	int[optional] $height
