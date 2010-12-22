@@ -11,7 +11,8 @@
  *
  *
  * @author		Davy Hellemans <davy@spoon-library.com>
- * @since		0.1.1
+ * @author		Matthias Mullie <matthias@spoon-library.com>
+ * @since		1.0.0
  */
 
 
@@ -270,9 +271,6 @@ class SpoonTemplate
 
 		// calculate modulus
 		$modulus = $counter % $numElements;
-
-		// update counter
-		$counter += 1;
 
 		// leftovers?
 		if($modulus == 0) return $elements[$numElements - 1];
