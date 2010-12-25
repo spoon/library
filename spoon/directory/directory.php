@@ -46,8 +46,8 @@ class SpoonDirectory
 	 *
 	 * @return	bool						True if the file/directory was copied, false if not.
 	 * @param	string $source				The full path to the source file/folder.
-	 * @param	bool[optional] $overwrite	If the destination already exists, should we overwrite?
 	 * @param	string $destination			The full path to the destination.
+	 * @param	bool[optional] $overwrite	If the destination already exists, should we overwrite?
 	 * @param	bool[optional] $strict		If strict is true, exceptions will be thrown when an error occures.
 	 * @param 	int[optional] $chmod		Mode that will be applied on the file/directory.
 	 */
@@ -364,7 +364,7 @@ class SpoonDirectory
 	 * The default is_writable function has problems due to Windows ACLs "bug"
 	 *
 	 * @return	bool
-	 * @param	string $path
+	 * @param	string $path	The path to check.
 	 */
 	private static function isWritable($path)
 	{

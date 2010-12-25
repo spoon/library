@@ -215,6 +215,8 @@ class SpoonThumbnail
 		$filename = (string) $filename;
 		$quality = (int) $quality;
 
+		// @todo is the destination path writeable? (throw exception or just return false?)
+
 		// get extension
 		$extension = SpoonFile::getExtension($filename);
 
@@ -294,8 +296,8 @@ class SpoonThumbnail
 	 * @return	void
 	 * @param	int $currentWidth		Original width.
 	 * @param	int $currentHeight		Original height.
-	 * @param	int $currentType		Current type of image
-	 * @param	string $currentMime		Current mime-type
+	 * @param	int $currentType		Current type of image.
+	 * @param	string $currentMime		Current mime-type.
 	 */
 	private function resizeImage($currentWidth, $currentHeight, $currentType, $currentMime)
 	{
@@ -313,8 +315,8 @@ class SpoonThumbnail
 	 * @return	void
 	 * @param	int $currentWidth		Original width.
 	 * @param	int $currentHeight		Original height.
-	 * @param	int $currentType		Current type of image
-	 * @param	string $currentMime		Current mime-type
+	 * @param	int $currentType		Current type of image.
+	 * @param	string $currentMime		Current mime-type.
 	 */
 	private function resizeImageWithForceAspectRatio($currentWidth, $currentHeight, $currentType, $currentMime)
 	{
@@ -416,7 +418,7 @@ class SpoonThumbnail
 		}
 
 		// read current image
-		switch ($currentType)
+		switch($currentType)
 		{
 			case IMG_GIF:
 				$currentImage = @imagecreatefromgif($this->filename);
@@ -510,8 +512,8 @@ class SpoonThumbnail
 	 * @return	void
 	 * @param	int $currentWidth		Original width.
 	 * @param	int $currentHeight		Original height.
-	 * @param	int $currentType		Current type of image
-	 * @param	string $currentMime		Current mime-type
+	 * @param	int $currentType		Current type of image.
+	 * @param	string $currentMime		Current mime-type.
 	 */
 	private function resizeImageWithoutForceAspectRatio($currentWidth, $currentHeight, $currentType, $currentMime)
 	{
@@ -523,7 +525,7 @@ class SpoonThumbnail
 		$newHeight = $this->height;
 
 		// read current image
-		switch ($currentType)
+		switch($currentType)
 		{
 			case IMG_GIF:
 				$currentImage = @imagecreatefromgif($this->filename);
