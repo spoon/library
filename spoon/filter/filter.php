@@ -868,7 +868,14 @@ class SpoonFilter
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
 
 		// allowed characters
-		$characters = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_', ' ');
+		$characters = array(
+								'a', 'b', 'c', 'd', 'e', 'f', 'g',
+								'h', 'i', 'j', 'k', 'l', 'm', 'n',
+								'o', 'p', 'q', 'r', 's', 't', 'u',
+								'v', 'w', 'x', 'y', 'z', '0', '1',
+								'2', '3', '4', '5', '6', '7', '8',
+								'9', '-', '_', ' '
+							);
 
 		// redefine value
 		$value = mb_strtolower($value, $charset);
@@ -880,6 +887,7 @@ class SpoonFilter
 		$replace['©'] = ' copyright ';
 		$replace['€'] = ' euro ';
 		$replace['™'] = ' tm ';
+		$replace['&'] = ' and ';
 
 		// replace special characters
 		$value = str_replace(array_keys($replace), array_values($replace), $value);
