@@ -341,19 +341,6 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(true, SpoonFilter::isString('This should qualify as a string.'));
 	}
 
-	public function testIsURL()
-	{
-		$this->assertEquals(true, SpoonFilter::isURL('http://www.spoon-library.be'));
-		$this->assertEquals(true, SpoonFilter::isURL('http://127.0.0.1'));
-		$this->assertEquals(true, SpoonFilter::isURL('https://payment.ogone.be'));
-		$this->assertEquals(true, SpoonFilter::isURL('https://192.168.1.101'));
-		$this->assertEquals(true, SpoonFilter::isURL('https://netlash.com:8080'));
-		$this->assertEquals(true, SpoonFilter::isURL('http://feedproxy.google.com/~r/netlog/~3/EdqJ5FkO78o/internet-is-de-petrischaal-van-de-maatschappij'));
-		$this->assertEquals(false, SpoonFilter::isURL(''));
-		$this->assertEquals(false, SpoonFilter::isURL('netlash.com'));
-
-	}
-
 	public function testIsValidAgainstRegexp()
 	{
 		$this->assertEquals(true, SpoonFilter::isValidAgainstRegexp('/([a-z]+)/', 'alphabet'));
@@ -456,6 +443,13 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('Spoon Library', SpoonFilter::stripHTML($html));
 		$this->assertEquals('<a href="http://www.spoon-library.be">Spoon Library</a>', SpoonFilter::stripHTML($html, '<a>'));
 		$this->assertEquals('Spoon Library (http://www.spoon-library.be)', SpoonFilter::stripHTML($html, null, true));
+	}
+
+
+	public function testUrlise()
+	{
+		$this->assertEquals('geen-bananen', SpoonFilter::urlise('géén bananen'));
+		$this->assertEquals('tom-and-jerry', SpoonFilter::urlise('Tom & Jerry'));
 	}
 }
 
