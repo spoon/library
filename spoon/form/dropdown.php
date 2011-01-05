@@ -126,10 +126,7 @@ class SpoonFormDropdown extends SpoonFormAttributes
 		if($selected !== null) $this->setSelected($selected);
 		$this->attributes['class'] = (string) $class;
 		$this->classError = (string) $classError;
-		if(!$this->single)
-		{
-			$this->attributes['size'] = 1;
-		}
+		if($this->single) $this->attributes['size'] = 1;
 	}
 
 
