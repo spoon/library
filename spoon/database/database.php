@@ -223,7 +223,7 @@ class SpoonDatabase
 	 */
 	public function drop($tables)
 	{
-		$this->execute('DROP TABLE '. implode(', ', (array) $tables) .';');
+		$this->execute('DROP TABLE '. implode(', ', (array) $tables));
 	}
 
 
@@ -333,6 +333,28 @@ class SpoonDatabase
 
 
 	/**
+	 * Retrieve the debug setting
+	 *
+	 * @return	bool	true if debug is enabled, false if not.
+	 */
+	public function getDebug()
+	{
+		return $this->debug;
+	}
+
+
+	/**
+	 * Fetch the name of the database driver
+	 *
+	 * @return	string	The name of the driver that is used.
+	 */
+	public function getDriver()
+	{
+		return $this->driver;
+	}
+
+
+	/**
 	 * Retrieves the possible ENUM values
 	 *
 	 * @return	array			An array with all the possible ENUM values.
@@ -363,28 +385,6 @@ class SpoonDatabase
 
 		// return
 		return (array) explode(',', $types);
-	}
-
-
-	/**
-	 * Retrieve the debug setting
-	 *
-	 * @return	bool	true if debug is enabled, false if not.
-	 */
-	public function getDebug()
-	{
-		return $this->debug;
-	}
-
-
-	/**
-	 * Fetch the name of the database driver
-	 *
-	 * @return	string	The name of the driver that is used.
-	 */
-	public function getDriver()
-	{
-		return $this->driver;
 	}
 
 
@@ -644,7 +644,7 @@ class SpoonDatabase
 	 */
 	public function getTables()
 	{
-		return (array) $this->getColumn('SHOW TABLES;');
+		return (array) $this->getColumn('SHOW TABLES');
 	}
 
 
@@ -861,7 +861,7 @@ class SpoonDatabase
 		$tables = (func_num_args() == 1) ? (array) $tables : func_get_args();
 
 		// build & execute query
-		return $this->getRecords('OPTIMIZE TABLE '. implode(', ', $tables) .';');
+		return $this->getRecords('OPTIMIZE TABLE '. implode(', ', $tables));
 	}
 
 
@@ -983,7 +983,7 @@ class SpoonDatabase
 		$tables = (func_num_args() == 1) ? (array) $tables : func_get_args();
 
 		// loop & truncate
-		foreach($tables as $table) $this->execute('TRUNCATE TABLE '. $table .';');
+		foreach($tables as $table) $this->execute('TRUNCATE TABLE '. $table);
 	}
 
 
