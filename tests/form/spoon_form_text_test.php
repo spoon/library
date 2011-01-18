@@ -133,6 +133,10 @@ class SpoonFormTextTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(true, $this->txtName->isFloat());
 		$_POST['name'] = 199;
 		$this->assertEquals(true, $this->txtName->isFloat());
+		$_POST['name'] = '1,35';
+		$this->assertTrue($this->txtName->isFloat(null, true));
+		$_POST['name'] = '-1,35';
+		$this->assertTrue($this->txtName->isFloat(null, true));
 	}
 
 	public function testIsGreatherThan()
@@ -217,9 +221,7 @@ class SpoonFormTextTest extends PHPUnit_Framework_TestCase
 
 	public function testIsURL()
 	{
-		$_POST['name'] = 'http://www.spoon-library.be';
-		$this->assertEquals(true, $this->txtName->isURL());
-		$_POST['name'] = 'http://127.0.0.1';
+		$_POST['name'] = 'http://www.spoon-library.com';
 		$this->assertEquals(true, $this->txtName->isURL());
 	}
 
