@@ -330,7 +330,7 @@ class SpoonFormDropdown extends SpoonFormAttributes
 						// external data is not allowed
 						else
 						{
-							if(isset($this->values[$value]) && !in_array($value, $values)) $values[] = $value;
+							if((isset($this->values[$value]) || (isset($this->defaultElement[1]) && $this->defaultElement[1] == $value) && !in_array($value, $values))) $values[] = $value;
 						}
 					}
 				}
@@ -432,6 +432,7 @@ class SpoonFormDropdown extends SpoonFormAttributes
 		}
 
 		// not submitted
+		if($error !== null) $this->setError($error);
 		return false;
 	}
 
