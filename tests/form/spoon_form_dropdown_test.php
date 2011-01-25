@@ -36,7 +36,7 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$this->ddmMultiple->setAttribute('rel', 'bauffman.jpg');
 		$this->assertEquals('bauffman.jpg', $this->ddmMultiple->getAttribute('rel'));
 		$this->ddmMultiple->setAttributes(array('id' => 'specialID'));
-		$this->assertEquals(array('id' => 'specialID', 'name' => 'multiple', 'class' => 'inputDropdown', 'size' => 1, 'rel' => 'bauffman.jpg'), $this->ddmMultiple->getAttributes());
+		$this->assertEquals(array('id' => 'specialID', 'name' => 'multiple', 'class' => 'inputDropdown', 'rel' => 'bauffman.jpg'), $this->ddmMultiple->getAttributes());
 	}
 
 	public function testIsFilled()
@@ -44,10 +44,17 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(false, $this->ddmSingle->isFilled());
 		$_POST['single'] = '2';
 		$_POST['form'] = 'dropdown';
-		$this->assertEquals(true, $this->ddmSingle->isFilled());
-		$this->assertEquals(false, $this->ddmMultiple->isFilled());
+		$this->assertTrue($this->ddmSingle->isFilled());
+		$_POST['single'] = '1337';
+		$this->assertFalse($this->ddmSingle->isFilled());
+
+		$this->assertFalse($this->ddmMultiple->isFilled());
 		$_POST['multiple'] = array('1', '2');
-		$this->assertEquals(true, $this->ddmMultiple->isFilled());
+		$this->assertTrue($this->ddmMultiple->isFilled());
+		$_POST['multiple'] = array('1336', '1337', '1338');
+		$this->assertFalse($this->ddmMultiple->isFilled());
+		$_POST['multiple'] = array('1337', 1);
+		$this->assertTrue($this->ddmMultiple->isFilled());
 	}
 
 	public function testGetValue()
