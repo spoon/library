@@ -341,7 +341,7 @@ class SpoonTemplateCompiler
 	private function parseForms($content)
 	{
 		// regex pattern
-		$pattern = '/\{form:([a-z0-9_]+?)\}?/siU';
+		$pattern = '/\{form:([a-z0-9_]+?)\}?/is';
 
 		// find matches
 		if(preg_match_all($pattern, $content, $matches))
@@ -381,7 +381,7 @@ class SpoonTemplateCompiler
 	{
 		// regex pattern
 		// no unified restriction can be done on the allowed characters, that differs from one OS to another (see http://www.comentum.com/File-Systems-HFS-FAT-UFS.html)
-		$pattern = '/\{include:(("[^"]*?"|\'[^\']*?\')|[^:]*)\}/is';
+		$pattern = '/\{include:(("[^"]*?"|\'[^\']*?\')|[^:]*)\}/i';
 
 		// find matches
 		if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER))
@@ -738,7 +738,7 @@ class SpoonTemplateCompiler
 							if(isset($match[7]) && $match[7] != '')
 							{
 								// modifier pattern
-								$pattern = '/\|([a-z_][a-z0-9_]*)((:(.*))*)/';
+								$pattern = '/\|([a-z_][a-z0-9_]*)((:(.*))*)/i';
 
 								// has match
 								if(preg_match_all($pattern, $match[7], $modifiers))
@@ -834,14 +834,14 @@ class SpoonTemplateCompiler
 								foreach((array) $variables as $variable)
 								{
 									// get array containing variable
-									$array = preg_replace('/(\[\'[a-z_][a-z0-9_]*\'\])$/', '', $variable);
+									$array = preg_replace('/(\[\'[a-z_][a-z0-9_]*\'\])$/i', '', $variable);
 
 									// get variable name
-									preg_match('/\[\'([a-z_][a-z0-9_]*)\'\]$/', $variable, $variable);
+									preg_match('/\[\'([a-z_][a-z0-9_]*)\'\]$/i', $variable, $variable);
 									$variable = $variable[1];
 
 									// container array is index of higher array
-									if(preg_match('/\[\'[a-z_][a-z0-9_]*\'\]/', $array)) $exists[] = 'isset('. $array .')';
+									if(preg_match('/\[\'[a-z_][a-z0-9_]*\'\]/i', $array)) $exists[] = 'isset('. $array .')';
 									$exists[] = 'array_key_exists(\''. $variable .'\', (array) '. $array .')';
 								}
 
@@ -999,7 +999,7 @@ class SpoonTemplateCompiler
 	 */
 	private function stripCode($content)
 	{
-		return $content = preg_replace('/\<\?(php)?(.*)\?\>/siU', '', $content);
+		return $content = preg_replace('/\<\?(php)?(.*)\?\>/si', '', $content);
 	}
 
 
