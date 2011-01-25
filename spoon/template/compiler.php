@@ -566,7 +566,7 @@ class SpoonTemplateCompiler
 	private function parseOptions($content)
 	{
 		// regex pattern
-		$pattern = '/\{option:(\!?)([a-z0-9_]*)((\.[a-z0-9_]*)*)(-\>[a-z0-9_]*((\.[a-z0-9_]*)*))?}.*?\{\/option:\\1\\2\\3\\5\}/is';
+		$pattern = '/\{option:(\!?)([a-z0-9_]*)((\.[a-z0-9_]*)*)(-\>[a-z0-9_]*((\.[a-z0-9_]*)*))?}.*?\{\/option:\\1\\2\\3\\5?\}/is';
 
 		// init vars
 		$options = array();
@@ -613,13 +613,15 @@ class SpoonTemplateCompiler
 					// not yet used
 					$options[] = $match;
 
+					$option = $match[1] . $match[2] . (isset($match[5]) ? $match[5] : '');
+
 					// search for
-					$search[] = '{option:'. $match[1] . $match[2] . $match[5] .'}';
-					$search[] = '{/option:'. $match[1] . $match[2] . $match[5] .'}';
+					$search[] = '{option:'. $option .'}';
+					$search[] = '{/option:'. $option .'}';
 
 					// inverse option
-					$search[] = '{option:!'. $match[1] . $match[2] . $match[5] .'}';
-					$search[] = '{/option:!'. $match[1] . $match[2] . $match[5] .'}';
+					$search[] = '{option:!'. $option .'}';
+					$search[] = '{/option:!'. $option .'}';
 
 					// replace with
 					$replace[] = '<?php
