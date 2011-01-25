@@ -185,9 +185,6 @@ class SpoonTemplateCompiler
 			// map modifiers
 			$this->modifiers = SpoonTemplateModifiers::getModifiers();
 
-			// add error_reporting setting
-			$this->content = '<?php error_reporting('. $errorReporting .'); ini_set(\'display_errors\', \''. $displayErrors .'\'); ?>'. "\n";
-
 			// set content
 			$this->content = SpoonFile::getContent($this->template);
 
@@ -220,6 +217,9 @@ class SpoonTemplateCompiler
 
 			// replace variables
 			$this->content = $this->replaceVariables($this->content);
+
+			// add error_reporting setting
+			$this->content = '<?php error_reporting('. $errorReporting .'); ini_set(\'display_errors\', \''. $displayErrors .'\'); ?>'. "\n". $this->content;
 
 			// parsed
 			$this->parsed = true;
