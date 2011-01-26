@@ -121,12 +121,14 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 	public function testHtmlentities()
 	{
 		// setup
-		$input = 'Ik heb géén bananen vandaag';
-		$expectedResult = 'Ik heb g&eacute;&eacute;n bananen vandaag';
+		$input = 'Ik heb "géén" bananen vandaag';
+		$expectedResult = 'Ik heb "g&eacute;&eacute;n" bananen vandaag';
 
 		// perform test
 		$this->assertEquals($expectedResult, SpoonFilter::htmlentities(utf8_decode($input), 'iso-8859-1'));
 		$this->assertEquals($expectedResult, SpoonFilter::htmlentities($input, 'utf-8'));
+		$expectedResult = 'Ik heb &quot;g&eacute;&eacute;n&quot; bananen vandaag';
+		$this->assertEquals($expectedResult, SpoonFilter::htmlentities($input, null, ENT_QUOTES));
 	}
 
 	public function testHtmlspecialchars()
