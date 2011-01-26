@@ -294,10 +294,8 @@ class SpoonFilter
 	 */
 	public static function htmlentities($value, $charset = null, $quoteStyle = ENT_NOQUOTES)
 	{
-		// define charset
+		// init vars
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
-
-		// define quote style
 		$quoteStyle = self::getValue($quoteStyle, array(ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES), ENT_NOQUOTES);
 
 		// apply method
@@ -323,10 +321,8 @@ class SpoonFilter
 	 */
 	public static function htmlentitiesDecode($value, $charset = null, $quoteStyle = ENT_NOQUOTES)
 	{
-		// define charset
+		// init vars
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
-
-		// define quote style
 		$quoteStyle = self::getValue($quoteStyle, array(ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES), ENT_NOQUOTES);
 
 		// apply method
