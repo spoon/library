@@ -26,6 +26,17 @@ class SpoonFormTest extends PHPUnit_Framework_TestCase
 		$frm->addText('email', 'something@example.org');
 		$frm->addText('now', date('H:i'));
 	}
+
+	public function  testExistsField()
+	{
+		// setup
+		$frm = new SpoonForm('name', 'action');
+		$frm->addButton('submit', 'submit');
+
+		// checks
+		$this->assertTrue($frm->existsField('submit'));
+		$this->assertFalse($frm->existsField('custom_field'));
+	}
 }
 
 ?>
