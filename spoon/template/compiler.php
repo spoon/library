@@ -615,7 +615,7 @@ class SpoonTemplateCompiler
 					$options[] = $match;
 
 					// set option
-					$option = $match[2] . (isset($match[5]) ? $match[5] : '');
+					$option = $match[2] . $match[3] .(isset($match[5]) ? $match[5] : '');
 
 					// search for
 					$search[] = '{option:'. $option .'}';
@@ -740,7 +740,7 @@ class SpoonTemplateCompiler
 							if(isset($match[7]) && $match[7] != '')
 							{
 								// modifier pattern
-								$pattern = '/\|([a-z_][a-z0-9_]*)((:(.*))*)/i';
+								$pattern = '/\|([a-z_][a-z0-9_]*)((:("[^"]*?"|\'[^\']*?\'|[^:|]*))*)/i';
 
 								// has match
 								if(preg_match_all($pattern, $match[7], $modifiers))
@@ -765,7 +765,7 @@ class SpoonTemplateCompiler
 										if($modifiers[2][$key] != '')
 										{
 											// arguments pattern (don't just explode on ':', it might be used inside a string argument)
-											$pattern = '/:("[^"]*?"|\'[^\']*?\'|[^:]*)/';
+											$pattern = '/:("[^"]*?"|\'[^\']*?\'|[^:|]*)/';
 
 											// has arguments
 											if(preg_match_all($pattern, $modifiers[2][$key], $arguments))
