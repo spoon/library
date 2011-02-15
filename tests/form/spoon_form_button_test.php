@@ -10,15 +10,22 @@ require_once 'PHPUnit/Framework/TestCase.php';
 class SpoonFormButtonTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @var	SpoonForm
-	 */
-	private $frm;
-
-	/**
 	 * @var	SpoonFormButton
 	 */
 	private $btnSubmit, $btnReset, $btnSpecial;
 
+
+	/**
+	 * @var	SpoonForm
+	 */
+	private $frm;
+
+
+	/**
+	 * Setup
+	 *
+	 * @return	void
+	 */
 	public function setup()
 	{
 		$this->frm = new SpoonForm('button');

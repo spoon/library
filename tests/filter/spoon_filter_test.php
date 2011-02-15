@@ -154,206 +154,206 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 
 	public function testIsAlphabetical()
 	{
-		$this->assertEquals(true, SpoonFilter::isAlphabetical('geen'));
-		$this->assertEquals(true, SpoonFilter::isAlphabetical('GeeN'));
-		$this->assertEquals(false, SpoonFilter::isAlphabetical('géén'));
-		$this->assertEquals(false, SpoonFilter::isAlphabetical('gééN'));
+		$this->assertTrue(SpoonFilter::isAlphabetical('geen'));
+		$this->assertTrue(SpoonFilter::isAlphabetical('GeeN'));
+		$this->assertFalse(SpoonFilter::isAlphabetical('géén'));
+		$this->assertFalse(SpoonFilter::isAlphabetical('gééN'));
 	}
 
 	public function testIsAlphaNumeric()
 	{
-		$this->assertEquals(true, SpoonFilter::isAlphaNumeric('John09'));
-		$this->assertEquals(false, SpoonFilter::isAlphaNumeric('Johan Mayer 007'));
+		$this->assertTrue(SpoonFilter::isAlphaNumeric('John09'));
+		$this->assertFalse(SpoonFilter::isAlphaNumeric('Johan Mayer 007'));
 	}
 
 	public function testIsBetween()
 	{
-		$this->assertEquals(true, SpoonFilter::isBetween(1, 10, 5));
-		$this->assertEquals(true, SpoonFilter::isBetween(1, 10, 1));
-		$this->assertEquals(true, SpoonFilter::isBetween(1, 10, 10));
-		$this->assertEquals(false, SpoonFilter::isBetween(1, 10, -1));
-		$this->assertEquals(false, SpoonFilter::isBetween(1, 10, 0));
-		$this->assertEquals(false, SpoonFilter::isBetween(1, 10, 12));
+		$this->assertTrue(SpoonFilter::isBetween(1, 10, 5));
+		$this->assertTrue(SpoonFilter::isBetween(1, 10, 1));
+		$this->assertTrue(SpoonFilter::isBetween(1, 10, 10));
+		$this->assertFalse(SpoonFilter::isBetween(1, 10, -1));
+		$this->assertFalse(SpoonFilter::isBetween(1, 10, 0));
+		$this->assertFalse(SpoonFilter::isBetween(1, 10, 12));
 	}
 
 	public function testIsBool()
 	{
-		$this->assertEquals(true, SpoonFilter::isBool('true'));
-		$this->assertEquals(true, SpoonFilter::isBool(1));
-		$this->assertEquals(true, SpoonFilter::isBool('on'));
-		$this->assertEquals(true, SpoonFilter::isBool('yes'));
-		$this->assertEquals(true, SpoonFilter::isBool('false'));
-		$this->assertEquals(true, SpoonFilter::isBool(0));
-		$this->assertEquals(false, SpoonFilter::isBool(100));
-		$this->assertEquals(false, SpoonFilter::isBool(900));
-		$this->assertEquals(true, SpoonFilter::isBool(090));
+		$this->assertTrue(SpoonFilter::isBool('true'));
+		$this->assertTrue(SpoonFilter::isBool(1));
+		$this->assertTrue(SpoonFilter::isBool('on'));
+		$this->assertTrue(SpoonFilter::isBool('yes'));
+		$this->assertTrue(SpoonFilter::isBool('false'));
+		$this->assertTrue(SpoonFilter::isBool(0));
+		$this->assertFalse(SpoonFilter::isBool(100));
+		$this->assertFalse(SpoonFilter::isBool(900));
+		$this->assertTrue(SpoonFilter::isBool(090));
 	}
 
 	public function testIsDigital()
 	{
-		$this->assertEquals(true, SpoonFilter::isDigital('010192029'));
-		$this->assertEquals(true, SpoonFilter::isDigital(1337));
-		$this->assertEquals(false, SpoonFilter::isDigital('I can has cheezeburger'));
+		$this->assertTrue(SpoonFilter::isDigital('010192029'));
+		$this->assertTrue(SpoonFilter::isDigital(1337));
+		$this->assertFalse(SpoonFilter::isDigital('I can has cheezeburger'));
 	}
 
 	public function testIsEmail()
 	{
-		$this->assertEquals(true, SpoonFilter::isEmail('erik@spoon-library.be'));
-		$this->assertEquals(true, SpoonFilter::isEmail('erik+bauffman@spoon-library.be'));
-		$this->assertEquals(true, SpoonFilter::isEmail('erik-bauffman@spoon-library.be'));
-		$this->assertEquals(true, SpoonFilter::isEmail('erik.bauffman@spoon-library.be'));
-		$this->assertEquals(true, SpoonFilter::isEmail('a.osterhaus@erasmusnc.nl'));
-		$this->assertEquals(true, SpoonFilter::isEmail('asmonto@umich.edu'));
+		$this->assertTrue(SpoonFilter::isEmail('erik@spoon-library.be'));
+		$this->assertTrue(SpoonFilter::isEmail('erik+bauffman@spoon-library.be'));
+		$this->assertTrue(SpoonFilter::isEmail('erik-bauffman@spoon-library.be'));
+		$this->assertTrue(SpoonFilter::isEmail('erik.bauffman@spoon-library.be'));
+		$this->assertTrue(SpoonFilter::isEmail('a.osterhaus@erasmusnc.nl'));
+		$this->assertTrue(SpoonFilter::isEmail('asmonto@umich.edu'));
 	}
 
 	public function testIsEven()
 	{
-		$this->assertEquals(true, SpoonFilter::isEven(0));
-		$this->assertEquals(false, SpoonFilter::isEven(1));
-		$this->assertEquals(true, SpoonFilter::isEven(10901920));
-		$this->assertEquals(false, SpoonFilter::isEven(-1337));
+		$this->assertTrue(SpoonFilter::isEven(0));
+		$this->assertFalse(SpoonFilter::isEven(1));
+		$this->assertTrue(SpoonFilter::isEven(10901920));
+		$this->assertFalse(SpoonFilter::isEven(-1337));
 	}
 
 	public function testIsFilename()
 	{
-		$this->assertEquals(true, SpoonFilter::isFilename('test.tpl'));
-		$this->assertEquals(true, SpoonFilter::isFilename('spoon_template.php'));
-		$this->assertEquals(false, SpoonFilter::isFilename('/Users/bauffman/Desktop/test.txt'));
+		$this->assertTrue(SpoonFilter::isFilename('test.tpl'));
+		$this->assertTrue(SpoonFilter::isFilename('spoon_template.php'));
+		$this->assertFalse(SpoonFilter::isFilename('/Users/bauffman/Desktop/test.txt'));
 	}
 
 	public function testIsFloat()
 	{
-		$this->assertEquals(true, SpoonFilter::isFloat(1));
-		$this->assertEquals(false, SpoonFilter::isFloat('a'));
-		$this->assertEquals(true, SpoonFilter::isFloat(1e10));
-		$this->assertEquals(true, SpoonFilter::isFloat('1e10'));
-		$this->assertEquals(false, SpoonFilter::isFloat('1a10'));
-		$this->assertEquals(true, SpoonFilter::isFloat(1.337));
-		$this->assertEquals(true, SpoonFilter::isFloat(-1.337));
-		$this->assertEquals(true, SpoonFilter::isFloat(100));
-		$this->assertEquals(true, SpoonFilter::isFloat(-100));
-		$this->assertEquals(false, SpoonFilter::isFloat('1.,35'));
-		$this->assertEquals(false, SpoonFilter::isFloat('1,.35'));
+		$this->assertTrue(SpoonFilter::isFloat(1));
+		$this->assertFalse(SpoonFilter::isFloat('a'));
+		$this->assertTrue(SpoonFilter::isFloat(1e10));
+		$this->assertTrue(SpoonFilter::isFloat('1e10'));
+		$this->assertFalse(SpoonFilter::isFloat('1a10'));
+		$this->assertTrue(SpoonFilter::isFloat(1.337));
+		$this->assertTrue(SpoonFilter::isFloat(-1.337));
+		$this->assertTrue(SpoonFilter::isFloat(100));
+		$this->assertTrue(SpoonFilter::isFloat(-100));
+		$this->assertFalse(SpoonFilter::isFloat('1.,35'));
+		$this->assertFalse(SpoonFilter::isFloat('1,.35'));
 		$this->assertTrue(SpoonFilter::isFloat('1,35', true));
 		$this->assertTrue(SpoonFilter::isFloat('-1,35', true));
 	}
 
 	public function testIsGreaterThan()
 	{
-		$this->assertEquals(true, SpoonFilter::isGreaterThan(1, 10));
-		$this->assertEquals(true, SpoonFilter::isGreaterThan(-10, -1));
-		$this->assertEquals(true, SpoonFilter::isGreaterThan(-1, 10));
-		$this->assertEquals(false, SpoonFilter::isGreaterThan(1, -10));
-		$this->assertEquals(false, SpoonFilter::isGreaterThan(0, 0));
+		$this->assertTrue(SpoonFilter::isGreaterThan(1, 10));
+		$this->assertTrue(SpoonFilter::isGreaterThan(-10, -1));
+		$this->assertTrue(SpoonFilter::isGreaterThan(-1, 10));
+		$this->assertFalse(SpoonFilter::isGreaterThan(1, -10));
+		$this->assertFalse(SpoonFilter::isGreaterThan(0, 0));
 	}
 
 	public function testIsInteger()
 	{
-		$this->assertEquals(true, SpoonFilter::isInteger(0));
-		$this->assertEquals(true, SpoonFilter::isInteger(1));
-		$this->assertEquals(true, SpoonFilter::isInteger(1234567890));
-		$this->assertEquals(true, SpoonFilter::isInteger(-1234567890));
-		$this->assertEquals(false, SpoonFilter::isInteger(1.337));
-		$this->assertEquals(false, SpoonFilter::isInteger(-1.337));
+		$this->assertTrue(SpoonFilter::isInteger(0));
+		$this->assertTrue(SpoonFilter::isInteger(1));
+		$this->assertTrue(SpoonFilter::isInteger(1234567890));
+		$this->assertTrue(SpoonFilter::isInteger(-1234567890));
+		$this->assertFalse(SpoonFilter::isInteger(1.337));
+		$this->assertFalse(SpoonFilter::isInteger(-1.337));
 	}
 
 	public function testIsInternalReferrer()
 	{
 		// reset referrer
 		unset($_SERVER['HTTP_REFERER']);
-		$this->assertEquals(true, SpoonFilter::isInternalReferrer());
+		$this->assertTrue(SpoonFilter::isInternalReferrer());
 
 		// new referrer
 		$_SERVER['HTTP_REFERER'] = 'http://www.spoon-library.com/about-us';
 		$_SERVER['HTTP_HOST'] = 'spoon-library.com';
-		$this->assertEquals(true, SpoonFilter::isInternalReferrer(array('spoon-library.com')));
+		$this->assertTrue(SpoonFilter::isInternalReferrer(array('spoon-library.com')));
 
 		// multiple domains
-		$this->assertEquals(true, SpoonFilter::isInternalReferrer(array('docs.spoon-library.com', 'blog.spoon-library.com', 'spoon-library.com')));
+		$this->assertTrue(SpoonFilter::isInternalReferrer(array('docs.spoon-library.com', 'blog.spoon-library.com', 'spoon-library.com')));
 
 		// incorrect!
-		$this->assertEquals(false, SpoonFilter::isInternalReferrer(array('rotten.com')));
-		$this->assertEquals(false, SpoonFilter::isInternalReferrer(array('rotten.com', 'rotn.com')));
+		$this->assertFalse(SpoonFilter::isInternalReferrer(array('rotten.com')));
+		$this->assertFalse(SpoonFilter::isInternalReferrer(array('rotten.com', 'rotn.com')));
 	}
 
 	public function testIsIP()
 	{
-		$this->assertEquals(true, SpoonFilter::isIp('127.0.0.1'));
-		$this->assertEquals(true, SpoonFilter::isIp('192.168.1.101'));
+		$this->assertTrue(SpoonFilter::isIp('127.0.0.1'));
+		$this->assertTrue(SpoonFilter::isIp('192.168.1.101'));
 	}
 
 	public function testIsMaximum()
 	{
-		$this->assertEquals(true, SpoonFilter::isMaximum(10, 1));
-		$this->assertEquals(true, SpoonFilter::isMaximum(10, 10));
-		$this->assertEquals(true, SpoonFilter::isMaximum(-10, -10));
-		$this->assertEquals(false, SpoonFilter::isMaximum(100, 101));
-		$this->assertEquals(false, SpoonFilter::isMaximum(-100, -99));
+		$this->assertTrue(SpoonFilter::isMaximum(10, 1));
+		$this->assertTrue(SpoonFilter::isMaximum(10, 10));
+		$this->assertTrue(SpoonFilter::isMaximum(-10, -10));
+		$this->assertFalse(SpoonFilter::isMaximum(100, 101));
+		$this->assertFalse(SpoonFilter::isMaximum(-100, -99));
 	}
 
 	public function testIsMaximumCharacters()
 	{
 		$string = 'Ik heb er géén gedacht van';
-		$this->assertEquals(true, SpoonFilter::isMaximumCharacters(26, $string, 'utf-8'));
-		$this->assertEquals(false, SpoonFilter::isMaximumCharacters(10, $string, 'utf-8'));
-		$this->assertEquals(true, SpoonFilter::isMaximumCharacters(26, utf8_decode($string), 'iso-8859-1'));
+		$this->assertTrue(SpoonFilter::isMaximumCharacters(26, $string, 'utf-8'));
+		$this->assertFalse(SpoonFilter::isMaximumCharacters(10, $string, 'utf-8'));
+		$this->assertTrue(SpoonFilter::isMaximumCharacters(26, utf8_decode($string), 'iso-8859-1'));
 	}
 
 	public function testIsMinimum()
 	{
-		$this->assertEquals(false, SpoonFilter::isMinimum(10, 1));
-		$this->assertEquals(true, SpoonFilter::isMinimum(10, 10));
-		$this->assertEquals(true, SpoonFilter::isMinimum(-10, -10));
-		$this->assertEquals(true, SpoonFilter::isMinimum(100, 101));
-		$this->assertEquals(true, SpoonFilter::isMinimum(-100, -99));
+		$this->assertFalse(SpoonFilter::isMinimum(10, 1));
+		$this->assertTrue(SpoonFilter::isMinimum(10, 10));
+		$this->assertTrue(SpoonFilter::isMinimum(-10, -10));
+		$this->assertTrue(SpoonFilter::isMinimum(100, 101));
+		$this->assertTrue(SpoonFilter::isMinimum(-100, -99));
 	}
 
 	public function testIsMinimumCharacters()
 	{
 		$string = 'Ik heb er géén gedacht van';
-		$this->assertEquals(true, SpoonFilter::isMinimumCharacters(10, $string, 'utf-8'));
-		$this->assertEquals(false, SpoonFilter::isMinimumCharacters(30, $string, 'utf-8'));
-		$this->assertEquals(true, SpoonFilter::isMinimumCharacters(10, utf8_decode($string), 'iso-8859-1'));
+		$this->assertTrue(SpoonFilter::isMinimumCharacters(10, $string, 'utf-8'));
+		$this->assertFalse(SpoonFilter::isMinimumCharacters(30, $string, 'utf-8'));
+		$this->assertTrue(SpoonFilter::isMinimumCharacters(10, utf8_decode($string), 'iso-8859-1'));
 	}
 
 	public function testIsNumeric()
 	{
-		$this->assertEquals(true, SpoonFilter::isNumeric('010192029'));
-		$this->assertEquals(true, SpoonFilter::isNumeric(1337));
-		$this->assertEquals(false, SpoonFilter::isNumeric('I can has cheezeburger'));
+		$this->assertTrue(SpoonFilter::isNumeric('010192029'));
+		$this->assertTrue(SpoonFilter::isNumeric(1337));
+		$this->assertFalse(SpoonFilter::isNumeric('I can has cheezeburger'));
 	}
 
 	public function testIsOdd()
 	{
-		$this->assertEquals(false, SpoonFilter::isOdd(0));
-		$this->assertEquals(true, SpoonFilter::isOdd(1));
-		$this->assertEquals(false, SpoonFilter::isOdd(10901920));
-		$this->assertEquals(true, SpoonFilter::isOdd(-1337));
+		$this->assertFalse(SpoonFilter::isOdd(0));
+		$this->assertTrue(SpoonFilter::isOdd(1));
+		$this->assertFalse(SpoonFilter::isOdd(10901920));
+		$this->assertTrue(SpoonFilter::isOdd(-1337));
 	}
 
 	public function testIsSmallerThan()
 	{
-		$this->assertEquals(false, SpoonFilter::isSmallerThan(1, 10));
-		$this->assertEquals(false, SpoonFilter::isSmallerThan(-10, -1));
-		$this->assertEquals(false, SpoonFilter::isSmallerThan(-1, 10));
-		$this->assertEquals(true, SpoonFilter::isSmallerThan(1, -10));
-		$this->assertEquals(false, SpoonFilter::isSmallerThan(0, 0));
+		$this->assertFalse(SpoonFilter::isSmallerThan(1, 10));
+		$this->assertFalse(SpoonFilter::isSmallerThan(-10, -1));
+		$this->assertFalse(SpoonFilter::isSmallerThan(-1, 10));
+		$this->assertTrue(SpoonFilter::isSmallerThan(1, -10));
+		$this->assertFalse(SpoonFilter::isSmallerThan(0, 0));
 	}
 
 	public function testIsString()
 	{
-		$this->assertEquals(true, SpoonFilter::isString('This should qualify as a string.'));
+		$this->assertTrue(SpoonFilter::isString('This should qualify as a string.'));
 	}
 
 	public function testIsValidAgainstRegexp()
 	{
-		$this->assertEquals(true, SpoonFilter::isValidAgainstRegexp('/([a-z]+)/', 'alphabet'));
-		$this->assertEquals(false, SpoonFilter::isValidAgainstRegexp('/(boobies)/', 'I like babies'));
+		$this->assertTrue(SpoonFilter::isValidAgainstRegexp('/([a-z]+)/', 'alphabet'));
+		$this->assertFalse(SpoonFilter::isValidAgainstRegexp('/(boobies)/', 'I like babies'));
 	}
 
 	public function testIsValidRegexp()
 	{
-		$this->assertEquals(true, SpoonFilter::isValidRegexp('/boobies/'));
+		$this->assertTrue(SpoonFilter::isValidRegexp('/boobies/'));
 	}
 
 	public function testToCamelCase()
