@@ -191,28 +191,21 @@ class Spoon
 
 
 	/**
-	 * Retrieve the whole registry or one specific instance.
+	 * Fetch an item from the registry.
 	 *
 	 * @return	mixed
-	 * @param	string[optional] $name	The name of the object to grab.
+	 * @param	string $name
 	 */
-	public static function getObjectReference($name = null)
+	public static function get($name)
 	{
-		// name defined
-		if($name !== null)
-		{
-			// redefine
-			$name = (string) $name;
+		// redefine
+		$name = (string) $name;
 
-			// item doesn't exist
-			if(!isset(self::$registry[$name])) throw new SpoonException('An item with reference name "'. $name .'" doesn\'t exist in the registry.');
+		// item doesn't exist
+		if(!isset(self::$registry[$name])) throw new SpoonException('An item with reference name "'. $name .'" doesn\'t exist in the registry.');
 
-			// item exists
-			return self::$registry[$name];
-		}
-
-		// whole registry
-		return self::$registry;
+		// item exists
+		return self::$registry[$name];
 	}
 
 
