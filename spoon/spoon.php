@@ -225,16 +225,26 @@ class Spoon
 	 * Registers a given value under a given name.
 	 *
 	 * @return	void
-	 * @param	string $name	The name of the value to store.
-	 * @param	mixed $value	The value that needs to be stored.
+	 * @param	string $name			The name of the value to store.
+	 * @param	mixed[optional] $value	The value that needs to be stored.
 	 */
-	public static function set($name, $value)
+	public static function set($name, $value = null)
 	{
 		// redefine name
 		$name = (string) $name;
 
+		// delete
+		if($value === null) unset(self::$registry[$name]);
+
 		// add & return value
-		return self::$registry[$name] = $value;
+		else
+		{
+			// add value
+			self::$registry[$name] = $value;
+
+			// fetch value
+			return self::get($name);
+		}
 	}
 }
 
