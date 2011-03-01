@@ -78,17 +78,17 @@ class SpoonLog
 		$milliseconds = round($milliseconds * 1000, 0);
 
 		// redefine var
-		$message = date('Y-m-d H:i:s') .' '. $milliseconds .'ms | '. $message . "\n";
+		$message = date('Y-m-d H:i:s') . ' ' . $milliseconds . 'ms | ' . $message . "\n";
 		$type = SpoonFilter::getValue($type, array('error', 'custom'), 'error');
 
 		// file
-		$file = self::getPath() .'/'. $type .'.log';
+		$file = self::getPath() . '/' . $type . '.log';
 
 		// rename if needed
 		if((int) @filesize($file) >= (self::MAX_FILE_SIZE * 1024))
 		{
 			// start new log file
-			SpoonDirectory::move($file, $file .'.'. date('Ymdhis'));
+			SpoonDirectory::move($file, $file . '.' . date('Ymdhis'));
 		}
 
 		// write content
