@@ -180,6 +180,37 @@ class Spoon
 
 
 	/**
+	 * Checks if an object with this name is in the registry.
+	 *
+	 * @return	bool
+	 * @param	string $name	The name of the registry item to check for existence.
+	 */
+	public static function exists($name)
+	{
+		return isset(self::$registry[(string) $name]);
+	}
+
+
+	/**
+	 * Fetch an item from the registry.
+	 *
+	 * @return	mixed
+	 * @param	string $name
+	 */
+	public static function get($name)
+	{
+		// redefine
+		$name = (string) $name;
+
+		// item doesn't exist
+		if(!isset(self::$registry[$name])) throw new SpoonException('An item with reference name "' . $name . '" doesn\'t exist in the registry.');
+
+		// item exists
+		return self::$registry[$name];
+	}
+
+
+	/**
 	 * Retrieve the list of available charsets.
 	 *
 	 * @return	array
@@ -191,88 +222,28 @@ class Spoon
 
 
 	/**
-	 * Retrieve the whole registry or one specific instance.
-	 *
-	 * @return	mixed
-	 * @param	string[optional] $name	The name of the object to grab.
-	 */
-	public static function getObjectReference($name = null)
-	{
-		// name defined
-		if($name !== null)
-		{
-			// redefine
-			$name = (string) $name;
-
-			// item doesn't exist
-			if(!isset(self::$registry[$name])) throw new SpoonException('An item with reference name "' . $name . '" doesn\'t exist in the registry.');
-
-			// item exists
-			return self::$registry[$name];
-		}
-
-		// whole registry
-		return self::$registry;
-	}
-
-
-	/**
-	 * Checks if an object with this name has been registered.
-	 *
-	 * @return	bool
-	 * @param	string $name	The name of the object to check for existance.
-	 */
-	public static function isObjectReference($name)
-	{
-		return isset(self::$registry[(string) $name]);
-	}
-
-
-	/**
-	 * Deletes a given object from the registry.
+	 * Registers a given value under a given name.
 	 *
 	 * @return	void
-	 * @param	string $name	The name of the object to remove.
+	 * @param	string $name			The name of the value to store.
+	 * @param	mixed[optional] $value	The value that needs to be stored.
 	 */
-	public static function killObjectReference($name)
-	{
-		// name
-		$name = (string) $name;
-
-		// object doesn't exist
-		if(!isset(self::$registry[$name])) throw new SpoonException('The given object "' . $name . '" doesn\'t exist in the registry.');
-
-		// object exists
-		unset(self::$registry[$name]);
-	}
-
-
-	/**
-	 * Registers a given object under a given name.
-	 *
-	 * @return	void
-	 * @param	string $name	The name of the object to store.
-	 * @param	object $object	The real object.
-	 */
-	public static function setObjectReference($name, $object)
+	public static function set($name, $value = null)
 	{
 		// redefine name
 		$name = (string) $name;
 
-		// not an object
-		if(!is_object($object)) throw new SpoonException('The given object "' . $name . '" is not an object.');
+		// delete
+		if($value === null) unset(self::$registry[$name]);
 
-		// valid object
+		// add & return value
 		else
 		{
-			// name already exists
-			if(isset(self::$registry[$name])) throw new SpoonException('An object by the reference name "' . $name . '" has already been added to the registry.');
+			// add value
+			self::$registry[$name] = $value;
 
-			// new item
-			self::$registry[$name] = $object;
-
-			// retrieve object
-			return self::getObjectReference($name);
+			// fetch value
+			return self::get($name);
 		}
 	}
 }
