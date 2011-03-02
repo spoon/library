@@ -226,7 +226,7 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(SpoonFilter::isFloat(1));
 		$this->assertFalse(SpoonFilter::isFloat('a'));
 		$this->assertTrue(SpoonFilter::isFloat(1e10));
-		$this->assertTrue(SpoonFilter::isFloat('1e10'));
+		$this->assertFalse(SpoonFilter::isFloat('1e10'));
 		$this->assertFalse(SpoonFilter::isFloat('1a10'));
 		$this->assertTrue(SpoonFilter::isFloat(1.337));
 		$this->assertTrue(SpoonFilter::isFloat(-1.337));
@@ -236,6 +236,7 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse(SpoonFilter::isFloat('1,.35'));
 		$this->assertTrue(SpoonFilter::isFloat('1,35', true));
 		$this->assertTrue(SpoonFilter::isFloat('-1,35', true));
+
 	}
 
 	public function testIsGreaterThan()
