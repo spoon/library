@@ -467,10 +467,10 @@ class SpoonFilter
 	public static function isFloat($value, $allowCommas = false)
 	{
 		// no commas allowed
-		if(!$allowCommas) return ((string) (float) $value == (string) $value);
+		if(!$allowCommas) return ((string) (float) $value === (string) $value);
 
 		// replace commas with dots
-		return ((string) (float) str_replace(',', '.', (string) $value) == str_replace(',', '.', (string) $value));
+		return ((string) (float) str_replace(',', '.', (string) $value) === str_replace(',', '.', (string) $value));
 	}
 
 
