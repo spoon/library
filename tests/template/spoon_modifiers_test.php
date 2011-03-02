@@ -7,6 +7,9 @@ define('SPOON_CHARSET', 'utf-8');
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
+// timezone
+date_default_timezone_set('Europe/Brussels');
+
 class SpoonTemplateModifiersTest extends PHPUnit_Framework_TestCase
 {
 	public function testClearModifiers()
@@ -36,24 +39,24 @@ class SpoonTemplateModifiersTest extends PHPUnit_Framework_TestCase
 
 		foreach($tlds as $tld)
 		{
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l', SpoonTemplateModifiers::createHTMLLinks('verkeerde link: www.link.'. $tld .'l'));
-			$this->assertEquals('zonder http: <a href="http://www.link.'. $tld .'">www.link.'. $tld .'</a>', SpoonTemplateModifiers::createHTMLLinks('zonder http: www.link.'. $tld));
-			$this->assertEquals('met http: <a href="http://www.link.'. $tld .'">http://www.link.'. $tld .'</a>', SpoonTemplateModifiers::createHTMLLinks('met http: http://www.link.'. $tld));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l', SpoonTemplateModifiers::createHTMLLinks('verkeerde link: www.link.' . $tld . 'l'));
+			$this->assertEquals('zonder http: <a href="http://www.link.' . $tld . '">www.link.' . $tld . '</a>', SpoonTemplateModifiers::createHTMLLinks('zonder http: www.link.' . $tld));
+			$this->assertEquals('met http: <a href="http://www.link.' . $tld . '">http://www.link.' . $tld . '</a>', SpoonTemplateModifiers::createHTMLLinks('met http: http://www.link.' . $tld));
 
 			// port
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l:80', SpoonTemplateModifiers::createHTMLLinks('verkeerde link: www.link.'. $tld .'l:80'));
-			$this->assertEquals('zonder http: <a href="http://www.link.'. $tld .':80">www.link.'. $tld .':80</a>', SpoonTemplateModifiers::createHTMLLinks('zonder http: www.link.'. $tld .':80'));
-			$this->assertEquals('met http: <a href="http://www.link.'. $tld .':80">http://www.link.'. $tld .':80</a>', SpoonTemplateModifiers::createHTMLLinks('met http: http://www.link.'. $tld .':80'));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l:80', SpoonTemplateModifiers::createHTMLLinks('verkeerde link: www.link.' . $tld . 'l:80'));
+			$this->assertEquals('zonder http: <a href="http://www.link.' . $tld . ':80">www.link.' . $tld . ':80</a>', SpoonTemplateModifiers::createHTMLLinks('zonder http: www.link.' . $tld . ':80'));
+			$this->assertEquals('met http: <a href="http://www.link.' . $tld . ':80">http://www.link.' . $tld . ':80</a>', SpoonTemplateModifiers::createHTMLLinks('met http: http://www.link.' . $tld . ':80')); // @todo hier zit je!
 
 			// querystring
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l?m=12&b=0%20d', SpoonTemplateModifiers::createHTMLLinks('verkeerde link: www.link.'. $tld .'l?m=12&b=0%20d'));
-			$this->assertEquals('zonder http: <a href="http://www.link.'. $tld .'?m=12&b=0%20d">www.link.'. $tld .'?m=12&b=0%20d</a>', SpoonTemplateModifiers::createHTMLLinks('zonder http: www.link.'. $tld .'?m=12&b=0%20d'));
-			$this->assertEquals('met http: <a href="http://www.link.'. $tld .'?m=12&b=0%20d">http://www.link.'. $tld .'?m=12&b=0%20d</a>', SpoonTemplateModifiers::createHTMLLinks('met http: http://www.link.'. $tld .'?m=12&b=0%20d'));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l?m=12&b=0%20d', SpoonTemplateModifiers::createHTMLLinks('verkeerde link: www.link.' . $tld . 'l?m=12&b=0%20d'));
+			$this->assertEquals('zonder http: <a href="http://www.link.' . $tld . '?m=12&b=0%20d">www.link.' . $tld . '?m=12&b=0%20d</a>', SpoonTemplateModifiers::createHTMLLinks('zonder http: www.link.' . $tld . '?m=12&b=0%20d'));
+			$this->assertEquals('met http: <a href="http://www.link.' . $tld . '?m=12&b=0%20d">http://www.link.' . $tld . '?m=12&b=0%20d</a>', SpoonTemplateModifiers::createHTMLLinks('met http: http://www.link.' . $tld . '?m=12&b=0%20d'));
 
 			// folder
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l/mekker', SpoonTemplateModifiers::createHTMLLinks('verkeerde link: www.link.'. $tld .'l/mekker'));
-			$this->assertEquals('zonder http: <a href="http://www.link.'. $tld .'/mekker">www.link.'. $tld .'/mekker</a>', SpoonTemplateModifiers::createHTMLLinks('zonder http: www.link.'. $tld .'/mekker'));
-			$this->assertEquals('met http: <a href="http://www.link.'. $tld .'/mekker">http://www.link.'. $tld .'/mekker</a>', SpoonTemplateModifiers::createHTMLLinks('met http: http://www.link.'. $tld .'/mekker'));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l/mekker', SpoonTemplateModifiers::createHTMLLinks('verkeerde link: www.link.' . $tld . 'l/mekker'));
+			$this->assertEquals('zonder http: <a href="http://www.link.' . $tld . '/mekker">www.link.' . $tld . '/mekker</a>', SpoonTemplateModifiers::createHTMLLinks('zonder http: www.link.' . $tld . '/mekker'));
+			$this->assertEquals('met http: <a href="http://www.link.' . $tld . '/mekker">http://www.link.' . $tld . '/mekker</a>', SpoonTemplateModifiers::createHTMLLinks('met http: http://www.link.' . $tld . '/mekker'));
 		}
 	}
 

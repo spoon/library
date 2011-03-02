@@ -7,6 +7,9 @@ if(!defined('SPOON_CHARSET')) define('SPOON_CHARSET', 'utf-8');
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
+// timezone
+date_default_timezone_set('Europe/Brussels');
+
 class SpoonFormTest extends PHPUnit_Framework_TestCase
 {
 	public function testMain()

@@ -11,7 +11,7 @@ class SpoonThumbnailTest extends PHPUnit_Framework_TestCase
 {
 	public function testIsSupportedFileType()
 	{
-		$this->assertEquals(true, SpoonThumbnail::isSupportedFileType(dirname(dirname(realpath(__FILE__))) .'/tmp/spoon.jpg'));
+		$this->assertEquals(true, SpoonThumbnail::isSupportedFileType(dirname(dirname(realpath(__FILE__))) . '/tmp/spoon.jpg'));
 	}
 }
 

@@ -7,6 +7,9 @@ if(!defined('SPOON_CHARSET')) define('SPOON_CHARSET', 'utf-8');
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
+// timezone
+date_default_timezone_set('Europe/Brussels');
+
 class SpoonFormTimeTest extends PHPUnit_Framework_TestCase
 {
 	/**
@@ -72,7 +75,7 @@ class SpoonFormTimeTest extends PHPUnit_Framework_TestCase
 	public function testGetTimestamp()
 	{
 		$_POST['time'] = '10:44';
-		$this->assertEquals('25/10/2009 '. date('H:i') .':00', date('d/m/Y H:i:s', $this->txtTime->getTimestamp(2009, 10, 25)));
+		$this->assertEquals('25/10/2009 ' . date('H:i') . ':00', date('d/m/Y H:i:s', $this->txtTime->getTimestamp(2009, 10, 25)));
 	}
 
 	public function testGetValue()

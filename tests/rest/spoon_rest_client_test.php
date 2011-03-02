@@ -85,7 +85,7 @@ class SpoonRESTClientTest extends PHPUnit_Framework_TestCase
 		$this->SpoonRESTClient->setUserAgent($userAgent);
 
 		// get
-		$this->assertEquals('Spoon '. SPOON_VERSION .'/'. $userAgent, $this->SpoonRESTClient->getUserAgent());
+		$this->assertEquals('Spoon ' . SPOON_VERSION . '/' . $userAgent, $this->SpoonRESTClient->getUserAgent());
 	}
 }
 

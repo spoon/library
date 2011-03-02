@@ -384,47 +384,47 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 
 		foreach($tlds as $tld)
 		{
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.'. $tld .'l', false));
-			$this->assertEquals('zonder http: <a href="http://www.link.'. $tld .'">www.link.'. $tld .'</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.'. $tld, false));
-			$this->assertEquals('met http: <a href="http://www.link.'. $tld .'">http://www.link.'. $tld .'</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.'. $tld, false));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.' . $tld . 'l', false));
+			$this->assertEquals('zonder http: <a href="http://www.link.' . $tld . '">www.link.' . $tld . '</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.' . $tld, false));
+			$this->assertEquals('met http: <a href="http://www.link.' . $tld . '">http://www.link.' . $tld . '</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.' . $tld, false));
 
 			// port
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l:80', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.'. $tld .'l:80', false));
-			$this->assertEquals('zonder http: <a href="http://www.link.'. $tld .':80">www.link.'. $tld .':80</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.'. $tld .':80', false));
-			$this->assertEquals('met http: <a href="http://www.link.'. $tld .':80">http://www.link.'. $tld .':80</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.'. $tld .':80', false));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l:80', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.' . $tld . 'l:80', false));
+			$this->assertEquals('zonder http: <a href="http://www.link.' . $tld . ':80">www.link.' . $tld . ':80</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.' . $tld . ':80', false));
+			$this->assertEquals('met http: <a href="http://www.link.' . $tld . ':80">http://www.link.' . $tld . ':80</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.' . $tld . ':80', false));
 
 			// querystring
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l?m=12&b=0%20d', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.'. $tld .'l?m=12&b=0%20d', false));
-			$this->assertEquals('zonder http: <a href="http://www.link.'. $tld .'?m=12&b=0%20d">www.link.'. $tld .'?m=12&b=0%20d</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.'. $tld .'?m=12&b=0%20d', false));
-			$this->assertEquals('met http: <a href="http://www.link.'. $tld .'?m=12&b=0%20d">http://www.link.'. $tld .'?m=12&b=0%20d</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.'. $tld .'?m=12&b=0%20d', false));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l?m=12&b=0%20d', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.' . $tld . 'l?m=12&b=0%20d', false));
+			$this->assertEquals('zonder http: <a href="http://www.link.' . $tld . '?m=12&b=0%20d">www.link.' . $tld . '?m=12&b=0%20d</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.' . $tld . '?m=12&b=0%20d', false));
+			$this->assertEquals('met http: <a href="http://www.link.' . $tld . '?m=12&b=0%20d">http://www.link.' . $tld . '?m=12&b=0%20d</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.' . $tld . '?m=12&b=0%20d', false));
 
 			// folder
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l/mekker', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.'. $tld .'l/mekker', false));
-			$this->assertEquals('zonder http: <a href="http://www.link.'. $tld .'/mekker">www.link.'. $tld .'/mekker</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.'. $tld .'/mekker', false));
-			$this->assertEquals('met http: <a href="http://www.link.'. $tld .'/mekker">http://www.link.'. $tld .'/mekker</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.'. $tld .'/mekker', false));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l/mekker', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.' . $tld . 'l/mekker', false));
+			$this->assertEquals('zonder http: <a href="http://www.link.' . $tld . '/mekker">www.link.' . $tld . '/mekker</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.' . $tld . '/mekker', false));
+			$this->assertEquals('met http: <a href="http://www.link.' . $tld . '/mekker">http://www.link.' . $tld . '/mekker</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.' . $tld . '/mekker', false));
 		}
 
 		// no follow
 		foreach($tlds as $tld)
 		{
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.'. $tld .'l'));
-			$this->assertEquals('zonder http: <a rel="nofollow" href="http://www.link.'. $tld .'">www.link.'. $tld .'</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.'. $tld));
-			$this->assertEquals('met http: <a rel="nofollow" href="http://www.link.'. $tld .'">http://www.link.'. $tld .'</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.'. $tld));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.' . $tld . 'l'));
+			$this->assertEquals('zonder http: <a rel="nofollow" href="http://www.link.' . $tld . '">www.link.' . $tld . '</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.' . $tld));
+			$this->assertEquals('met http: <a rel="nofollow" href="http://www.link.' . $tld . '">http://www.link.' . $tld . '</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.' . $tld));
 
 			// port
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l:80', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.'. $tld .'l:80'));
-			$this->assertEquals('zonder http: <a rel="nofollow" href="http://www.link.'. $tld .':80">www.link.'. $tld .':80</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.'. $tld .':80'));
-			$this->assertEquals('met http: <a rel="nofollow" href="http://www.link.'. $tld .':80">http://www.link.'. $tld .':80</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.'. $tld .':80'));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l:80', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.' . $tld . 'l:80'));
+			$this->assertEquals('zonder http: <a rel="nofollow" href="http://www.link.' . $tld . ':80">www.link.' . $tld . ':80</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.' . $tld . ':80'));
+			$this->assertEquals('met http: <a rel="nofollow" href="http://www.link.' . $tld . ':80">http://www.link.' . $tld . ':80</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.' . $tld . ':80'));
 
 			// querystring
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l?m=12&b=0%20d', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.'. $tld .'l?m=12&b=0%20d'));
-			$this->assertEquals('zonder http: <a rel="nofollow" href="http://www.link.'. $tld .'?m=12&b=0%20d">www.link.'. $tld .'?m=12&b=0%20d</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.'. $tld .'?m=12&b=0%20d'));
-			$this->assertEquals('met http: <a rel="nofollow" href="http://www.link.'. $tld .'?m=12&b=0%20d">http://www.link.'. $tld .'?m=12&b=0%20d</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.'. $tld .'?m=12&b=0%20d'));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l?m=12&b=0%20d', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.' . $tld . 'l?m=12&b=0%20d'));
+			$this->assertEquals('zonder http: <a rel="nofollow" href="http://www.link.' . $tld . '?m=12&b=0%20d">www.link.' . $tld . '?m=12&b=0%20d</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.' . $tld . '?m=12&b=0%20d'));
+			$this->assertEquals('met http: <a rel="nofollow" href="http://www.link.' . $tld . '?m=12&b=0%20d">http://www.link.' . $tld . '?m=12&b=0%20d</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.' . $tld . '?m=12&b=0%20d'));
 
 			// folder
-			$this->assertEquals('verkeerde link: www.link.'. $tld .'l/mekker', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.'. $tld .'l/mekker'));
-			$this->assertEquals('zonder http: <a rel="nofollow" href="http://www.link.'. $tld .'/mekker">www.link.'. $tld .'/mekker</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.'. $tld .'/mekker'));
-			$this->assertEquals('met http: <a rel="nofollow" href="http://www.link.'. $tld .'/mekker">http://www.link.'. $tld .'/mekker</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.'. $tld .'/mekker'));
+			$this->assertEquals('verkeerde link: www.link.' . $tld . 'l/mekker', SpoonFilter::replaceURLsWithAnchors('verkeerde link: www.link.' . $tld . 'l/mekker'));
+			$this->assertEquals('zonder http: <a rel="nofollow" href="http://www.link.' . $tld . '/mekker">www.link.' . $tld . '/mekker</a>', SpoonFilter::replaceURLsWithAnchors('zonder http: www.link.' . $tld . '/mekker'));
+			$this->assertEquals('met http: <a rel="nofollow" href="http://www.link.' . $tld . '/mekker">http://www.link.' . $tld . '/mekker</a>', SpoonFilter::replaceURLsWithAnchors('met http: http://www.link.' . $tld . '/mekker'));
 		}	}
 
 	public function testStripHTML()
@@ -448,7 +448,6 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('<a href="http://www.spoon-library.be">Spoon Library</a>', SpoonFilter::stripHTML($html, '<a>'));
 		$this->assertEquals('Spoon Library (http://www.spoon-library.be)', SpoonFilter::stripHTML($html, null, true));
 	}
-
 
 	public function testUrlise()
 	{

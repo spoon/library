@@ -8,11 +8,11 @@ class SpoonFileTest extends PHPUnit_Framework_TestCase
 {
 	public function setup()
 	{
-		if(!defined('TMPPATH')) define('TMPPATH', dirname(realpath(dirname(__FILE__))) .'/tmp');
+		if(!defined('TMPPATH')) define('TMPPATH', dirname(realpath(dirname(__FILE__))) . '/tmp');
 
 		$this->existingUrl = 'http://www.spoon-library.com/downloads/1.0.3/spoon-1.0.3.zip';
-		$this->nonExistingUrl = 'http://ksdgg.com/'. time() .'.txt';
-		$this->destinationFile = TMPPATH .'/spoon.zip';
+		$this->nonExistingUrl = 'http://ksdgg.com/' . time() . '.txt';
+		$this->destinationFile = TMPPATH . '/spoon.zip';
 	}
 
 	public function testDownload()
@@ -30,11 +30,11 @@ class SpoonFileTest extends PHPUnit_Framework_TestCase
 		}
 
 		// hopefully catch exception
-		catch (Exception $e)
+		catch(Exception $e)
 		{
 			$this->assertType('SpoonFileException', $e);
 			$this->assertObjectHasAttribute('message', $e);
-			$this->assertEquals('The file "'. $this->nonExistingUrl .'" isn\'t available for download.', $e->getMessage());
+			$this->assertEquals('The file "' . $this->nonExistingUrl . '" isn\'t available for download.', $e->getMessage());
 		}
 	}
 }

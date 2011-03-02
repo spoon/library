@@ -44,8 +44,8 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 			) ENGINE=MyISAM;");
 
 		// do nothing
-		$this->db->execute('SELECT * FROM users LIMIT ?;', 10);
-		$this->db->execute('SELECT * FROM users limit :limit;', array(':limit' => 10));
+		$this->db->execute('SELECT * FROM users LIMIT ?', 10);
+		$this->db->execute('SELECT * FROM users limit :limit', array(':limit' => 10));
 	}
 
 	public function testDrop()
@@ -93,11 +93,11 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 
 	public function testGetNumRows()
 	{
-		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users;'));
-		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users WHERE id != ?;', 1337));
-		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users WHERE id != :id;', array(':id' => 1337)));
-		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users LIMIT ?;', array(9999)));
-		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users LIMIT :limit;', array(':limit' => 9999)));
+		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users'));
+		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users WHERE id != ?', 1337));
+		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users WHERE id != :id', array(':id' => 1337)));
+		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users LIMIT ?', array(9999)));
+		$this->assertEquals(1001, $this->db->getNumRows('SELECT id FROM users LIMIT :limit', array(':limit' => 9999)));
 	}
 
 	public function testGetEnumValues()
@@ -107,22 +107,22 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 
 	public function testGetVar()
 	{
-		$this->assertEquals('1001', $this->db->getVar('SELECT COUNT(id) FROM users;'));
+		$this->assertEquals('1001', $this->db->getVar('SELECT COUNT(id) FROM users'));
 		$this->assertEquals('1001', $this->db->getVar('SELECT COUNT(id) FROM users WHERE id != ?', 1337));
 		$this->assertEquals('1001', $this->db->getVar('SELECT COUNT(id) FROM users WHERE id != :id', array(':id' => 1337)));
-		$this->assertEquals('1', $this->db->getVar('SELECT id FROM users ORDER BY id ASC LIMIT 1;'));
-		$this->assertEquals('1', $this->db->getVar('SELECT id FROM users ORDER BY id ASC LIMIT ?;', 1));
-		$this->assertEquals('1', $this->db->getVar('SELECT id FROM users ORDER BY id ASC LIMIT ?;', array(1)));
-		$this->assertEquals('1', $this->db->getVar('SELECT id FROM users ORDER BY id ASC LIMIT :limit;', array(':limit' => 1)));
+		$this->assertEquals('1', $this->db->getVar('SELECT id FROM users ORDER BY id ASC LIMIT 1'));
+		$this->assertEquals('1', $this->db->getVar('SELECT id FROM users ORDER BY id ASC LIMIT ?', 1));
+		$this->assertEquals('1', $this->db->getVar('SELECT id FROM users ORDER BY id ASC LIMIT ?', array(1)));
+		$this->assertEquals('1', $this->db->getVar('SELECT id FROM users ORDER BY id ASC LIMIT :limit', array(':limit' => 1)));
 	}
 
 	public function testGetPairs()
 	{
 		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users LIMIT 10;')));
-		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users WHERE id != ? LIMIT 10;', 1337)));
-		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users WHERE id != ? LIMIT ?;', array(1337, 10))));
-		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users WHERE id != :id LIMIT 10;', array(':id' => 1337))));
-		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users WHERE id != :id LIMIT :limit;', array(':id' => 1337, ':limit' => 10))));
+		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users WHERE id != ? LIMIT 10', 1337)));
+		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users WHERE id != ? LIMIT ?', array(1337, 10))));
+		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users WHERE id != :id LIMIT 10', array(':id' => 1337))));
+		$this->assertEquals(10, count($this->db->getPairs('SELECT id, username FROM users WHERE id != :id LIMIT :limit', array(':id' => 1337, ':limit' => 10))));
 	}
 
 	public function testDelete()
@@ -132,19 +132,19 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 		$this->db->delete('users', 'id = :id', array(':id' => 1001));
 
 		// 999 records should remain
-		$this->assertEquals(999, $this->db->getVar('SELECT COUNT(id) FROM users;'));
+		$this->assertEquals(999, $this->db->getVar('SELECT COUNT(id) FROM users'));
 	}
 
 	public function testUpdate()
 	{
 		// no record with id 1337
-		$this->assertEquals(0, $this->db->getNumRows('SELECT id FROM users WHERE id = ?;', 1337));
+		$this->assertEquals(0, $this->db->getNumRows('SELECT id FROM users WHERE id = ?', 1337));
 
 		// update record
 		$this->db->update('users', array('id' => 1337, 'username' => 'Bauffman', 'email' => 'erik@bauffman.be', 'developer' => 'Y'), 'id = ?', 2);
 
 		// 1 record with id 1337
-		$this->assertEquals(1, $this->db->getNumRows('SELECT id FROM users WHERE id = ?;', 1337));
+		$this->assertEquals(1, $this->db->getNumRows('SELECT id FROM users WHERE id = ?', 1337));
 
 		// update record
 		$this->db->update('users', array('id' => 1337), 'id = :leet AND id != :bauffman', array(':leet' => 1337, ':bauffman' => 291));
@@ -158,13 +158,13 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 
 	public function testGetColumn()
 	{
-		$this->assertEquals(10, count($this->db->getColumn('SELECT username FROM users LIMIT 10;')));
+		$this->assertEquals(10, count($this->db->getColumn('SELECT username FROM users LIMIT 10')));
 	}
 
 	public function testGetQueries()
 	{
 		$this->db->setDebug(true);
-		$this->db->execute('SELECT id FROM users;');
+		$this->db->execute('SELECT id FROM users');
 		$this->assertEquals(1, count($this->db->getQueries()));
 	}
 
@@ -174,14 +174,14 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 		$data['email'] = 'erik@bauffman.be';
 		$data['developer'] = 'Y';
 
-		$this->assertEquals($data, $this->db->getRecord('SELECT username, email, developer FROM users WHERE id = ?;', 1337));
-		$this->assertEquals($data, $this->db->getRecord('SELECT username, email, developer FROM users WHERE id = :id;', array(':id' => 1337)));
+		$this->assertEquals($data, $this->db->getRecord('SELECT username, email, developer FROM users WHERE id = ?', 1337));
+		$this->assertEquals($data, $this->db->getRecord('SELECT username, email, developer FROM users WHERE id = :id', array(':id' => 1337)));
 	}
 
 	public function testGetRecords()
 	{
-		$this->assertEquals(100, count($this->db->getRecords('SELECT * FROM users WHERE id != ? LIMIT 100;', 1337)));
-		$this->assertEquals(100, count($this->db->getRecords('SELECT * FROM users WHERE id != :id LIMIT 100;', array(':id' => 1337))));
+		$this->assertEquals(100, count($this->db->getRecords('SELECT * FROM users WHERE id != ? LIMIT 100', 1337)));
+		$this->assertEquals(100, count($this->db->getRecords('SELECT * FROM users WHERE id != :id LIMIT 100', array(':id' => 1337))));
 	}
 
 	public function testTruncate()
@@ -189,7 +189,7 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 		$this->db->truncate('users');
 		$this->db->truncate(array('users'));
 
-		$this->assertEquals(0, $this->db->getNumRows('SELECT id FROM users;'));
+		$this->assertEquals(0, $this->db->getNumRows('SELECT id FROM users'));
 	}
 }
 
