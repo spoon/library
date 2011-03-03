@@ -140,6 +140,7 @@ class SpoonDirectory
 	 */
 	public static function create($directory, $chmod = 0777)
 	{
+		// @todo this needs to recursively check if the directory exists
 		return @mkdir((string) $directory, $chmod, true);
 	}
 
