@@ -348,7 +348,8 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 
 	public function testIsValidAgainstRegexp()
 	{
-		$this->assertTrue(SpoonFilter::isValidAgainstRegexp('/([a-z]+)/', 'alphabet'));
+		$this->assertTrue(SpoonFilter::isValidAgainstRegexp('/(^[a-z]+$)/', 'alphabet'));
+		$this->assertFalse(SpoonFilter::isValidAgainstRegexp('/(^[a-z]+$)/', 'alphabet my ass!'));
 		$this->assertFalse(SpoonFilter::isValidAgainstRegexp('/(boobies)/', 'I like babies'));
 	}
 
