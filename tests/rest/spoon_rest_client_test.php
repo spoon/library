@@ -16,15 +16,8 @@ class SpoonRESTClientTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		parent::setUp();
-
 		// create instance
 		$this->SpoonRESTClient = new SpoonRESTClient();
-	}
-
-	protected function tearDown()
-	{
-		parent::tearDown();
 	}
 
 	public function testExecute()
