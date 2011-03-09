@@ -73,6 +73,13 @@ class SpoonLogTest extends PHPUnit_Framework_TestCase
 		}
 	}
 
+	public function testRotate()
+	{
+		$this->log->write('Message for the log');
+		$this->log->rotate();
+		$this->assertFalse(SpoonFile::exists($this->log->getPath() . '/custom.log'));
+	}
+
 	public function tearDown()
 	{
 		// remove directory
