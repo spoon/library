@@ -438,7 +438,7 @@ class SpoonXMLRPCClient
 		$headers[] = 'Content-type: text/xml';
 
 		// set content-length
-		$headers[] = 'Content-length: ' . mb_strlen($xml) . "\r\n";
+		$headers[] = 'Content-length: ' . strlen($xml) . "\r\n";
 
 		// add XML
 		$headers[] = $xml;
