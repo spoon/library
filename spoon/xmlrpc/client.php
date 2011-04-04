@@ -430,6 +430,7 @@ class SpoonXMLRPCClient
 		$options[CURLOPT_TIMEOUT] = $this->getTimeout();
 		$options[CURLOPT_RETURNTRANSFER] = true;
 		$options[CURLOPT_CUSTOMREQUEST] = 'POST';
+		$options[CURLOPT_SSL_VERIFYPEER] = false;
 
 		// get headers
 		$headers = $this->getCustomHeaders();
