@@ -434,7 +434,7 @@ class SpoonXMLRPCClient
 		// get headers
 		$headers = $this->getCustomHeaders();
 
-		// set correct content)type
+		// set correct content type
 		$headers[] = 'Content-type: text/xml';
 
 		// set content-length
