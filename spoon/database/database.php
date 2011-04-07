@@ -869,12 +869,11 @@ class SpoonDatabase
 	 * Quote the name of a table or column.
 	 * Note: for now this will only put backticks around the name (mysql).
 	 *
-	 * @return string		The quoted name
-	 * @param string $name	The name of a column or table to quote.
+	 * @return	string			The quoted name.
+	 * @param	string $name	The name of a column or table to quote.
 	 */
 	protected function quoteName($name)
 	{
-		// TODO Use different quoting depending on the database in use.
 		return '`' . $name . '`';
 	}
 
