@@ -97,8 +97,7 @@ class SpoonFormPasswordTest extends PHPUnit_Framework_TestCase
 	{
 		$_POST['form'] = 'passwordfield';
 		$_POST['name'] = '<a href="http://www.spoon-library.be">Bobby Tables, my friends call mééé</a>';
-		$this->assertEquals(SpoonFilter::htmlspecialchars($_POST['name']), $this->txtPassword->getValue());
-		$this->assertEquals($_POST['name'], $this->txtPassword->getValue(true));
+		$this->assertEquals($_POST['name'], $this->txtPassword->getValue());
 	}
 }
 
