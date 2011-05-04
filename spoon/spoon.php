@@ -222,6 +222,17 @@ class Spoon
 
 
 	/**
+	 * Are we running in the command line?
+	 *
+	 * @return	bool
+	 */
+	public static function inCli()
+	{
+		return PHP_SAPI == 'cli';
+	}
+
+
+	/**
 	 * Registers a given value under a given name.
 	 *
 	 * @return	void
