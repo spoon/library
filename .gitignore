@@ -1,8 +1,11 @@
 # /
-/.project
-/.cache
 /.buildpath
+/.cache
+/.project
 /.settings
+.*.swp
+.DS_store
 .idea
 *.iml
-.DS_store
+tags
+!tags/
