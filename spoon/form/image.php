@@ -46,9 +46,13 @@ class SpoonFormImage extends SpoonFormFile
 	 */
 	public function __construct($name, $class = 'inputFilefield', $classError = 'inputFilefieldError')
 	{
+		// call the parent
 		parent::__construct($name, $class, $classError);
-		if($this->isSubmitted() && is_uploaded_file($this->getTempFileName()))
-			$this->properties = @getimagesize($this->getTempFileName());
+
+		// is the form submitted and the file is uploaded?
+		if($this->isSubmitted() && is_uploaded_file($this->getTempFileName())) $this->properties = @getimagesize($this->getTempFileName());
+
+		// fallback
 		else $this->properties = false;
 	}
 
@@ -109,8 +113,10 @@ class SpoonFormImage extends SpoonFormFile
 	 */
 	public function getHeight()
 	{
-		if(!$this->isSubmitted())
-			throw new SpoonException('Cannot get height if image is not uploaded.');
+		// not submitted
+		if(!$this->isSubmitted()) throw new SpoonException('Cannot get height if image is not uploaded.');
+
+		// return
 		if($this->properties) return $this->properties[1];
 	}
 
@@ -122,8 +128,10 @@ class SpoonFormImage extends SpoonFormFile
 	 */
 	public function getWidth()
 	{
-		if(!$this->isSubmitted())
-			throw new SpoonException('Cannot get width if image is not uploaded.');
+		// not submitted
+		if(!$this->isSubmitted()) throw new SpoonException('Cannot get width if image is not uploaded.');
+
+		// return
 		if($this->properties) return $this->properties[0];
 	}
 
@@ -176,10 +184,16 @@ class SpoonFormImage extends SpoonFormFile
 	 */
 	public function isSquare($error = null)
 	{
+		// no properties?
 		if(!$this->properties) return false;
-		$isSquare = is_int($this->getHeight()) && is_int($this->getWidth())
-			&& $this->getHeight() == $this->getWidth();
+
+		// is it a square image?
+		$isSquare = (is_int($this->getHeight()) && is_int($this->getWidth()) && $this->getHeight() == $this->getWidth());
+
+		// set error if needed
 		if(!$isSquare && $error) $this->setError($error);
+
+		// return
 		return $isSquare;
 	}
 }
