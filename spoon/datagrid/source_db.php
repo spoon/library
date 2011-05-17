@@ -168,17 +168,18 @@ class SpoonDatagridSourceDB extends SpoonDatagridSource
 		// query with parameters
 		if(is_array($query) && count($query) > 1 && isset($query[0]) && isset($query[1]))
 		{
-			$this->query = str_replace(';', '', (string) $query[0]);
+			// remove the trailing semicolon(s) to enable adding "ORDER BY" etc.
+			$this->query = preg_replace('/;+\s*$/', '', (string) $query[0]);
 			$this->queryParameters = (array) $query[1];
 		}
 
 		// no parameters
-		else $this->query = str_replace(';', '', (string) $query);
+		else $this->query = preg_replace('/;+\s*$/', '', (string) $query);
 
 		// numResults query with parameters
 		if(is_array($numResultsQuery) && count($numResultsQuery) > 1 && isset($numResultsQuery[0]) && isset($numResultsQuery[1]))
 		{
-			$this->numResultsQuery = str_replace(';', '', (string) $numResultsQuery[0]);
+			$this->numResultsQuery = preg_replace('/;+\s*$/', '', (string) $numResultsQuery[0]);
 			$this->numResultsQueryParameters = (array) $numResultsQuery[1];
 		}
 
