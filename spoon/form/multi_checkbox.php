@@ -141,11 +141,7 @@ class SpoonFormMultiCheckbox extends SpoonFormElement
 	 */
 	public function getChecked()
 	{
-		// when submitted
-		if($this->isSubmitted()) return $this->getValue();
-
-		// default values
-		else return $this->checked;
+		return ($this->isSubmitted()) ? $this->getValue() : $this->checked;
 	}
 
 
