@@ -67,6 +67,35 @@ class SpoonMultiCheckBoxTest extends PHPUnit_Framework_TestCase
 		$this->chkHobbies->setAllowExternalData(true);
 		$this->assertEquals(array('bimbo', 'tramp', '10', '30'), $this->chkHobbies->getValue());
 	}
+
+	public function testNotSupplyingCorrectFormatThrowsException()
+	{
+		$values = array('12' => 'aaa', '132' => 'bbb', '32' => 'ccc');
+		$this->setExpectedException('SpoonFormException');
+		$c = new SpoonFormMultiCheckbox('test', $values);
+	}
+
+	public function testNotSupplyingLabelThrowsException()
+	{
+		$values = array(
+			array('value' => 'aaa'),
+			array('value' => 'bbb'),
+			array('value' => 'ccc')
+		);
+		$this->setExpectedException('SpoonFormException');
+		$c = new SpoonFormMultiCheckbox('test', $values);
+	}
+
+	public function testNotSupplyingValueThrowsException()
+	{
+		$values = array(
+			array('label' => 'aaa'),
+			array('label' => 'bbb'),
+			array('label' => 'ccc')
+		);
+		$this->setExpectedException('SpoonFormException');
+		$c = new SpoonFormMultiCheckbox('test', $values);
+	}
 }
 
 ?>
