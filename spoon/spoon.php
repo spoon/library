@@ -228,7 +228,7 @@ class Spoon
 	 */
 	public static function inCli()
 	{
-		return PHP_SAPI == 'cli';
+		return (PHP_SAPI == 'cli');
 	}
 
 
@@ -258,5 +258,3 @@ class Spoon
 		}
 	}
 }
-
-?>
