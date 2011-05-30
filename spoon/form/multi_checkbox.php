@@ -355,6 +355,7 @@ class SpoonFormMultiCheckbox extends SpoonFormElement
 		// loop values
 		foreach($values as $value)
 		{
+			// additional array check
 			if(!is_array($value)) throw new SpoonFormException('Each value should be an associative array with a "label" and "value" key.');
 
 			// label is not set
