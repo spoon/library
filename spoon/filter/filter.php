@@ -873,8 +873,9 @@ class SpoonFilter
 	 * @return	string						The urlised string.
 	 * @param	string $value				The value that should be urlised.
 	 * @param	string[optional] $charset	The charset to use, default is based on SPOON_CHARSET.
+	 * @param	string[optional] $language	The language to fetch string-related alternatives for.
 	 */
-	public static function urlise($value, $charset = null)
+	public static function urlise($value, $charset = null, $language = 'en')
 	{
 		// define charset
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
@@ -897,7 +898,7 @@ class SpoonFilter
 		$replace['©'] = ' copyright ';
 		$replace['€'] = ' euro ';
 		$replace['™'] = ' tm ';
-		$replace['&'] = ' and ';
+		$replace['&'] = ' ' . SpoonLocale::getConjunction('And', $language) . ' ';
 
 		// replace special characters
 		$value = str_replace(array_keys($replace), array_values($replace), $value);
