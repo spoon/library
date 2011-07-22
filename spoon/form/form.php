@@ -1011,73 +1011,83 @@ class SpoonForm
 	/**
 	 * Sets the correct value.
 	 *
-	 * @return	void
+	 * @return	SpoonForm
 	 * @param	bool[optional] $correct		Was the form submitted without errors?
 	 */
 	private function setCorrect($correct = true)
 	{
 		$this->correct = (bool) $correct;
+		return $this;
 	}
 
 
 	/**
 	 * Set the form method.
 	 *
-	 * @return	void
+	 * @return	SpoonForm
 	 * @param	string[optional] $method	The method to use, possible values are: get, post.
 	 */
 	public function setMethod($method = 'post')
 	{
 		$this->method = SpoonFilter::getValue((string) $method, array('get', 'post'), 'post');
+		return $this;
 	}
 
 
 	/**
 	 * Set the name.
 	 *
-	 * @return	void
+	 * @return	SpoonForm
 	 * @param	string $name	The name of the form.
 	 */
 	private function setName($name)
 	{
 		$this->name = (string) $name;
+		return $this;
 	}
 
 
 	/**
 	 * Set a parameter for the form tag.
 	 *
-	 * @return	void
+	 * @return	SpoonForm
 	 * @param	string $key			The name of the parameter.
 	 * @param	string $value		The value of the parameter.
 	 */
 	public function setParameter($key, $value)
 	{
 		$this->parameters[(string) $key] = (string) $value;
+		return $this;
 	}
 
 
 	/**
 	 * Set multiple form parameters.
 	 *
-	 * @return	void
+	 * @return	SpoonForm
 	 * @param	array $parameters	The parameters as key/value-pairs.
 	 */
 	public function setParameters(array $parameters)
 	{
-		foreach($parameters as $key => $value) $this->setParameter($key, $value);
+		foreach($parameters as $key => $value)
+		{
+			$this->setParameter($key, $value);
+		}
+
+		return $this;
 	}
 
 
 	/**
 	 * Sets a custom error message when the token turns out to be invalid.
 	 *
-	 * @return	void
+	 * @return	SpoonForm
 	 * @param	string $error		The message to be displayed in case a token is invalid.
 	 */
 	public function setTokenError($error)
 	{
 		$this->tokenError = (string) $error;
+		return $this;
 	}
 
 
@@ -1096,7 +1106,7 @@ class SpoonForm
 	/**
 	 * Validates the form. This is an alternative for isCorrect, but without retrieve the status of course.
 	 *
-	 * @return	void
+	 * @return	SpoonForm
 	 */
 	public function validate()
 	{
@@ -1132,6 +1142,7 @@ class SpoonForm
 
 		// update parsed status
 		$this->validated = true;
+		return $this;
 	}
 }
 
@@ -1147,5 +1158,3 @@ class SpoonForm
  * @since		0.1.1
  */
 class SpoonFormException extends SpoonException {}
-
-?>

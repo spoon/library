@@ -123,5 +123,3 @@ class SpoonFormHidden extends SpoonFormAttributes
 		return $output;
 	}
 }
-
-?>

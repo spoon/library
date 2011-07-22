@@ -197,5 +197,3 @@ class SpoonFormImage extends SpoonFormFile
 		return $isSquare;
 	}
 }
-
-?>

@@ -754,5 +754,3 @@ class SpoonFormText extends SpoonFormInput
 		return $output;
 	}
 }
-
-?>

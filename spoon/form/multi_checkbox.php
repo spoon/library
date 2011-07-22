@@ -308,7 +308,7 @@ class SpoonFormMultiCheckbox extends SpoonFormElement
 	/**
 	 * Sets the checked status.
 	 *
-	 * @return	void
+	 * @return	SpoonFormMultiCheckbox
 	 * @param	mixed $checked		Set the value that should be checked.
 	 */
 	public function setChecked($checked)
@@ -325,25 +325,27 @@ class SpoonFormMultiCheckbox extends SpoonFormElement
 
 		// set values
 		if(isset($aChecked)) $this->checked = $aChecked;
+		return $this;
 	}
 
 
 	/**
 	 * Overwrites the error stack.
 	 *
-	 * @return	void
+	 * @return	SpoonFormMultiCheckbox
 	 * @param	string $error	The error message to set.
 	 */
 	public function setError($error)
 	{
 		$this->errors = (string) $error;
+		return $this;
 	}
 
 
 	/**
 	 * Set the initial values.
 	 *
-	 * @return	void
+	 * @return	SpoonFormMultiCheckbox
 	 * @param	array $values						The values.
 	 * @param	string[optional] $defaultClass		The CSS-class to use.
 	 */
@@ -396,7 +398,7 @@ class SpoonFormMultiCheckbox extends SpoonFormElement
 			// add id
 			if(!isset($this->attributes[$value['value']]['id'])) $this->attributes[$value['value']]['id'] = $this->variables[$value['value']]['id'];
 		}
+
+		return $this;
 	}
 }
-
-?>

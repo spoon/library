@@ -304,35 +304,38 @@ class SpoonFormRadiobutton extends SpoonFormElement
 	/**
 	 * Set the checked value.
 	 *
-	 * @return	void
+	 * @return	SpoonFormRadiobutton
 	 * @param	string $checked		Set the radiobutton as checked.
 	 */
 	public function setChecked($checked)
 	{
-		// doesnt exist
-		if(!isset($this->values[(string) $checked])) throw new SpoonFormException('This value "' . (string) $checked . '" is not among the list of values.');
+		if(!isset($this->values[(string) $checked]))
+		{
+			throw new SpoonFormException(sprintf('This value "%s" is not among the list of values.', (string) $checked));
+		}
 
-		// exists
 		$this->checked = (string) $checked;
+		return $this;
 	}
 
 
 	/**
 	 * Overwrites the error stack.
 	 *
-	 * @return	void
+	 * @return	SpoonFormRadiobutton
 	 * @param	string[optional] $error		The error message to set.
 	 */
 	public function setError($error)
 	{
 		$this->errors = (string) $error;
+		return $this;
 	}
 
 
 	/**
 	 * Set the labels and their values.
 	 *
-	 * @return	void
+	 * @return	SpoonFormRadiobutton
 	 * @param	array $values						The values to set.
 	 * @param	string[optional] $defaultClass		The CSS-class to use.
 	 */
@@ -382,7 +385,7 @@ class SpoonFormRadiobutton extends SpoonFormElement
 			// add id
 			if(!isset($this->attributes[$value['value']]['id'])) $this->attributes[$value['value']]['id'] = $this->variables[$value['value']]['id'];
 		}
+
+		return $this;
 	}
 }
-
-?>

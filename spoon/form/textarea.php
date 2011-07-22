@@ -326,5 +326,3 @@ class SpoonFormTextarea extends SpoonFormInput
 		$this->value = (string) $value;
 	}
 }
-
-?>

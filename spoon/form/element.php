@@ -129,25 +129,25 @@ class SpoonFormElement
 	/**
 	 * Set the name of the form this field is a part of.
 	 *
-	 * @return	void
+	 * @return	SpoonFormElement
 	 * @param	string $name	The name of the form.
 	 */
 	public function setFormName($name)
 	{
 		$this->formName = (string) $name;
+		return $this;
 	}
 
 
 	/**
 	 * Set the form method.
 	 *
-	 * @return	void
+	 * @return	SpoonFormElement
 	 * @param	string[optional] $method	The method to use, possible values are: get, post.
 	 */
 	public function setMethod($method = 'post')
 	{
 		$this->method = SpoonFilter::getValue($method, array('get', 'post'), 'post');
+		return $this;
 	}
 }
-
-?>

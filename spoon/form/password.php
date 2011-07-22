@@ -296,5 +296,3 @@ class SpoonFormPassword extends SpoonFormInput
 		$this->value = (string) $value;
 	}
 }
-
-?>

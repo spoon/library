@@ -230,13 +230,12 @@ class SpoonFormTime extends SpoonFormInput
 	/**
 	 * Set the value attribute for this time field.
 	 *
-	 * @return	void
+	 * @return	SpoonFormTime
 	 * @param	string $value	The new value for the element.
 	 */
 	public function setValue($value)
 	{
 		$this->value = (string) $value;
+		return $this;
 	}
 }
-
-?>

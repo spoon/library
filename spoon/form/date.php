@@ -385,7 +385,7 @@ class SpoonFormDate extends SpoonFormInput
 	/**
 	 * Set the input mask.
 	 *
-	 * @return	void
+	 * @return	SpoonFormDate
 	 * @param	string[optional] $mask	The date-mask.
 	 */
 	public function setMask($mask = null)
@@ -417,6 +417,7 @@ class SpoonFormDate extends SpoonFormInput
 
 		// update value
 		if($this->defaultValue !== null) $this->setValue($this->defaultValue);
+		return $this;
 	}
 
 
@@ -431,5 +432,3 @@ class SpoonFormDate extends SpoonFormInput
 		$this->value = ($value === '' ? '' : date($this->mask, (int) $value));
 	}
 }
-
-?>
