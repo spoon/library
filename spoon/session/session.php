@@ -67,7 +67,12 @@ class SpoonSession
 	 */
 	public static function destroy()
 	{
-		if(session_id()) session_destroy();
+		if(session_id())
+		{
+			session_unset();
+			session_destroy();
+			$_SESSION = array();
+		}
 	}
 
 
