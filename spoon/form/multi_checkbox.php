@@ -78,7 +78,6 @@ class SpoonFormMultiCheckbox extends SpoonFormElement
 	/**
 	 * Class constructor.
 	 *
-	 * @return	void
 	 * @param	string $name					The name.
 	 * @param	array $values					The possible values. Each value should have a label and value-key.
 	 * @param	mixed[optional] $checked		The value that should be checked.
@@ -99,7 +98,6 @@ class SpoonFormMultiCheckbox extends SpoonFormElement
 	/**
 	 * Adds an error to the error stack.
 	 *
-	 * @return	void
 	 * @param	string $error	The error message to set.
 	 */
 	public function addError($error)
@@ -296,7 +294,6 @@ class SpoonFormMultiCheckbox extends SpoonFormElement
 	/**
 	 * Should we allow external data.
 	 *
-	 * @return	void
 	 * @param	bool[optional] $on	Is external data (through Javascript) allowed?
 	 */
 	public function setAllowExternalData($on = true)

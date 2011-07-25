@@ -46,7 +46,6 @@ class SpoonException extends Exception
 	/**
 	 * Class constructor.
 	 *
-	 * @return	void
 	 * @param	string $message				The message that should be used.
 	 * @param	int[optional] $code			A numeric code for the exceptions.
 	 * @param	mixed[optional] $obfuscate	The string(s) that will be obfuscated.
@@ -95,7 +94,6 @@ if(!Spoon::inCli()) set_exception_handler('exceptionHandler');
  * Prints out the thrown exception in a more readable manner for a person using
  * a web browser.
  *
- * @return	void
  * @param	SpoonException $exception
  */
 function exceptionHandler($exception)

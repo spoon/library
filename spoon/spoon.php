@@ -88,7 +88,6 @@ class Spoon
 	/**
 	 * Spoon autoloader
 	 *
-	 * @return	void
 	 * @param	string $class	The class that should be loaded.
 	 */
 	public static function autoLoader($class)
@@ -156,7 +155,6 @@ class Spoon
 	/**
 	 * Dumps the output of a variable in a more readable manner.
 	 *
-	 * @return	void
 	 * @param	mixed $var				The variable to dump.
 	 * @param	bool[optional] $exit	Should the code stop here?
 	 */
@@ -234,7 +232,6 @@ class Spoon
 	/**
 	 * Registers a given value under a given name.
 	 *
-	 * @return	void
 	 * @param	string $name			The name of the value to store.
 	 * @param	mixed[optional] $value	The value that needs to be stored.
 	 */

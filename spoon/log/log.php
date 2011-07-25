@@ -165,7 +165,7 @@ class SpoonLog
 	/**
 	 * Write a message to the log.
 	 *
-	 * @return	void
+	 * @return	SpoonLog
 	 * @param	string $message		the message that should be logged.
 	 */
 	public function write($message)
