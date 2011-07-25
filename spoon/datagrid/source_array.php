@@ -125,5 +125,3 @@ class SpoonDatagridSourceArray extends SpoonDatagridSource
 		$this->numResults = (int) count($this->data);
 	}
 }
-
-?>

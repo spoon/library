@@ -396,5 +396,3 @@ class SpoonEmailSMTP
 		return ($this->repliedCode === 220) ? true : false;
 	}
 }
-
-?>

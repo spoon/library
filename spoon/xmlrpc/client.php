@@ -631,5 +631,3 @@ class SpoonXMLRPCClient
  * @since		1.1.4
  */
 class SpoonXMLRPCException extends SpoonException {}
-
-?>

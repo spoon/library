@@ -518,5 +518,3 @@ class SpoonDatagridColumn
 		$this->overwriteValue = (bool) $overwrite;
 	}
 }
-
-?>

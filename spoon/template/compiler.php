@@ -1041,5 +1041,3 @@ class SpoonTemplateCompiler
 		return $content;
 	}
 }
-
-?>

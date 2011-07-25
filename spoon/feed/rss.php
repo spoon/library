@@ -1308,5 +1308,3 @@ class SpoonFeedRSS
 		$this->items = $items;
 	}
 }
-
-?>

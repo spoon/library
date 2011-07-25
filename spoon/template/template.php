@@ -485,5 +485,3 @@ class SpoonTemplate
  * @since		0.1.1
  */
 class SpoonTemplateException extends SpoonException {}
-
-?>

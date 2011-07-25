@@ -1963,5 +1963,3 @@ class SpoonDatagrid
  * @since		0.1.1
  */
 class SpoonDatagridException extends SpoonException {}
-
-?>

@@ -635,5 +635,3 @@ class SpoonFeedRSSItem
 		$this->title = (string) $title;
 	}
 }
-
-?>

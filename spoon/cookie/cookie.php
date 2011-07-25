@@ -168,5 +168,3 @@ class SpoonCookie
  * @since		0.1.1
  */
 class SpoonCookieException extends SpoonException {}
-
-?>

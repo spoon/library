@@ -926,5 +926,3 @@ class SpoonEmail
  * @since		1.0.0
  */
 class SpoonEmailException extends SpoonException {}
-
-?>

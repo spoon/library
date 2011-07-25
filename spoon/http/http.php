@@ -198,5 +198,3 @@ class SpoonHTTP
  * @since		0.1.1
  */
 class SpoonHTTPException extends SpoonException {}
-
-?>

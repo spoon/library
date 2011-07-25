@@ -263,5 +263,3 @@ class SpoonRESTClient
  * @since		1.1.1
  */
 class SpoonRESTException extends SpoonException {}
-
-?>

@@ -186,5 +186,3 @@ class SpoonDatagridSourceDB extends SpoonDatagridSource
 		$this->setNumResults();
 	}
 }
-
-?>

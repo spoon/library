@@ -1109,5 +1109,3 @@ class SpoonDatabase
  * @since		1.1.0
  */
 class SpoonDatabaseException extends SpoonException {}
-
-?>

@@ -156,5 +156,3 @@ class SpoonTemplateModifiers
 		return mb_convert_case($string, MB_CASE_UPPER, SPOON_CHARSET);
 	}
 }
-
-?>

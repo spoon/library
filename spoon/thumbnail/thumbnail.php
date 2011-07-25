@@ -770,5 +770,3 @@ class SpoonThumbnail
  * @since		1.0.0
  */
 class SpoonThumbnailException extends SpoonException {}
-
-?>

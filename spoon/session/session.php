@@ -187,5 +187,3 @@ class SpoonSession
  * @since		0.1.1
  */
 class SpoonSessionException extends SpoonException {}
-
-?>

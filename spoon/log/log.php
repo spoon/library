@@ -206,5 +206,3 @@ class SpoonLog
  * @since		1.0.0
  */
 class SpoonLogException extends SpoonException {}
-
-?>
