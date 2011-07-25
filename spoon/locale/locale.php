@@ -51,7 +51,7 @@ class SpoonLocale
 	 * Fetch the name of a conjunction based on the code.
 	 *
 	 * @return	string
-	 * @param	string $code					The name of the conjunction to fetch.
+	 * @param	string $name					The name of the conjunction to fetch.
 	 * @param	string[optional] $language		The language to use, possible values can be found by calling SpoonLocale::getAvailableLanguages().
 	 */
 	public static function getConjunction($name, $language = 'en')
