@@ -65,7 +65,6 @@ if(!extension_loaded('mbstring')) throw new SpoonException('You need to make sur
 // attach autoloader
 if(SPOON_AUTOLOADER) spl_autoload_register(array('Spoon', 'autoLoader'));
 
-
 /**
  * This class holds objects in a name based registry to make them easily
  * available throughout your application.
