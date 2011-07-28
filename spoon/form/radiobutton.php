@@ -78,7 +78,6 @@ class SpoonFormRadiobutton extends SpoonFormElement
 	/**
 	 * Class constructor.
 	 *
-	 * @return	void
 	 * @param	string $name					The name.
 	 * @param	array $values					The possible values. Each value should have a label and value-key.
 	 * @param	string[optional] $checked		The value of the check radiobutton.
@@ -98,7 +97,6 @@ class SpoonFormRadiobutton extends SpoonFormElement
 	/**
 	 * Adds an error to the error stack.
 	 *
-	 * @return	void
 	 * @param	string $error		The error message to set.
 	 */
 	public function addError($error)

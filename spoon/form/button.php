@@ -46,7 +46,6 @@ class SpoonFormButton extends SpoonFormAttributes
 	/**
 	 * Class constructor.
 	 *
-	 * @return	void
 	 * @param	string $name				The name of the button.
 	 * @param	string $value				The text that should appear on the button.
 	 * @param	string[optional] $type		The type of button.

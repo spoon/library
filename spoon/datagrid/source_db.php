@@ -70,7 +70,6 @@ class SpoonDatagridSourceDB extends SpoonDatagridSource
 	/**
 	 * Class construtor.
 	 *
-	 * @return	void
 	 * @param	SpoonDatabase $dbConnection			The database connection.
 	 * @param	string $query						The query to execute.
 	 * @param	string[optional] $numResultsQuery	The query to use to retrieve the number of results.
@@ -143,8 +142,6 @@ class SpoonDatagridSourceDB extends SpoonDatagridSource
 
 	/**
 	 * Set the number of results.
-	 *
-	 * @return	void
 	 */
 	private function setNumResults()
 	{
@@ -159,7 +156,6 @@ class SpoonDatagridSourceDB extends SpoonDatagridSource
 	/**
 	 * Set the queries.
 	 *
-	 * @return	void
 	 * @param	string $query						The query to execute.
 	 * @param	string[optional] $numResultsQuery	The query to use to retrieve the number of results.
 	 */
@@ -190,5 +186,3 @@ class SpoonDatagridSourceDB extends SpoonDatagridSource
 		$this->setNumResults();
 	}
 }
-
-?>

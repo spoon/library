@@ -54,7 +54,6 @@ class SpoonFormCheckbox extends SpoonFormAttributes
 	/**
 	 * Class constructor.
 	 *
-	 * @return	void
 	 * @param	string $name					The name.
 	 * @param	bool[optional] $checked			Should the checkbox be checked?
 	 * @param	string[optional] $class			The CSS-class to be used.
@@ -79,7 +78,6 @@ class SpoonFormCheckbox extends SpoonFormAttributes
 	/**
 	 * Adds an error to the error stack.
 	 *
-	 * @return	void
 	 * @param	string $error	The error message to set.
 	 */
 	public function addError($error)

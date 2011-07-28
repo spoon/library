@@ -30,7 +30,6 @@ class SpoonFormTime extends SpoonFormInput
 	/**
 	 * Class constructor.
 	 *
-	 * @return	void
 	 * @param	string $name					The name.
 	 * @param	string[optional] $value			The initial value.
 	 * @param	string[optional] $class			The CSS-class to be used.

@@ -103,7 +103,6 @@ class SpoonFormDropdown extends SpoonFormAttributes
 	/**
 	 * Class constructor.
 	 *
-	 * @return	void
 	 * @param	string $name						The name.
 	 * @param	array[optional] $values				The possible values. Each value should have a label and value-key.
 	 * @param	mixed[optional] $selected			The selected value.
@@ -133,7 +132,6 @@ class SpoonFormDropdown extends SpoonFormAttributes
 	/**
 	 * Adds an error to the error stack.
 	 *
-	 * @return	void
 	 * @param	string $error	The error message to set.
 	 */
 	public function addError($error)
@@ -694,7 +692,6 @@ class SpoonFormDropdown extends SpoonFormAttributes
 	/**
 	 * Sets the values for this dropdown menu.
 	 *
-	 * @return	void
 	 * @param	array[optional] $values		The possible values. Each value should have a label and value-key.
 	 */
 	private function setValues(array $values = null)
