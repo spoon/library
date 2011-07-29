@@ -187,18 +187,18 @@ class Spoon
 	 */
 	public static function dump($var, $exit = true)
 	{
-		// fetch var
 		ob_start();
 		var_dump($var);
 		$output = ob_get_clean();
 
-		// cleanup the output
-		$output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
+		// no xdebug installed
+		if(!extension_loaded('xdebug'))
+		{
+			$output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
+			$output = '<pre>' . htmlspecialchars($output, ENT_QUOTES, SPOON_CHARSET) . '</pre>';
+		}
 
-		// print
-		echo '<pre>' . htmlspecialchars($output, ENT_QUOTES, SPOON_CHARSET) . '</pre>';
-
-		// stop script
+		echo $output;
 		if($exit) exit;
 	}
 
