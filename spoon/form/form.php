@@ -850,17 +850,12 @@ class SpoonForm
 	 */
 	public function getToken()
 	{
-		// no token available?
 		if(!SpoonSession::exists('form_token'))
 		{
-			// generate a token
 			$token = md5(SpoonSession::getSessionId() . rand(0, 999) . time());
-
-			// store in session
 			SpoonSession::set('form_token', $token);
 		}
 
-		// return
 		return SpoonSession::get('form_token');
 	}
 
