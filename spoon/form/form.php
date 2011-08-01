@@ -776,8 +776,8 @@ class SpoonForm
 				elseif($object instanceof SpoonFormCheckbox)
 				{
 					$value .= "\t<p>\n";
-					$value .= "\t\t" . '<label for="' . $object->getAttribute('id') . '">' . SpoonFilter::toCamelCase($object->getName()) . "</label>\n";
 					$value .= "\t\t{\$chk" . SpoonFilter::toCamelCase($object->getName()) . "}\n";
+					$value .= "\t\t" . '<label for="' . $object->getAttribute('id') . '">' . SpoonFilter::toCamelCase($object->getName()) . "</label>\n";
 					$value .= "\t\t{\$chk" . SpoonFilter::toCamelCase($object->getName()) . "Error}\n";
 					$value .= "\t</p>\n";
 				}
