@@ -102,7 +102,7 @@ if(SPOON_AUTOLOADER)
 class Spoon
 {
 	/**
-	 * Registry of objects
+	 * Registry of variables
 	 *
 	 * @var	array
 	 */
