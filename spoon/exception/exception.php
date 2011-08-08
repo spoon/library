@@ -102,7 +102,7 @@ function exceptionHandler($exception)
 	$trace = $exception->getTrace();
 
 	// specific name
-	$name = (is_callable(array($exception, 'getName'))) ? $exception->getName() : 'UnknownException';
+	$name = (is_callable(array($exception, 'getName'))) ? $exception->getName() : get_class($exception);
 
 	// spoon type exception
 	if(is_callable(array($exception, 'getName')) && strtolower(substr($exception->getName(), 0, 5)) == 'spoon' && $exception->getCode() != 0)
