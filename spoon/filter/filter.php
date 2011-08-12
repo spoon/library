@@ -139,6 +139,8 @@ class SpoonFilter
 
 	/**
 	 * Disable php's magic quotes (yuck!)
+	 *
+	 * @return	void
 	 */
 	public static function disableMagicQuotes()
 	{
@@ -836,29 +838,27 @@ class SpoonFilter
 	{
 		// init vars
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
-		$value = str_replace($separator, ' ', (string) $value);
 
 		// init var
 		$string = '';
 
 		// fetch words
-		$words = explode(' ', $value);
+		$words = explode((string) $separator, (string) $value);
 
 		// create new string
 		foreach($words as $i => $word)
 		{
-			// skip first word
-			if($i == 0 && $lcfirst)
-			{
-				// add as is
-				$string .= $word;
+			// skip empty words
+			if($word == '') continue;
 
-				// go on
-				continue;
-			}
+			// if it is the first word and  we should use lowercase for the first word
+			if($i == 0 && $lcfirst) $word = $word;
 
-			// regular words
-			$string .= mb_strtoupper(mb_substr($word, 0, 1, $charset), $charset) . mb_substr($word, 1, mb_strlen($word), $charset);
+			// convert first letter to uppercase
+			else $word[0] = mb_strtoupper($word[0], $charset);
+
+			// append
+			$string .= $word;
 		}
 
 		return $string;
@@ -871,9 +871,8 @@ class SpoonFilter
 	 * @return	string						The urlised string.
 	 * @param	string $value				The value that should be urlised.
 	 * @param	string[optional] $charset	The charset to use, default is based on SPOON_CHARSET.
-	 * @param	string[optional] $language	The language to fetch string-related alternatives for.
 	 */
-	public static function urlise($value, $charset = null, $language = 'en')
+	public static function urlise($value, $charset = null)
 	{
 		// define charset
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
@@ -896,13 +895,13 @@ class SpoonFilter
 		$replace['©'] = ' copyright ';
 		$replace['€'] = ' euro ';
 		$replace['™'] = ' tm ';
-		$replace['&'] = ' ' . SpoonLocale::getConjunction('And', $language) . ' ';
+		$replace['&'] = ' and ';
 
 		// replace special characters
 		$value = str_replace(array_keys($replace), array_values($replace), $value);
 
 		// reform non ascii characters
-		$value = iconv($charset, 'ASCII//TRANSLIT//IGNORE', $value);
+		$value = iconv($charset, 'ASCII//IGNORE//TRANSLIT', $value);
 
 		// remove spaces at the beginning and the end
 		$value = trim($value);
@@ -944,3 +943,5 @@ class SpoonFilter
  * @since		0.1.1
  */
 class SpoonFilterException extends SpoonException {}
+
+?>
