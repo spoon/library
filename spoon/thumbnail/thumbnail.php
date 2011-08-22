@@ -216,9 +216,12 @@ class SpoonThumbnail
 		//
 		if(@is_writable(dirname($filename)) !== true)
 		{
-			// strict?
-			if($this->strict) throw new SpoonThumbnailException('The destination-path should be writable.');
-			return false;
+			// does the folder exist? if not, try to create
+			if(!SpoonDirectory::create(dirname($filename)))
+			{
+				if($this->strict) throw new SpoonThumbnailException('The destination-path should be writable.');
+				return false;
+			}
 		}
 
 		// get extension
