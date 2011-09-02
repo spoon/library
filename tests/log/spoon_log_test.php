@@ -58,7 +58,6 @@ class SpoonLogTest extends PHPUnit_Framework_TestCase
 		// hopefully catch exception
 		catch(Exception $e)
 		{
-			$this->assertType('SpoonLogException', $e);
 			$this->assertObjectHasAttribute('message', $e);
 			$this->assertEquals('The log type should only contain a-z, 0-9, underscores and hyphens. Your value "No way hosé!" is invalid.', $e->getMessage());
 		}
