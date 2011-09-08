@@ -68,8 +68,10 @@ class SpoonFormTimeTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(true, $this->txtTime->isValid());
 		$_POST['time'] = '25:60';
 		$this->assertEquals(false, $this->txtTime->isValid());
-		//$_POST['time'] = 'pipi00:01asshole';
-		//$this->assertFalse($this->txtTime->isValid()); // @todo this assertion is currently invalid.
+		$_POST['time'] = 'pipi00:01asshole';
+		$this->assertFalse($this->txtTime->isValid());
+		$_POST['time'] = '1k:2b';
+		$this->assertFalse($this->txtTime->isValid());
 	}
 
 	public function testGetTimestamp()
@@ -85,5 +87,3 @@ class SpoonFormTimeTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('14:55', $this->txtTime->getValue());
 	}
 }
-
-?>
