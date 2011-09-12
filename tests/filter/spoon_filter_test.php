@@ -55,21 +55,6 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expectedArray, SpoonFilter::arraySortKeys($testArray));
 	}
 
-	public function testDisableMagicQuotes()
-	{
-		// test input
-		$_POST['name'] = "Erik\'s appetite for sex is NOT normal";
-
-		// expected output
-		$expectedOutput = 'Erik\'s appetite for sex is NOT normal';
-
-		// disable magic quotes
-		SpoonFilter::disableMagicQuotes();
-
-		// perform test
-		$this->assertEquals($expectedOutput, $_POST['name']);
-	}
-
 	public function testGetGetValue()
 	{
 		// setup
