@@ -450,6 +450,9 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals('geen-bananen', SpoonFilter::urlise('géén bananen'));
 		$this->assertEquals('tom-and-jerry', SpoonFilter::urlise('Tom & Jerry'));
+		$this->assertEquals('not', SpoonFilter::urlise('¬'));
+		$this->assertEquals('yen', SpoonFilter::urlise('¥'));
+		$this->assertEquals('poo', SpoonFilter::urlise("'poo'"));
 	}
 }
 
