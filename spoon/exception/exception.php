@@ -392,10 +392,11 @@ function exceptionHandler($exception)
 /**
  * Helper function for the exception handler to pretty-print variables.
  *
- * @return	void
- * @param	SpoonException $exception
+ * @return	string
+ * @param	mixed $var	A variable to dump
+ * @param	mixed[optional] $varN	Zero or more variables to dump.
  */
-function exceptionHandlerDumper($exception)
+function exceptionHandlerDumper($var)
 {
 	ob_start();
 	foreach (func_get_args() as $arg)
