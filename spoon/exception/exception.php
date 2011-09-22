@@ -225,12 +225,12 @@ function exceptionHandler($exception)
 												<table width="550px;" style="border-top: 1px dotted; padding-top: 1ex;">
 													<tr>
 														<th width="110px" style="vertical-align: top; text-align: left; font-weight: 700; padding: 0 0 0 10px; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">File</th>
-														<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">' . ((isset($traceStack['file'])) ? wordwrap($traceStack['file'], 70, '&shy;', true) : 'Unknown') . '
+														<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">' . ((isset($traceStack['file'])) ? wordwrap($traceStack['file'], 70, '&shy;', true) : '<i>(Unknown)</i>') . '
 														</td>
 													</tr>
 													<tr>
 														<th width="110px" style="vertical-align: top; text-align: left; font-weight: 700; padding: 0 0 0 10px; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">Line</th>
-														<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">' . ((isset($traceStack['line'])) ? $traceStack['line'] : 'Unknown') . '
+														<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">' . ((isset($traceStack['line'])) ? $traceStack['line'] : '<i>(Unknown)</i>') . '
 														</td>
 													</tr>';
 
