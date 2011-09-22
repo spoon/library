@@ -139,7 +139,7 @@ function exceptionHandler($exception)
 										</tr>
 										<tr>
 											<th width="110px" style="vertical-align: top; text-align: left; font-weight: 700; padding: 0 0 0 10px; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">File</th>
-											<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">' . wordwrap($exception->getFile(), 70, '&shy;', true) . '</td>
+											<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">' . dimCommonPathPrefix($exception->getFile()) . '</td>
 										</tr>
 										<tr>
 											<th width="110px" style="vertical-align: top; text-align: left; font-weight: 700; padding: 0 0 0 10px; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">Line</th>
@@ -225,7 +225,7 @@ function exceptionHandler($exception)
 												<table width="550px;" style="border-top: 1px dotted; padding-top: 1ex;">
 													<tr>
 														<th width="110px" style="vertical-align: top; text-align: left; font-weight: 700; padding: 0 0 0 10px; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">File</th>
-														<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">' . ((isset($traceStack['file'])) ? wordwrap($traceStack['file'], 70, '&shy;', true) : '<i>(Unknown)</i>') . '
+														<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">' . ((isset($traceStack['file'])) ? dimCommonPathPrefix($traceStack['file']) : '<i>(Unknown)</i>') . '
 														</td>
 													</tr>
 													<tr>
@@ -419,4 +419,38 @@ function exceptionHandlerDumper($var)
 		array('{ }', '', '] => '),
 		$dump
 	);
+}
+
+
+/**
+ * Get the HTML with the longest common path for this file and the given
+ * path dimmed.
+ *
+ * @param	string $path	The path to compare against this file's path.
+ * @return	string
+ */
+function dimCommonPathPrefix($path)
+{
+	// determine the longest shared prefix
+	$prefix = dirname(__FILE__);
+	while(!empty($prefix) && $prefix !== '/' && $prefix !== '.')
+	{
+		if(strpos($path, $prefix . DIRECTORY_SEPARATOR) === 0)
+		{
+			break;
+		}
+		$prefix = dirname($prefix);
+	}
+
+	// generate the HTML to dim the prefix, if any
+	$html = empty($prefix) || $prefix === '/' || $prefix === '.'
+		? htmlspecialchars($path)
+		: sprintf(
+			'<span style="opacity: 0.33">%s/</span>%s',
+			htmlspecialchars($prefix),
+			htmlspecialchars(substr($path, strlen($prefix) + 1))
+		);
+
+	// wrap it using soft hyphens
+	return preg_replace('@[^<]/@', '$0&shy', $html);
 }
