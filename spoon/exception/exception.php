@@ -452,5 +452,5 @@ function dimCommonPathPrefix($path)
 		);
 
 	// wrap it using soft hyphens
-	return preg_replace('@[^<]/@', '$0&shy', $html);
+	return preg_replace('@[^<]/@', '$0<wbr/>', $html);
 }
