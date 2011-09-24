@@ -308,7 +308,7 @@ class SpoonFormDropdown extends SpoonFormAttributes
 		if($this->isSubmitted() && isset($data[$this->attributes['name']]))
 		{
 			// option groups
-			if($this->optionGroups[$this->selected]) $values = $data[$this->attributes['name']];
+			if(isset($this->optionGroups[$this->selected])) $values = $data[$this->attributes['name']];
 
 			// no option groups
 			else
