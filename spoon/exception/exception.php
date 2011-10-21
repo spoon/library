@@ -280,29 +280,38 @@ function exceptionHandler($exception)
 											<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">No trace available.</td>
 										</tr>';
 
-		// continue output
-		$output .= '				</table>
-								</td>
-							<tr>
-							<tr>
-								<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">&nbsp;</td>
-							</tr>
-							<!-- variables -->
-							<tr>
-								<td style="background-color: #EEEEEE; border: 1px solid #B2B2B2;">
-									<h1 style="font-size: 12px; margin: 5px 5px 12px 5px; padding: 0 0 5px 0; color: #000000; font-family: Verdana, Tahoma, Arial; border-bottom: 1px solid #999999;">' . $name . ' &raquo; Variables</h1>
-									<table width="550px;">' . "\n";
-
+		// output the superglobal variables, if any
+		$hasVars = false;
 		foreach(array('GET', 'POST', 'COOKIE', 'FILES') as $superGlobal)
 		{
-			if(!empty($GLOBALS['_' . $superGlobal]))
+			$hasVars |= count($GLOBALS['_' . $superGlobal]);
+		}
+
+		if($hasVars)
+		{
+			$output .= '				</table>
+									</td>
+								<tr>
+								<tr>
+									<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">&nbsp;</td>
+								</tr>
+								<!-- variables -->
+								<tr>
+									<td style="background-color: #EEEEEE; border: 1px solid #B2B2B2;">
+										<h1 style="font-size: 12px; margin: 5px 5px 12px 5px; padding: 0 0 5px 0; color: #000000; font-family: Verdana, Tahoma, Arial; border-bottom: 1px solid #999999;">' . $name . ' &raquo; Variables</h1>
+										<table width="550px;">' . "\n";
+
+			foreach(array('GET', 'POST', 'COOKIE', 'FILES') as $superGlobal)
 			{
-				$output .= '				<tr>
-												<th width="110px" style="vertical-align: top; text-align: left; font-weight: 700; padding: 0 10px 0 10px; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">$_' . $superGlobal . '</th>
-												<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">
-													<pre style="font-family: Courier; margin-bottom: 10px;">' . exceptionHandlerDumper($GLOBALS['_' . $superGlobal]) . '</pre>
-												</td>
-											</tr>' . "\n";
+				if(!empty($GLOBALS['_' . $superGlobal]))
+				{
+					$output .= '				<tr>
+													<th width="110px" style="vertical-align: top; text-align: left; font-weight: 700; padding: 0 10px 0 10px; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">$_' . $superGlobal . '</th>
+													<td style="vertical-align: top; font-family: Verdana, Tahoma, Arial; font-size: 10px; color: #000000;">
+														<pre style="font-family: Courier; margin-bottom: 10px;">' . exceptionHandlerDumper($GLOBALS['_' . $superGlobal]) . '</pre>
+													</td>
+												</tr>' . "\n";
+				}
 			}
 		}
 
