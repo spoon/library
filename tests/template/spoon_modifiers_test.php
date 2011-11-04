@@ -31,8 +31,8 @@ class SpoonTemplateModifiersTest extends PHPUnit_Framework_TestCase
 									'jp', 'ke', 'kg', 'kh', 'ki', 'km', 'kn', 'kp', 'kr', 'kw', 'ky', 'kz', 'la', 'lb', 'lc', 'li', 'lk', 'lr',
 									'ls', 'lt', 'lu', 'lv', 'ly', 'ma', 'mc', 'md', 'me', 'mg', 'mh', 'mk', 'ml', 'mn', 'mn', 'mo', 'mp', 'mr',
 									'ms', 'mt', 'mu', 'mv', 'mw', 'mx', 'my', 'mz', 'na', 'nc', 'ne', 'nf', 'ng', 'ni', 'nl', 'no', 'np', 'nr',
-									'nu', 'nz', 'nom', 'pa', 'pe', 'pf', 'pg', 'ph', 'pk', 'pl', 'pm', 'pn', 'pr', 'ps', 'pt', 'pw', 'py', 'qa',
-									're', 'ra', 'rs', 'ru', 'rw', 'sa', 'sb', 'sc', 'sd', 'se', 'sg', 'sh', 'si', 'sj', 'sj', 'sk', 'sl', 'sm',
+									'nu', 'nz', 'pa', 'pe', 'pf', 'pg', 'ph', 'pk', 'pl', 'pm', 'pn', 'pr', 'ps', 'pt', 'pw', 'py', 'qa',
+									're', 'rs', 'ru', 'rw', 'sa', 'sb', 'sc', 'sd', 'se', 'sg', 'sh', 'si', 'sj', 'sj', 'sk', 'sl', 'sm',
 									'sn', 'so', 'sr', 'st', 'su', 'sv', 'sy', 'sz', 'tc', 'td', 'tf', 'tg', 'th', 'tj', 'tk', 'tl', 'tm', 'tn',
 									'to', 'tp', 'tr', 'tt', 'tv', 'tw', 'tz', 'ua', 'ug', 'uk', 'us', 'uy', 'uz', 'va', 'vc', 've', 'vg', 'vi',
 									'vn', 'vu', 'wf', 'ws', 'ye', 'yt', 'yu', 'za', 'zm', 'zw', 'arpa');
@@ -62,7 +62,8 @@ class SpoonTemplateModifiersTest extends PHPUnit_Framework_TestCase
 
 	public function testGetDate()
 	{
-		$this->assertEquals(date('d'), SpoonDate::getDate('d'));
+		$this->assertEquals(date('d'), SpoonTemplateModifiers::date(time(), 'd'));
+		$this->assertEquals(date('d/m/Y H:i', strtotime('2011-11-04 13:37')), SpoonTemplateModifiers::date('2011-11-04 13:37', 'd/m/Y H:i'));
 	}
 
 	public function testLowercase()
@@ -77,5 +78,3 @@ class SpoonTemplateModifiersTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('BLEÉÉÉÉ', SpoonTemplateModifiers::uppercase('bleéééé'));
 	}
 }
-
-?>
