@@ -836,7 +836,6 @@ class SpoonFilter
 	 */
 	public static function toCamelCase($value, $separator = '_', $lcfirst = false, $charset = null)
 	{
-		// init vars
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
 
 		// init var
@@ -851,13 +850,12 @@ class SpoonFilter
 			// skip empty words
 			if($word == '') continue;
 
-			// if it is the first word and  we should use lowercase for the first word
+			// first word lowercase
 			if($i == 0 && $lcfirst) $word = $word;
 
 			// convert first letter to uppercase
 			else $word[0] = mb_strtoupper($word[0], $charset);
 
-			// append
 			$string .= $word;
 		}
 
