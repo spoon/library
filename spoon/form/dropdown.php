@@ -610,6 +610,7 @@ class SpoonFormDropdown extends SpoonFormAttributes
 	public function setDefaultElement($label, $value = null)
 	{
 		$this->defaultElement = array((string) $label, (string) $value);
+		if($value != null) $this->values[$value] = (string) $label;
 		return $this;
 	}
 
