@@ -11,6 +11,7 @@
  *
  *
  * @author		Davy Hellemans <davy@spoon-library.com>
+ * @author		Sam Tubbax <sam@sumocoders.be>
  * @since		1.0.0
  */
 
