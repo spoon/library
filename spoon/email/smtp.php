@@ -352,6 +352,9 @@ class SpoonEmailSMTP
 		// code 354 means we can continue
 		if($this->repliedCode === 354)
 		{
+			// get rid of bare LFs
+			$data = str_replace("\n", "\r\n", $data);
+
 			// push our data
 			$this->say($data . self::CRLF . '.');
 
