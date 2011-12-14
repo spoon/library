@@ -695,9 +695,9 @@ class SpoonForm
 	public function getMethod()
 	{
 		// prevent against xss
-		$action = (SPOON_CHARSET == 'utf-8') ? SpoonFilter::htmlspecialchars($this->action) : SpoonFilter::htmlentities($this->action);
+		$method = (SPOON_CHARSET == 'utf-8') ? SpoonFilter::htmlspecialchars($this->method) : SpoonFilter::htmlentities($this->method);
 
-		return $action;
+		return $method;
 	}
 
 
