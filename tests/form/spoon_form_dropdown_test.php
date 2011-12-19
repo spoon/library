@@ -17,7 +17,7 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @var	SpoonFormDropdown
 	 */
-	private $ddmSingle, $ddmMultiple, $ddmOptGroupSingle, $ddmOptGroupMultiple;
+	private $ddmSingle, $ddmMultiple, $ddmOptGroupSingle, $ddmOptGroupMultiple, $ddmDefaultElement;
 
 	public function setup()
 	{
@@ -26,7 +26,9 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$this->ddmMultiple = new SpoonFormDropdown('multiple', array(1 => 'Swimming', 'Running', 'Cycling', 'Boxing', 'Slackin'), null, true);
 		$this->ddmOptGroupSingle = new SpoonFormDropdown('optgroup_single', array('foo', 'bar', 'foobar' => array('foo', 'baz')));
 		$this->ddmOptGroupMultiple = new SpoonFormDropdown('optgroup_multiple', array('foo', 'bar', 'foobar' => array('foo', 'baz')), null, true);
-		$this->frm->add($this->ddmSingle, $this->ddmMultiple, $this->ddmOptGroupSingle, $this->ddmOptGroupMultiple);
+		$this->ddmDefaultElement = new SpoonFormDropdown('default_element', array(1 => 'Davy Hellemans'));
+		$this->ddmDefaultElement->setDefaultElement('Baz', 1337);
+		$this->frm->add($this->ddmSingle, $this->ddmMultiple, $this->ddmOptGroupSingle, $this->ddmOptGroupMultiple, $this->ddmDefaultElement);
 	}
 
 	public function testAttributes()
@@ -131,6 +133,19 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($_POST['multiple'], $this->ddmMultiple->getValue());
 		$this->assertEquals($_POST['optgroup_multiple'], $this->ddmOptGroupMultiple->getValue());
 	}
-}
 
-?>
+	/**
+	 * There was an issue with a dropdown that default elements were not taken into account
+	 * when they actually contain a value.
+	 *
+	 * @group bugfix
+	 * @link https://github.com/Spoon/library/pull/19
+	 */
+	public function testDefaultElement()
+	{
+		$_POST['form'] = 'dropdown';
+		$_POST['default_element'] = '1337';
+		$this->assertTrue($this->ddmDefaultElement->isFilled());
+		$this->assertEquals($_POST['default_element'], $this->ddmDefaultElement->getValue());
+	}
+}
