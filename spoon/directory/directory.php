@@ -38,7 +38,7 @@ class SpoonDirectory
 	 * @param	bool[optional] $strict		If strict is true, exceptions will be thrown when an error occures.
 	 * @param	int[optional] $chmod		Chmod mode that should be applied on the directory/file. Defaults to 0777 (+rwx for all) for directories and 0666 (+rw for all) for files.
 	 */
-	public static function copy($source, $destination, $overwrite = true, $strict = true, $chmod = 0777)
+	public static function copy($source, $destination, $overwrite = true, $strict = true, $chmod = null)
 	{
 		// redefine vars
 		$source = (string) $source;
