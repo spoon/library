@@ -4,22 +4,18 @@
 if(!defined('SPOON_CHARSET')) define('SPOON_CHARSET', 'utf-8');
 
 // includes
+set_include_path(get_include_path() . PATH_SEPARATOR . dirname(dirname(dirname(__FILE__))));
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
 class SpoonMultiCheckBoxTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * Form
-	 *
 	 * @var	SpoonForm
 	 */
-	private $frm;
-
+	protected $frm;
 
 	/**
-	 * Form element
-	 *
 	 * @var	SpoonFormMultiCheckbox
 	 */
 	private $chkHobbies;
@@ -97,5 +93,3 @@ class SpoonMultiCheckBoxTest extends PHPUnit_Framework_TestCase
 		$c = new SpoonFormMultiCheckbox('test', $values);
 	}
 }
-
-?>

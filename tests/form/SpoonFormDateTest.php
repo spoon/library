@@ -4,6 +4,7 @@
 if(!defined('SPOON_CHARSET')) define('SPOON_CHARSET', 'utf-8');
 
 // includes
+set_include_path(get_include_path() . PATH_SEPARATOR . dirname(dirname(dirname(__FILE__))));
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
@@ -15,12 +16,12 @@ class SpoonFormDateTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @var	SpoonForm
 	 */
-	private $frm;
+	protected $frm;
 
 	/**
 	 * @var	SpoonFormDate
 	 */
-	private $txtDate;
+	protected $txtDate;
 
 	public function setup()
 	{
@@ -87,5 +88,3 @@ class SpoonFormDateTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('12/10/2009', $this->txtDate->getValue());
 	}
 }
-
-?>
