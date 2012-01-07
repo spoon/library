@@ -308,8 +308,8 @@ class SpoonFilter
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
 		$quoteStyle = self::getValue($quoteStyle, array(ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES), ENT_NOQUOTES);
 
-		// apply method
-		$return = htmlentities($value, $quoteStyle, $charset);
+		// apply htmlentities
+		$return = htmlentities((string) $value, $quoteStyle, $charset);
 
 		/**
 		 * PHP doesn't replace a backslash to its html entity since this is something
