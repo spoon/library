@@ -29,9 +29,13 @@ class SpoonFormCheckboxTest extends PHPUnit_Framework_TestCase
 
 	public function testGetChecked()
 	{
-		$this->assertEquals(true, $this->chkAgree->getChecked());
+		$this->assertTrue($this->chkAgree->getChecked());
 		$this->chkAgree->setChecked(false);
-		$this->assertEquals(false, $this->chkAgree->getChecked());
+		$this->assertFalse($this->chkAgree->getChecked());
+
+		$_POST['form'] = 'checkbox';
+		$_POST['agree'] = array('foo', 'bar');
+		$this->assertFalse($this->chkAgree->getChecked());
 	}
 
 	public function testAttributes()
@@ -47,6 +51,21 @@ class SpoonFormCheckboxTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(false, $this->chkAgree->getValue());
 		$_POST['form'] = 'checkbox';
 		$_POST['agree'] = 'Y';
-		$this->assertEquals(true, $this->chkAgree->getValue());
+		$this->assertTrue($this->chkAgree->getValue());
+
+		$_POST['agree'] = array('foo', 'bar');
+		$this->assertFalse($this->chkAgree->getValue());
+	}
+
+	public function testIsFilled()
+	{
+		$this->assertFalse($this->chkAgree->isFilled());
+
+		$_POST['form'] = 'checkbox';
+		$_POST['agree'] = 'Y';
+		$this->assertTrue($this->chkAgree->isFilled());
+
+		$_POST['agree'] = array('foo', 'bar');
+		$this->assertFalse($this->chkAgree->isFilled());
 	}
 }
