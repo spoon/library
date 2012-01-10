@@ -52,46 +52,58 @@ class SpoonFormPasswordTest extends PHPUnit_Framework_TestCase
 
 	public function testIsFilled()
 	{
-		$this->assertEquals(false, $this->txtPassword->isFilled());
+		$this->assertFalse($this->txtPassword->isFilled());
 		$_POST['name'] = 'I am not empty';
-		$this->assertEquals(true, $this->txtPassword->isFilled());
+		$this->assertTrue($this->txtPassword->isFilled());
+		$_POST['name'] = array('foo', 'bar');
+		$this->assertTrue($this->txtPassword->isFilled());
 	}
 
 	public function testIsAlphabetical()
 	{
-		$this->assertEquals(false, $this->txtPassword->isAlphabetical());
+		$this->assertFalse($this->txtPassword->isAlphabetical());
 		$_POST['name'] = 'Bauffman';
-		$this->assertEquals(true, $this->txtPassword->isAlphabetical());
+		$this->assertTrue($this->txtPassword->isAlphabetical());
+		$_POST['name'] = array('foo', 'bar');
+		$this->assertTrue($this->txtPassword->isAlphabetical());
 	}
 
 	public function testIsAlphaNumeric()
 	{
 		$_POST['name'] = 'Spaces are not allowed?';
-		$this->assertEquals(false, $this->txtPassword->isAlphaNumeric());
+		$this->assertFalse($this->txtPassword->isAlphaNumeric());
 		$_POST['name'] = 'L33t';
-		$this->assertEquals(true, $this->txtPassword->isAlphaNumeric());
+		$this->assertTrue($this->txtPassword->isAlphaNumeric());
+		$_POST['name'] = array('foo', 'bar');
+		$this->assertTrue($this->txtPassword->isAlphaNumeric());
 	}
 
 	public function testIsMaximumCharacters()
 	{
 		$_POST['name'] = 'Writing tests can be pretty frakkin boring';
-		$this->assertEquals(true, $this->txtPassword->isMaximumCharacters(100));
-		$this->assertEquals(false, $this->txtPassword->isMaximumCharacters(10));
+		$this->assertTrue($this->txtPassword->isMaximumCharacters(100));
+		$this->assertFalse($this->txtPassword->isMaximumCharacters(10));
+		$_POST['name'] = array('foo', 'bar');
+		$this->assertFalse($this->txtPassword->isMaximumCharacters(4));
 	}
 
 	public function testIsMinimumCharacaters()
 	{
 		$_POST['name'] = 'Stil pretty bored';
-		$this->assertEquals(true, $this->txtPassword->isMinimumCharacters(10));
-		$this->assertEquals(true, $this->txtPassword->isMinimumCharacters(2));
-		$this->assertEquals(false, $this->txtPassword->isMinimumCharacters(23));
+		$this->assertTrue($this->txtPassword->isMinimumCharacters(10));
+		$this->assertTrue($this->txtPassword->isMinimumCharacters(2));
+		$this->assertFalse($this->txtPassword->isMinimumCharacters(23));
+		$_POST['name'] = array('foo', 'bar');
+		$this->assertFalse($this->txtPassword->isMinimumCharacters(23));
 	}
 
 	public function testIsValidAgainstRegexp()
 	{
 		$_POST['name'] = 'Spoon';
-		$this->assertEquals(true, $this->txtPassword->isValidAgainstRegexp('/([a-z]+)/'));
-		$this->assertEquals(false, $this->txtPassword->isValidAgainstRegexp('/([0-9]+)/'));
+		$this->assertTrue($this->txtPassword->isValidAgainstRegexp('/([a-z]+)/'));
+		$this->assertFalse($this->txtPassword->isValidAgainstRegexp('/([0-9]+)/'));
+		$_POST['name'] = array('foo', 'bar');
+		$this->assertTrue($this->txtPassword->isValidAgainstRegexp('/Array/'));
 	}
 
 	public function testGetValue()
@@ -99,5 +111,7 @@ class SpoonFormPasswordTest extends PHPUnit_Framework_TestCase
 		$_POST['form'] = 'passwordfield';
 		$_POST['name'] = '<a href="http://www.spoon-library.be">Bobby Tables, my friends call mééé</a>';
 		$this->assertEquals($_POST['name'], $this->txtPassword->getValue());
+		$_POST['name'] = array('foo', 'bar');
+		$this->assertEquals('Array', $this->txtPassword->getValue());
 	}
 }
