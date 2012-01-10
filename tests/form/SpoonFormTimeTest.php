@@ -55,23 +55,27 @@ class SpoonFormTimeTest extends PHPUnit_Framework_TestCase
 
 	public function testIsFilled()
 	{
-		$this->assertEquals(false, $this->txtTime->isFilled());
+		$this->assertFalse($this->txtTime->isFilled());
 		$_POST['time'] = '14:55';
-		$this->assertEquals(true, $this->txtTime->isFilled());
+		$this->assertTrue($this->txtTime->isFilled());
+		$_POST['name'] = array('foo', 'bar');
+		$this->assertTrue($this->txtTime->isFilled());
 	}
 
 	public function testIsValid()
 	{
-		$this->assertEquals(false, $this->txtTime->isValid());
+		$this->assertFalse($this->txtTime->isValid());
 		$_POST['time'] = 'Boobies';
-		$this->assertEquals(false, $this->txtTime->isValid());
+		$this->assertFalse($this->txtTime->isValid());
 		$_POST['time'] = '13:37';
-		$this->assertEquals(true, $this->txtTime->isValid());
+		$this->assertTrue($this->txtTime->isValid());
 		$_POST['time'] = '25:60';
-		$this->assertEquals(false, $this->txtTime->isValid());
+		$this->assertFalse($this->txtTime->isValid());
 		$_POST['time'] = 'pipi00:01asshole';
 		$this->assertFalse($this->txtTime->isValid());
 		$_POST['time'] = '1k:2b';
+		$this->assertFalse($this->txtTime->isValid());
+		$_POST['name'] = array('foo', 'bar');
 		$this->assertFalse($this->txtTime->isValid());
 	}
 
@@ -86,5 +90,7 @@ class SpoonFormTimeTest extends PHPUnit_Framework_TestCase
 		$_POST['form'] = 'timefield';
 		$_POST['time'] = '14:55';
 		$this->assertEquals('14:55', $this->txtTime->getValue());
+		$_POST['time'] = array('foo', 'bar');
+		$this->assertEquals('Array', $this->txtTime->getValue());
 	}
 }
