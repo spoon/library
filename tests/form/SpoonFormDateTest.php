@@ -56,20 +56,24 @@ class SpoonFormDateTest extends PHPUnit_Framework_TestCase
 
 	public function testIsFilled()
 	{
-		$this->assertEquals(false, $this->txtDate->isFilled());
+		$this->assertFalse($this->txtDate->isFilled());
 		$_POST['date'] = '12/10/2009';
-		$this->assertEquals(true, $this->txtDate->isFilled());
+		$this->assertTrue($this->txtDate->isFilled());
+		$_POST['date'] = array('foo', 'bar');
+		$this->assertTrue($this->txtDate->isFilled());
 	}
 
 	public function testIsValid()
 	{
-		$this->assertEquals(false, $this->txtDate->isValid());
+		$this->assertFalse($this->txtDate->isValid());
 		$_POST['date'] = '29/02/1997';
-		$this->assertEquals(false, $this->txtDate->isValid());
+		$this->assertFalse($this->txtDate->isValid());
 		$_POST['date'] = '29/02/2000';
-		$this->assertEquals(true, $this->txtDate->isValid());
+		$this->assertTrue($this->txtDate->isValid());
 		$_POST['date'] = '31/04/2009';
-		$this->assertEquals(false, $this->txtDate->isValid());
+		$this->assertFalse($this->txtDate->isValid());
+		$_POST['date'] = array('foo', 'bar');
+		$this->assertFalse($this->txtDate->isValid());
 	}
 
 	public function testGetTimestamp()
@@ -79,6 +83,9 @@ class SpoonFormDateTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('12/10/2010 12:13:14', date('d/m/Y H:i:s', $this->txtDate->getTimestamp(2010, null, null, 12, 13, 14)));
 		$this->assertEquals('12/11/2009 12:13:14', date('d/m/Y H:i:s', $this->txtDate->getTimestamp(null, 11, null, 12, 13, 14)));
 		$this->assertEquals('25/10/2009 12:13:14', date('d/m/Y H:i:s', $this->txtDate->getTimestamp(null, null, 25, 12, 13, 14)));
+
+		$_POST['date'] = array('foo', 'bar');
+		$this->assertEquals(date('Y-m-d H:i:s'), date('Y-m-d H:i:s', $this->txtDate->getTimestamp()));
 	}
 
 	public function testGetValue()
@@ -86,5 +93,8 @@ class SpoonFormDateTest extends PHPUnit_Framework_TestCase
 		$_POST['form'] = 'datefield';
 		$_POST['date'] = '12/10/2009';
 		$this->assertEquals('12/10/2009', $this->txtDate->getValue());
+
+		$_POST['date'] = array('foo', 'bar');
+		$this->assertEquals('Array', $this->txtDate->getValue());
 	}
 }
