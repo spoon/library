@@ -75,6 +75,10 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$_POST['single'] = 'spoon';
 		$this->assertFalse($this->ddmSingle->isFilled());
 
+		// arrays
+		$_POST['single'] = array('foo', 'bar');
+		$this->assertFalse($this->ddmSingle->isFilled());
+
 		// single dropdown (optgroups)
 		$this->assertEquals(false, $this->ddmOptGroupSingle->isFilled());
 		$_POST['optgroup_single'] = '1';
@@ -133,6 +137,9 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($_POST['optgroup_single'], $this->ddmOptGroupSingle->getValue());
 		$this->assertEquals($_POST['multiple'], $this->ddmMultiple->getValue());
 		$this->assertEquals($_POST['optgroup_multiple'], $this->ddmOptGroupMultiple->getValue());
+
+		$_POST['single'] = array('foo', 'bar');
+		$this->assertNull($this->ddmSingle->getValue());
 	}
 
 	/**
