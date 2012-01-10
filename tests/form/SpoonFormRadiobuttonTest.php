@@ -33,4 +33,25 @@ class SpoonFormRadiobuttonTest extends PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals('M', $this->rbtGender->getChecked());
 	}
+
+	public function testGetValue()
+	{
+		$_POST['form'] = 'radiobutton';
+		$this->assertEquals('M', $this->rbtGender->getValue());
+		$_POST['gender'] = 'F';
+		$this->assertEquals('F', $this->rbtGender->getValue());
+		$_POST['gender'] = array('foo', 'bar');
+		$this->assertEquals('F', $this->rbtGender->getValue());
+	}
+
+	public function testIsFilled()
+	{
+		$_POST['form'] = 'radiobutton';
+		$_POST['gender'] = 'M';
+		$this->assertTrue($this->rbtGender->isFilled());
+		$_POST['gender'] = 'foobar';
+		$this->assertFalse($this->rbtGender->isFilled());
+		$_POST['gender'] = array('foo', 'bar');
+		$this->assertFalse($this->rbtGender->isFilled());
+	}
 }
