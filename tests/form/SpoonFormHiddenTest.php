@@ -39,7 +39,9 @@ class SpoonFormHiddenTest extends PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals(false, $this->hidHidden->isFilled());
 		$_POST['hidden'] = 'I am not empty';
-		$this->assertEquals(true, $this->hidHidden->isFilled());
+		$this->assertTrue($this->hidHidden->isFilled());
+		$_POST['hidden'] = array('foo', 'bar');
+		$this->assertTrue($this->hidHidden->isFilled());
 	}
 
 	public function testGetValue()
@@ -47,5 +49,7 @@ class SpoonFormHiddenTest extends PHPUnit_Framework_TestCase
 		$_POST['form'] = 'hiddenfield';
 		$_POST['hidden'] = 'But I am le tired';
 		$this->assertEquals($_POST['hidden'], $this->hidHidden->getValue());
+		$_POST['hidden'] = array('foo', 'bar');
+		$this->assertEquals('Array', $this->hidHidden->getValue());
 	}
 }
