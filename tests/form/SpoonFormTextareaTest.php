@@ -52,39 +52,49 @@ class SpoonFormTextareaTest extends PHPUnit_Framework_TestCase
 
 	public function testIsFilled()
 	{
-		$this->assertEquals(false, $this->txtMessage->isFilled());
+		$this->assertFalse($this->txtMessage->isFilled());
 		$_POST['message'] = 'I am not empty';
-		$this->assertEquals(true, $this->txtMessage->isFilled());
+		$this->assertTrue($this->txtMessage->isFilled());
+		$_POST['message'] = array('foo', 'bar');
+		$this->assertTrue($this->txtMessage->isFilled());
 	}
 
 	public function testIsAlphabetical()
 	{
-		$this->assertEquals(false, $this->txtMessage->isAlphabetical());
+		$this->assertFalse($this->txtMessage->isAlphabetical());
 		$_POST['message'] = 'Bauffman';
-		$this->assertEquals(true, $this->txtMessage->isAlphabetical());
+		$this->assertTrue($this->txtMessage->isAlphabetical());
+		$_POST['message'] = array('foo', 'bar');
+		$this->assertTrue($this->txtMessage->isAlphabetical());
 	}
 
 	public function testIsAlphaNumeric()
 	{
 		$_POST['message'] = 'Spaces are not allowed?';
-		$this->assertEquals(false, $this->txtMessage->isAlphaNumeric());
+		$this->assertFalse($this->txtMessage->isAlphaNumeric());
 		$_POST['message'] = 'L33t';
-		$this->assertEquals(true, $this->txtMessage->isAlphaNumeric());
+		$this->assertTrue($this->txtMessage->isAlphaNumeric());
+		$_POST['message'] = array('foo', 'bar');
+		$this->assertTrue($this->txtMessage->isAlphaNumeric());
 	}
 
 	public function testIsMaximumCharacters()
 	{
 		$_POST['message'] = 'Writing tests can be pretty frakkin boring';
-		$this->assertEquals(true, $this->txtMessage->isMaximumCharacters(100));
-		$this->assertEquals(false, $this->txtMessage->isMaximumCharacters(10));
+		$this->assertTrue($this->txtMessage->isMaximumCharacters(100));
+		$this->assertFalse($this->txtMessage->isMaximumCharacters(10));
+		$_POST['message'] = array('foo', 'bar');
+		$this->assertFalse($this->txtMessage->isMaximumCharacters(0));
 	}
 
 	public function testIsMinimumCharacters()
 	{
 		$_POST['message'] = 'Stil pretty bored';
-		$this->assertEquals(true, $this->txtMessage->isMinimumCharacters(10));
-		$this->assertEquals(true, $this->txtMessage->isMinimumCharacters(2));
-		$this->assertEquals(false, $this->txtMessage->isMinimumCharacters(23));
+		$this->assertTrue($this->txtMessage->isMinimumCharacters(10));
+		$this->assertTrue($this->txtMessage->isMinimumCharacters(2));
+		$this->assertFalse($this->txtMessage->isMinimumCharacters(23));
+		$_POST['message'] = array('foo', 'bar');
+		$this->assertFalse($this->txtMessage->isMinimumCharacters(10));
 	}
 
 	public function testGetValue()
@@ -93,7 +103,7 @@ class SpoonFormTextareaTest extends PHPUnit_Framework_TestCase
 		$_POST['message'] = '<a href="http://www.spoon-library.be">Bobby Tables, my friends call mééé</a>';
 		$this->assertEquals(SpoonFilter::htmlspecialchars($_POST['message']), $this->txtMessage->getValue());
 		$this->assertEquals($_POST['message'], $this->txtMessage->getValue(true));
+		$_POST['message'] = array('foo', 'bar');
+		$this->assertEquals('Array', $this->txtMessage->getValue(true));
 	}
 }
-
-?>
