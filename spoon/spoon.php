@@ -137,6 +137,8 @@ class Spoon
 		$classes['spoonfeedexception'] = 'feed/exception.php';
 		$classes['spoonfeedrss'] = 'feed/rss.php';
 		$classes['spoonfeedrssitem'] = 'feed/rss_item.php';
+		$classes['spoonfeedatomrss'] = 'feed/atom_rss.php';
+		$classes['spoonfeedatomrssitem'] = 'feed/atom_rss_item.php';
 		$classes['spoonfile'] = 'file/file.php';
 		$classes['spoonfilecsv'] = 'file/csv.php';
 		$classes['spoonfilter'] = 'filter/filter.php';
@@ -158,6 +160,10 @@ class Spoon
 		$classes['spoonformtextarea'] = 'form/textarea.php';
 		$classes['spoonformtime'] = 'form/time.php';
 		$classes['spoonhttp'] = 'http/http.php';
+		$classes['spoonicalexception'] = 'ical/exception.php';
+		$classes['spoonical'] = 'ical/ical.php';
+		$classes['spoonicalitem'] = 'ical/ical';
+		$classes['Spoonicalevent'] = 'ical/ical';
 		$classes['spoonlocale'] = 'locale/locale.php';
 		$classes['spoonlog'] = 'log/log.php';
 		$classes['spoonrestclient'] = 'rest/client.php';
