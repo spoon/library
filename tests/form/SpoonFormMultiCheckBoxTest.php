@@ -8,7 +8,7 @@ set_include_path(get_include_path() . PATH_SEPARATOR . dirname(dirname(dirname(_
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
-class SpoonMultiCheckBoxTest extends PHPUnit_Framework_TestCase
+class SpoonFormMultiCheckBoxTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @var	SpoonForm
@@ -18,7 +18,7 @@ class SpoonMultiCheckBoxTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @var	SpoonFormMultiCheckbox
 	 */
-	private $chkHobbies;
+	protected $chkHobbies;
 
 	public function setup()
 	{
@@ -46,6 +46,8 @@ class SpoonMultiCheckBoxTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($this->chkHobbies->isFilled());
 		$_POST['hobbies'] = array(20, 'bimbo', 'tramp');
 		$this->assertTrue($this->chkHobbies->isFilled());
+		$_POST['hobbies'] = 'foobar';
+		$this->assertFalse($this->chkHobbies->isFilled());
 	}
 
 	public function testGetValue()
@@ -62,6 +64,8 @@ class SpoonMultiCheckBoxTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array('10', '30'), $this->chkHobbies->getValue());
 		$this->chkHobbies->setAllowExternalData(true);
 		$this->assertEquals(array('bimbo', 'tramp', '10', '30'), $this->chkHobbies->getValue());
+		$_POST['hobbies'] = 'foobar';
+		$this->assertEquals(array(), $this->chkHobbies->getValue());
 	}
 
 	public function testNotSupplyingCorrectFormatThrowsException()
