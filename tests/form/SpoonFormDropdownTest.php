@@ -25,8 +25,8 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$this->frm = new SpoonForm('dropdown');
 		$this->ddmSingle = new SpoonFormDropdown('single', array(1 => 'Davy Hellemans', 'Tys Verkoyen', 'Dave Lens'));
 		$this->ddmMultiple = new SpoonFormDropdown('multiple', array(1 => 'Swimming', 'Running', 'Cycling', 'Boxing', 'Slackin'), null, true);
-		$this->ddmOptGroupSingle = new SpoonFormDropdown('optgroup_single', array('foo', 'bar', 'foobar' => array('foo', 'baz')));
-		$this->ddmOptGroupMultiple = new SpoonFormDropdown('optgroup_multiple', array('foo', 'bar', 'foobar' => array('foo', 'baz')), null, true);
+		$this->ddmOptGroupSingle = new SpoonFormDropdown('optgroup_single', array('foo', 123 => 'bar', 'foobar' => array('foo', 'baz')));
+		$this->ddmOptGroupMultiple = new SpoonFormDropdown('optgroup_multiple', array('foo', 123 => 'bar', 'foobar' => array('foo', 'baz')), null, true);
 		$this->ddmDefaultElement = new SpoonFormDropdown('default_element', array(1 => 'Davy Hellemans'));
 		$this->ddmDefaultElement->setDefaultElement('Baz', 1337);
 		$this->frm->add($this->ddmSingle, $this->ddmMultiple, $this->ddmOptGroupSingle, $this->ddmOptGroupMultiple, $this->ddmDefaultElement);
@@ -131,8 +131,8 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$_POST['form'] = 'dropdown';
 		$_POST['single'] = '1';
 		$_POST['multiple'] = array('1', '2', '3');
-		$_POST['optgroup_single'] = '1';
-		$_POST['optgroup_multiple'] = array('0', '1');
+		$_POST['optgroup_single'] = '123';
+		$_POST['optgroup_multiple'] = array('0', '123');
 		$this->assertEquals($_POST['single'], $this->ddmSingle->getValue());
 		$this->assertEquals($_POST['optgroup_single'], $this->ddmOptGroupSingle->getValue());
 		$this->assertEquals($_POST['multiple'], $this->ddmMultiple->getValue());
