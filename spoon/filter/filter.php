@@ -139,8 +139,6 @@ class SpoonFilter
 
 	/**
 	 * Disable php's magic quotes (yuck!)
-	 *
-	 * @return	void
 	 */
 	public static function disableMagicQuotes()
 	{
@@ -836,10 +834,8 @@ class SpoonFilter
 	 */
 	public static function toCamelCase($value, $separator = '_', $lcfirst = false, $charset = null)
 	{
-		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
-
-		// init var
 		$string = '';
+		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
 
 		// fetch words
 		$words = explode((string) $separator, (string) $value);
@@ -887,7 +883,7 @@ class SpoonFilter
 
 
 	/**
-	 * Prepares a string so that it can be used in urls. Special characters are stripped/replaced.
+	 * Prepares a string so that it can be used in urls.
 	 *
 	 * @return	string						The urlised string.
 	 * @param	string $value				The value that should be urlised.
@@ -964,5 +960,3 @@ class SpoonFilter
  * @since		0.1.1
  */
 class SpoonFilterException extends SpoonException {}
-
-?>
