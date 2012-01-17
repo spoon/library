@@ -101,6 +101,6 @@
   </exec>
  </target>
 
- <target name="build" depends="clean,parallelTasks"/>
+ <target name="build" depends="clean,parallelTasks,phpunit"/>
 </project>
 
