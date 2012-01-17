@@ -156,4 +156,12 @@ class SpoonFormDropdownTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($this->ddmDefaultElement->isFilled());
 		$this->assertEquals($_POST['default_element'], $this->ddmDefaultElement->getValue());
 	}
+
+	/**
+	 * @group bugfix
+	 */
+	public function testParse()
+	{
+		$this->ddmDefaultElement->parse();
+	}
 }
