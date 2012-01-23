@@ -348,6 +348,7 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('SpoonLibraryRocks', SpoonFilter::toCamelCase('Spoon library rocks', ' '));
 		$this->assertEquals('SpoonLibraryRocks', SpoonFilter::toCamelCase('spoon_library_Rocks'));
 		$this->assertEquals('SpoonLibraryRocks', SpoonFilter::toCamelCase('spoon_libraryRocks'));
+		$this->assertEquals('blaat', SpoonFilter::toCamelCase('Blaat', '_', true));
 	}
 
 	public function testReplaceURLsWithAnchors()
