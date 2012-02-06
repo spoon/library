@@ -1,12 +1,14 @@
 <?php
 
-// includes
+$includePath = dirname(dirname(dirname(dirname(__FILE__))));
+set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
+
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
 class SpoonDirectoryTest extends PHPUnit_Framework_TestCase
 {
-	private $path;
+	protected $path;
 
 	protected function setUp()
 	{
@@ -69,11 +71,6 @@ class SpoonDirectoryTest extends PHPUnit_Framework_TestCase
 		SpoonDirectory::delete($this->path . '/exists');
 	}
 
-	public function testGetList()
-	{
-		// @later rewrite this test
-	}
-
 	public function testGetSize()
 	{
 		SpoonDirectory::create($this->path . '/size');
@@ -114,5 +111,3 @@ class SpoonDirectoryTest extends PHPUnit_Framework_TestCase
 		SpoonDirectory::delete($this->path . '/move_dest');
 	}
 }
-
-?>
