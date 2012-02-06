@@ -1,6 +1,8 @@
 <?php
 
-// includes
+$includePath = dirname(dirname(dirname(dirname(__FILE__))));
+set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
+
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
@@ -18,25 +20,17 @@ class SpoonFileTest extends PHPUnit_Framework_TestCase
 	public function testDownload()
 	{
 		// download
-		$this->assertEquals(true, SpoonFile::download($this->existingUrl, $this->destinationFile));
+		$this->assertTrue(SpoonFile::download($this->existingUrl, $this->destinationFile));
 
 		// download again, but do not overwrite
-		$this->assertEquals(false, SpoonFile::download($this->existingUrl, $this->destinationFile, false));
+		$this->assertFalse(SpoonFile::download($this->existingUrl, $this->destinationFile, false));
+	}
 
-		// attempt to download file
-		try
-		{
-			$this->assertEquals(false, SpoonFile::download($this->nonExistingUrl, $this->destinationFile));
-		}
-
-		// hopefully catch exception
-		catch(Exception $e)
-		{
-			$this->assertType('SpoonFileException', $e);
-			$this->assertObjectHasAttribute('message', $e);
-			$this->assertEquals('The file "' . $this->nonExistingUrl . '" isn\'t available for download.', $e->getMessage());
-		}
+	/**
+	 * @expectedException SpoonFileException
+	 */
+	public function testDownloadFailure()
+	{
+		SpoonFile::download($this->nonExistingUrl, $this->destinationFile);
 	}
 }
-
-?>
