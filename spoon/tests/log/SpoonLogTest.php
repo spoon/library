@@ -1,18 +1,19 @@
 <?php
 
-// includes
+date_default_timezone_set('Europe/Brussels');
+
+$includePath = dirname(dirname(dirname(dirname(__FILE__))));
+set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
+
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
-
-// timezone
-date_default_timezone_set('Europe/Brussels');
 
 class SpoonLogTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @var	SpoonLog
+	 * @var SpoonLog
 	 */
-	private $log;
+	protected $log;
 
 	public function setUp()
 	{
@@ -48,19 +49,14 @@ class SpoonLogTest extends PHPUnit_Framework_TestCase
 		$this->log->setType('1337');
 		$this->log->setType('my_underscores_logging');
 		$this->log->setType('my-hyphen-logging');
+	}
 
-		// attempt to set type
-		try
-		{
-			$this->log->setType('No way hosé!');
-		}
-
-		// hopefully catch exception
-		catch(Exception $e)
-		{
-			$this->assertObjectHasAttribute('message', $e);
-			$this->assertEquals('The log type should only contain a-z, 0-9, underscores and hyphens. Your value "No way hosé!" is invalid.', $e->getMessage());
-		}
+	/**
+	 * @expectedException SpoonLogException
+	 */
+	public function testSetTypeFailure()
+	{
+		$this->log->setType('No way hosé!');
 	}
 
 	public function testWrite()
@@ -86,5 +82,3 @@ class SpoonLogTest extends PHPUnit_Framework_TestCase
 		SpoonDirectory::delete($directory);
 	}
 }
-
-?>
