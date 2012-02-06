@@ -11,7 +11,7 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @var	SpoonDatabase
 	 */
-	private $db;
+	protected $db;
 
 	public function setup()
 	{
