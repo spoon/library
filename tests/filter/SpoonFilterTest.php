@@ -456,5 +456,3 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('poo', SpoonFilter::urlise("'poo'"));
 	}
 }
-
-?>
