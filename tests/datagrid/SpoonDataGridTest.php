@@ -1,6 +1,5 @@
 <?php
 
-// includes
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
@@ -38,5 +37,3 @@ class SpoonDataGridTest extends PHPUnit_Framework_TestCase
 		else throw new SpoonException('getTemplate should return an object of SpoonTemplate.');
 	}
 }
-
-?>
