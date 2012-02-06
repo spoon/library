@@ -1,6 +1,10 @@
 <?php
 
-// includes
+if(!defined('SPOON_CHARSET')) define('SPOON_CHARSET', 'utf-8');
+
+$includePath = dirname(dirname(dirname(__FILE__)));
+set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
+
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
@@ -8,21 +12,17 @@ class SpoonTest extends PHPUnit_Framework_TestCase
 {
 	public function testGet()
 	{
-		// set value
 		$value = 'Speed spelled backwards is deeps.';
 		$this->assertEquals(Spoon::set('stored_value', $value), $value);
 		$this->assertEquals(Spoon::get('stored_value'), $value);
+	}
 
-		// attempt to fetch non existing value
-		try
-		{
-			$this->assertEquals('I have no idea what I am doing.', Spoon::get('my_custom_value'));
-		}
-
-		catch(SpoonException $e)
-		{
-			$this->assertEquals($e->getMessage(), 'An item with reference name "my_custom_value" doesn\'t exist in the registry.');
-		}
+	/**
+	 * @expectedException SpoonException
+	 */
+	public function testGetFailure()
+	{
+		$this->assertEquals('I have no idea what I am doing.', Spoon::get('my_custom_value'));
 	}
 
 	public function testExists()
@@ -46,5 +46,3 @@ class SpoonTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse(Spoon::exists('salad_fingers'));
 	}
 }
-
-?>
