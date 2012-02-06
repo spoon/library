@@ -1,8 +1,10 @@
 <?php
 
-define('SPOON_CHARSET', 'utf-8');
+if(!defined('SPOON_CHARSET')) define('SPOON_CHARSET', 'utf-8');
 
-// includes
+$includePath = dirname(dirname(dirname(dirname(__FILE__))));
+set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
+
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
@@ -437,22 +439,20 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 
 <body>
 	<p>
-		<a href="http://www.spoon-library.be">Spoon Library</a>
+		<a href="http://www.spoon-library.com">Spoon Library</a>
 	</p>
 </body>
 </html>';
 
 		$this->assertEquals('Spoon Library', SpoonFilter::stripHTML($html));
-		$this->assertEquals('<a href="http://www.spoon-library.be">Spoon Library</a>', SpoonFilter::stripHTML($html, '<a>'));
-		$this->assertEquals('Spoon Library (http://www.spoon-library.be)', SpoonFilter::stripHTML($html, null, true));
+		$this->assertEquals('<a href="http://www.spoon-library.com">Spoon Library</a>', SpoonFilter::stripHTML($html, '<a>'));
+		$this->assertEquals('Spoon Library (http://www.spoon-library.com)', SpoonFilter::stripHTML($html, null, true));
 	}
 
 	public function testUrlise()
 	{
-		$this->assertEquals('geen-bananen', SpoonFilter::urlise('géén bananen'));
-		$this->assertEquals('tom-and-jerry', SpoonFilter::urlise('Tom & Jerry'));
-		$this->assertEquals('not', SpoonFilter::urlise('¬'));
-		$this->assertEquals('yen', SpoonFilter::urlise('¥'));
-		$this->assertEquals('poo', SpoonFilter::urlise("'poo'"));
+		$this->assertEquals(urlencode('géén-bananen'), SpoonFilter::urlise('géén bananen'));
+		$this->assertEquals('tom-jerry', SpoonFilter::urlise('Tom & Jerry'));
+		$this->assertEquals(urlencode('¬'), SpoonFilter::urlise('¬'));
 	}
 }

@@ -1,12 +1,14 @@
 <?php
 
-define('SPOON_CHARSET', 'utf-8');
+if(!defined('SPOON_CHARSET')) define('SPOON_CHARSET', 'utf-8');
 
-// includes
+$includePath = dirname(dirname(dirname(dirname(__FILE__))));
+set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
+
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
-class SpoonFilterTest extends PHPUnit_Framework_TestCase
+class SpoonFilterIsURLTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * URL tests based on those of Mathias Bynens (http://mathiasbynens.be/demo/url-regex)
@@ -90,5 +92,3 @@ class SpoonFilterTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse(SpoonFilter::isURL('http://10.1.1.254'));
 	}
 }
-
-?>
