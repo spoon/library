@@ -16,14 +16,17 @@ class SpoonDatabaseTest extends PHPUnit_Framework_TestCase
 	public function setup()
 	{
 		// create database object
-		$this->db = new SpoonDatabase('mysql', 'localhost', 'root', 'root', 'spoon_tests');
+		$this->db = new SpoonDatabase('mysql', 'localhost', 'spoon', 'spoon', 'spoon_tests');
 	}
 
 	public function testExecute()
 	{
 		// create database
 		try { $this->db->execute('CREATE DATABASE IF NOT EXISTS spoon_tests'); }
-		catch (SpoondatabaseException $e) {}
+		catch (SpoondatabaseException $e)
+		{
+			$this->fail('You should manually create a database "spoon_tests"');
+		}
 
 		// clear all tables
 		if(count($this->db->getTables()) != 0) $this->db->drop($this->db->getTables());
