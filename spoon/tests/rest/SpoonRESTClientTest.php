@@ -6,15 +6,12 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
-/**
- * SpoonRESTClient test case.
- */
 class SpoonRESTClientTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @var SpoonRESTClient
 	 */
-	private $SpoonRESTClient;
+	protected  $SpoonRESTClient;
 
 	protected function setUp()
 	{
