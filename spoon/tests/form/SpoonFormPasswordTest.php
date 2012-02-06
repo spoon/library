@@ -1,10 +1,10 @@
 <?php
 
-// spoon charset
 if(!defined('SPOON_CHARSET')) define('SPOON_CHARSET', 'utf-8');
 
-// includes
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(dirname(dirname(__FILE__))));
+$includePath = dirname(dirname(dirname(dirname(__FILE__))));
+set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
+
 require_once 'spoon/spoon.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
