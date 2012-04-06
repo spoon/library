@@ -139,8 +139,6 @@ class SpoonFilter
 
 	/**
 	 * Disable php's magic quotes (yuck!)
-	 *
-	 * @return	void
 	 */
 	public static function disableMagicQuotes()
 	{
@@ -308,8 +306,8 @@ class SpoonFilter
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
 		$quoteStyle = self::getValue($quoteStyle, array(ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES), ENT_NOQUOTES);
 
-		// apply method
-		$return = htmlentities($value, $quoteStyle, $charset);
+		// apply htmlentities
+		$return = htmlentities((string) $value, $quoteStyle, $charset);
 
 		/**
 		 * PHP doesn't replace a backslash to its html entity since this is something
@@ -336,7 +334,7 @@ class SpoonFilter
 		$quoteStyle = self::getValue($quoteStyle, array(ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES), ENT_NOQUOTES);
 
 		// apply method
-		return html_entity_decode($value, $quoteStyle, $charset);
+		return html_entity_decode((string) $value, $quoteStyle, $charset);
 	}
 
 
@@ -353,7 +351,7 @@ class SpoonFilter
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
 
 		// apply method
-		return htmlspecialchars($value, ENT_QUOTES, $charset);
+		return htmlspecialchars((string) $value, ENT_QUOTES, $charset);
 	}
 
 
@@ -365,7 +363,7 @@ class SpoonFilter
 	 */
 	public static function htmlspecialcharsDecode($value)
 	{
-		return htmlspecialchars_decode($value, ENT_QUOTES);
+		return htmlspecialchars_decode((string) $value, ENT_QUOTES);
 	}
 
 
@@ -476,18 +474,21 @@ class SpoonFilter
 	 */
 	public static function isFloat($value, $allowCommas = false)
 	{
-		// no commas allowed
-		if(!$allowCommas) return ((string) (float) $value === (string) $value);
+		// replace commas if needed
+		if($allowCommas) $value = str_replace(',', '.', (string) $value);
 
-		// replace commas with dots
-		return ((string) (float) str_replace(',', '.', (string) $value) === str_replace(',', '.', (string) $value));
+		// trim zero characters after the decimal separator
+		if(mb_strpos((string) $value, '.') !== false) rtrim($value, '0');
+
+		// validate
+		return ((string) (float) $value === (string) $value);
 	}
 
 
 	/**
 	 * Checks if the value is greather than a given minimum.
 	 *
-	 * @return	bool			true if the value is greather then, false if not.
+	 * @return	bool				true if the value is greather then, false if not.
 	 * @param	float $minimum		The minimum as a float.
 	 * @param	float $value		The value to validate.
 	 */
@@ -631,6 +632,32 @@ class SpoonFilter
 	public static function isOdd($value)
 	{
 		return !self::isEven((int) $value);
+	}
+
+
+	/**
+	 * Checks this field for numbers 0-9 and an optional - (minus) sign (in the beginning only).
+	 *
+	 * @return	bool
+	 * @param 	string $value					The value to validate.
+	 * @param	string[optional] $error			The error message to set.
+	 * @param	int[optional] $precision		The allowed number of digits after the decimal separator. Defaults to 2.
+	 * @param	bool[optional] $allowNegative	Do you want to allow negative prices? Defaults to false.
+	 * @param	bool[optional] $allowCommas		Do you want to use commas as a decimal separator? Defaults to true.
+	 */
+	public static function isPrice($value, $precision = 2, $allowNegative = false, $allowCommas = true)
+	{
+		// replace commas if needed
+		if($allowCommas) $value = str_replace(',', '.', (string) $value);
+
+		// trim zero characters after the decimal separator
+		if(mb_strpos($value, '.') !== false) rtrim($value, '0');
+
+		// no negatives allowed
+		if(!$allowNegative) return (((float) $value >= 0) && ((string) (float) $value == $value));
+
+		// no commas allowed
+		return ((string) (float) $value === (string) $value);
 	}
 
 
@@ -836,10 +863,8 @@ class SpoonFilter
 	 */
 	public static function toCamelCase($value, $separator = '_', $lcfirst = false, $charset = null)
 	{
-		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
-
-		// init var
 		$string = '';
+		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
 
 		// fetch words
 		$words = explode((string) $separator, (string) $value);
@@ -851,7 +876,7 @@ class SpoonFilter
 			if($word == '') continue;
 
 			// first word lowercase
-			if($i == 0 && $lcfirst) $word = $word;
+			if($i == 0 && $lcfirst) $word[0] = mb_strtolower($word[0], $charset);
 
 			// convert first letter to uppercase
 			else $word[0] = mb_strtoupper($word[0], $charset);
@@ -864,7 +889,30 @@ class SpoonFilter
 
 
 	/**
-	 * Prepares a string so that it can be used in urls. Special characters are stripped/replaced.
+	 * Multibyte-safe ucfirst
+	 *
+	 * @return	string							The ucfirst'ed string.
+	 * @param	string $string					The string to ucfirst
+	 * @param	string[optional] $charset		The charset to use, default is based on SPOON_CHARSET.
+	 */
+	public static function ucfirst($string, $charset = null)
+	{
+		// init vars
+		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
+		$string = (string) $string;
+
+		// uppercase first character
+		$first = mb_strtoupper(mb_substr($string, 0, 1, $charset), $charset);
+
+		// leave rest untouched
+		$rest = mb_substr($string, 1, mb_strlen($string, $charset) - 1, $charset);
+
+		return $first . $rest;
+	}
+
+
+	/**
+	 * Prepares a string so that it can be used in urls.
 	 *
 	 * @return	string						The urlised string.
 	 * @param	string $value				The value that should be urlised.
@@ -875,57 +923,37 @@ class SpoonFilter
 		// define charset
 		$charset = ($charset !== null) ? self::getValue($charset, Spoon::getCharsets(), SPOON_CHARSET) : SPOON_CHARSET;
 
-		// allowed characters
-		$characters = array('a', 'b', 'c', 'd', 'e', 'f', 'g',
-							'h', 'i', 'j', 'k', 'l', 'm', 'n',
-							'o', 'p', 'q', 'r', 's', 't', 'u',
-							'v', 'w', 'x', 'y', 'z', '0', '1',
-							'2', '3', '4', '5', '6', '7', '8',
-							'9', '-', '_', ' ');
+		// reserved characters (RFC 3986)
+		$reservedCharacters = array(
+			'/', '?', ':', '@', '#', '[', ']',
+			'!', '$', '&', '\'', '(', ')', '*',
+			'+', ',', ';', '='
+		);
 
-		// redefine value
-		$value = mb_strtolower($value, $charset);
+		// remove reserved characters
+		$value = str_replace($reservedCharacters, ' ', $value);
 
-		// replace special characters
-		$replace = array();
-		$replace['.'] = ' ';
-		$replace['@'] = ' at ';
-		$replace['©'] = ' copyright ';
-		$replace['€'] = ' euro ';
-		$replace['™'] = ' tm ';
-		$replace['&'] = ' and ';
-
-		// replace special characters
-		$value = str_replace(array_keys($replace), array_values($replace), $value);
-
-		// reform non ascii characters
-		$value = iconv($charset, 'ASCII//TRANSLIT//IGNORE', $value);
-
-		// remove spaces at the beginning and the end
-		$value = trim($value);
-
-		// default endvalue
-		$newValue = '';
-
-		// loop charachtesr
-		for($i = 0; $i < mb_strlen($value, $charset); $i++)
-		{
-			// valid character (so add to new string)
-			if(in_array(mb_substr($value, $i, 1, $charset), $characters)) $newValue .= mb_substr($value, $i, 1, $charset);
-		}
+		// replace double quote, since this one might cause problems in html (e.g. <a href="double"quote">)
+		$value = str_replace('"', ' ', $value);
 
 		// replace spaces by dashes
-		$newValue = str_replace(' ', '-', $newValue);
+		$value = str_replace(' ', '-', $value);
 
-		// there IS a value
-		if(strlen($newValue) != 0)
+		// only urlencode if not yet urlencoded
+		if(urldecode($value) == $value)
 		{
-			// convert "--" to "-"
-			$newValue = preg_replace('/\-+/', '-', $newValue);
+			// to lowercase
+			$value = mb_strtolower($value, $charset);
+
+			// urlencode
+			$value = urlencode($value);
 		}
 
+		// convert "--" to "-"
+		$value = preg_replace('/\-+/', '-', $value);
+
 		// trim - signs
-		return trim($newValue, '-');
+		return trim($value, '-');
 	}
 }
 
@@ -941,5 +969,3 @@ class SpoonFilter
  * @since		0.1.1
  */
 class SpoonFilterException extends SpoonException {}
-
-?>
