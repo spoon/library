@@ -152,6 +152,7 @@ class SpoonLocale
 		$continentCountries = array();
 		$language = SpoonFilter::getValue($language, self::$languages, 'en');
 		$locale = array();
+		$returnLocale = (bool) $returnLocale;
 
 		// fetch file
 		require 'data/' . $language . '.php';
