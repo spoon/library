@@ -233,7 +233,7 @@ class SpoonLocale
 		}
 
 		// sort the results alphabetical
-		sort($results);
+		asort($results);
 
 		// return re
 		return $results;
