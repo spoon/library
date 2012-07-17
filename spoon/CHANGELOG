@@ -1,5 +1,6 @@
 1.3.1 (xxxx-xx-xx)
 ----
+- Locale: added continents and their countries. (thx to Siesqo).
 - Coding standards have changed for concatenating strings.
 - Bugfix: template compiler now allows two equal iterations within another iteration.
 - Rewrote SpoonLog so it doesn't use any statics, but requires you to create an instance.
