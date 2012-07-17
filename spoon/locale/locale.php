@@ -94,6 +94,31 @@ class SpoonLocale
 
 
 	/**
+	 * Fetch the name of a continent based on the code.
+	 *
+	 * @return	array						An array with all known continents in the requested language.
+	 * @param	string $code				The continent name.
+	 * @param	string[optional] $language	The language to use (available languages can be found in SpoonLocale).
+	 */
+	public static function getContinent($code, $language = 'en')
+	{
+		// init vars
+		$code = (string) $code;
+		$language = SpoonFilter::getValue($language, self::$languages, 'en');
+		$locale = array();
+
+		// fetch file
+		require 'data/' . $language . '.php';
+
+		// doesn't exist
+		if(!isset($locale['continents'][$code])) throw new SpoonLocaleException('There is no continent with the code: ' . $code);
+
+		// fetch countries
+		return $locale['continents'][$code];
+	}
+
+
+	/**
 	 * Retrieve the list of continents.
 	 *
 	 * @return	array						An array with all known continents in the requested language.
