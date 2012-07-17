@@ -97,7 +97,7 @@ class SpoonLocale
 	 * Fetch the name of a continent based on the code.
 	 *
 	 * @return	array						An array with all known continents in the requested language.
-	 * @param	string $code				The continent name.
+	 * @param	string $code				The official continents-code.
 	 * @param	string[optional] $language	The language to use (available languages can be found in SpoonLocale).
 	 */
 	public static function getContinent($code, $language = 'en')
@@ -141,11 +141,12 @@ class SpoonLocale
 	/**
 	 * Retrieve continent for the country.
 	 *
-	 * @return	array						The continent-code.
-	 * @param	string $code				The official country-code.
-	 * @param	string[optional] $language	The language to use (available languages can be found in SpoonLocale).
+	 * @return	array							The continent-code.
+	 * @param	string $code					The official country-code.
+	 * @param	string[optional] $language		The language to use (available languages can be found in SpoonLocale).
+	 * @param	bool[optional] $returnLocale	Should we return the locale for continent? Default = true
 	 */
-	public static function getContinentForCountry($code, $language = 'en')
+	public static function getContinentForCountry($code, $language = 'en', $returnLocale = true)
 	{
 		// init vars
 		$continentCountries = array();
@@ -160,13 +161,13 @@ class SpoonLocale
 		$continents = $locale['continents'];
 
 		// loop all continents
-		foreach($continents as $continentKey => $continentLabel)
+		foreach($continents as $key => $label)
 		{
 			// the country is in this continent
-			if(in_array($code, $continentCountries[$continentKey]))
+			if(in_array($code, $continentCountries[$key]))
 			{
-				// return continent name
-				return $continentLabel;
+				// return label, or key
+				return ($returnLocale) ? $label : $key;
 
 				// stop here
 				break;
