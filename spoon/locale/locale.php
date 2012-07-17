@@ -24,6 +24,7 @@
  *
  * @author		Davy Hellemans <davy@spoon-library.com>
  * @author		Dieter Vanden Eynde <dieter@dieterve.be>
+ * @author		Siesqo <info@siesqo.be>
  * @since		1.1.0
  */
 class SpoonLocale
