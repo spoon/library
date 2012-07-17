@@ -4,13 +4,13 @@
 $locale = array();
 
 // continents
-$locale['continents']['Africa'] = 'Afrika';
-$locale['continents']['Antarctica'] = 'Antarctica';
-$locale['continents']['Asia'] = 'Azië';
-$locale['continents']['Europe'] = 'Europa';
-$locale['continents']['NorthAmerica'] = 'Noord-Amerika';
-$locale['continents']['Oceania'] = 'Oceanië';
-$locale['continents']['SouthAmerica'] = 'Zuid-Amerika';
+$locale['continents']['africa'] = 'Afrika';
+$locale['continents']['antarctica'] = 'Antarctica';
+$locale['continents']['asia'] = 'Azië';
+$locale['continents']['europe'] = 'Europa';
+$locale['continents']['northAmerica'] = 'Noord-Amerika';
+$locale['continents']['oceania'] = 'Oceanië';
+$locale['continents']['southAmerica'] = 'Zuid-Amerika';
 
 // countries
 $locale['countries'] = array();
