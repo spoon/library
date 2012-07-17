@@ -93,6 +93,66 @@ class SpoonLocale
 
 
 	/**
+	 * Retrieve the list of continents.
+	 *
+	 * @return	array						An array with all known continents in the requested language.
+	 * @param	string[optional] $language	The language to use (available languages can be found in SpoonLocale).
+	 */
+	public static function getContinents($language = 'en')
+	{
+		// init vars
+		$language = SpoonFilter::getValue($language, self::$languages, 'en');
+		$locale = array();
+
+		// fetch file
+		require 'data/' . $language . '.php';
+
+		// fetch countries
+		return $locale['continents'];
+	}
+
+
+	/**
+	 * Retrieve continent for the country.
+	 *
+	 * @return	array						The continent-code.
+	 * @param	string $code				The official country-code.
+	 * @param	string[optional] $language	The language to use (available languages can be found in SpoonLocale).
+	 */
+	public static function getContinentForCountry($code, $language = 'en')
+	{
+		// init vars
+		$continentCountries = array();
+		$language = SpoonFilter::getValue($language, self::$languages, 'en');
+		$locale = array();
+
+		// fetch file
+		require 'data/' . $language . '.php';
+		require 'data/continent_countries.php';
+
+		// define contintents
+		$continents = $locale['continents'];
+
+		// loop all continents
+		foreach($continents as $continentKey => $continentLabel)
+		{
+			// the country is in this continent
+			if(in_array($code, $continentCountries[$continentKey]))
+			{
+				// return continent name
+				return $continentLabel;
+
+				// stop here
+				break;
+			}
+		}
+
+		// no continent for this country found
+		return false;
+	}
+
+
+	/**
 	 * Retrieve the list of countries.
 	 *
 	 * @return	array						An array with all known countries in the requested language.
@@ -109,6 +169,46 @@ class SpoonLocale
 
 		// fetch countries
 		return $locale['countries'];
+	}
+
+
+	/**
+	 * Retrieve the list of countries for a continent.
+	 *
+	 * @return	array						An array with all known continents in the requested language.
+	 * @param	string $continent			The continent you want all countries from.
+	 * @param	string[optional] $language	The language to use (available languages can be found in SpoonLocale).
+	 */
+	public static function getCountriesForContinent($continent, $language = 'en')
+	{
+		// init vars
+		$continentCountries = array();
+		$language = SpoonFilter::getValue($language, self::$languages, 'en');
+		$locale = array();
+		$results = array();
+
+		// fetch file
+		require 'data/' . $language . '.php';
+		require 'data/continent_countries.php';
+
+		// doesn't exist
+		if(!isset($continentCountries[$continent])) throw new SpoonLocaleException('There is no continent with the name: ' . $continent);
+
+		// fetch countries
+		$countries = $continentCountries[$continent];
+
+		// loop all countries for the continent
+		foreach($countries as $code)
+		{
+			// add country to results
+			$results[$code] = $locale['countries'][$code];
+		}
+
+		// sort the results alphabetical
+		sort($results);
+
+		// return re
+		return $results;
 	}
 
 
