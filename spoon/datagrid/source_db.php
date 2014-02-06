@@ -130,7 +130,7 @@ class SpoonDatagridSourceDB extends SpoonDatagridSource
 		$query = $this->query;
 
 		// order & sort defined
-		if($order !== null && $sort !== null) $query .= ' ORDER BY ' . $order . ' ' . $sort;
+		if($order !== null && $sort !== null) $query .= ' ORDER BY `' . $order . '` ' . $sort;
 
 		// offset & limit defined
 		if($offset !== null && $limit !== null) $query .= ' LIMIT ' . $offset . ', ' . $limit;
